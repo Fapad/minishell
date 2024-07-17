@@ -6,13 +6,13 @@
 #    By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 16:17:41 by bszilas           #+#    #+#              #
-#    Updated: 2024/07/16 16:49:00 by bszilas          ###   ########.fr        #
+#    Updated: 2024/07/17 10:38:36 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CFILES = readline.c
+CFILES = 
 
 CC = cc
 LIBDIR = libft
@@ -25,7 +25,7 @@ RM = rm -rf
 SRC = $(addprefix $(SRCDIR),$(CFILES))
 OBJ = $(addprefix $(OBJDIR),$(CFILES:%.c=%.o))
 CFLAGS = -Wall -Wextra -Werror -I$(INCDIR)
-LFLAGS = -L$(LIBDIR) -lft
+LFLAGS = -L$(LIBDIR) -lft -lreadline
 
 all: $(LIB) $(OBJDIR) $(NAME)
 	
@@ -53,7 +53,10 @@ $(DB): $(LIB)
 	gdb ./$(DB)
 
 diagram:
-	cflow --main=pipe_l --depth=6 --omit-arguments -f dot $(SRC) | dot -Txlib
+	cflow --main=main --depth=6 --omit-arguments -f dot $(SRC) | dot -Txlib
+
+parser:
+	$(CC) -g -o parser readline.c $(CFLAGS) $(LFLAGS)
 
 push: fclean
 	git add .

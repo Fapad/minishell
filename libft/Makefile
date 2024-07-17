@@ -6,7 +6,7 @@
 #    By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/08 12:01:27 by bszilas           #+#    #+#              #
-#    Updated: 2024/07/16 16:13:10 by bszilas          ###   ########.fr        #
+#    Updated: 2024/07/17 14:25:14 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ ft_strlcat.c ft_strlcpy.c ft_strlen.c ft_strmapi.c ft_strncmp.c ft_strnstr.c \
 ft_strrchr.c ft_strtrim.c ft_substr.c ft_tolower.c ft_toupper.c ft_lstiter.c \
 ft_lstadd_back.c ft_lstadd_front.c ft_lstclear.c ft_lstdelone.c ft_lstlast.c \
 ft_lstmap.c ft_lstnew.c ft_lstsize.c ft_printf.c ft_printf_fmts.c ft_abs.c \
-ft_free_array.c ft_rng.c ft_gnl.c ft_argv_splitter.c
+ft_free_array.c ft_rng.c ft_gnl.c ft_argv_splitter.c ft_iswhitespace.c
 
 NAME = libft.a
 INC = .

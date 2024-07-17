@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: szilas <szilas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:57:10 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/10 23:25:33 by szilas           ###   ########.fr       */
+/*   Updated: 2024/07/17 14:27:52 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,6 @@ int		ft_abs(int n);
 int		ft_rng(size_t seed, int nth);
 char	ft_rand_alnum(size_t seed, int nth);
 char	*get_next_line(int fd);
+int		ft_iswhitespace(int c);
 
 #endif
