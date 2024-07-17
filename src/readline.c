@@ -1,10 +1,29 @@
 #include "../inc/minishell.h"
 
-int	token_type(char c)
+int	token_type(char *str)
 {
-	if (strchr("|"))
-
+	if (*str == '\0')
+		return (END);
+	if (*str == '|')
+		return (PIPE);
+	if (*str == '<')
+	{
+		if (*str + 1 == '<')
+			return (HEREDOC);
+		else
+			return (IN_R);
+	}
+	if (*str == '>')
+	{
+		if (*str + 1 == '>')
+			return (OUT_APPEND);
+		else
+			return (OUT_R);
+	}
+	return (CMD);
 }
+
+
 
 t_token	*add_token(t_var *var, char *str)
 {
@@ -14,9 +33,8 @@ t_token	*add_token(t_var *var, char *str)
 	if (!new)
 		return (NULL);
 	new->str = str;
-	new->type = token_type(*str);
-	new->left = var->tree;
-	new->right = NULL;
+	new->type = token_type(str);
+	add_to_tree(new, var);
 }
 
 int	parser(t_var *var, char *line)
@@ -26,16 +44,14 @@ int	parser(t_var *var, char *line)
 
 	var->tree = NULL;
 	i = 0;
-	while (var->line[i])
+	while (line[i])
 	{
-		while (ft_iswhitespace(var->line[i]))
+		while (ft_iswhitespace(line[i]))
 			i++;
-		if (!var->line[i])
-			return (0);
-		new = add_token(var, var->line + i);
+		new = add_token(var, line + i);
 		if (!new)
 			return (0);
-		while (ft_isprint(var->line[i]))
+		while (ft_isprint(line[i]))
 			i++;
 		
 	}
