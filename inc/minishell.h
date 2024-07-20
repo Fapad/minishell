@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/17 18:09:49 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/20 13:31:09 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@
 # include "../libft/libft.h"
 
 # define END 0
-# define IN_R 1
-# define OUT_R 2
-# define OUT_APPEND 3
-# define HEREDOC 4
-# define CMD 5
-# define PIPE 6
+# define IN_R -1
+# define OUT_R -2
+# define OUT_APPEND -3
+# define HEREDOC -4
+# define CMD -5
+# define PIPE -6
 
 typedef struct s_token
 {

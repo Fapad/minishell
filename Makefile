@@ -6,7 +6,7 @@
 #    By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 16:17:41 by bszilas           #+#    #+#              #
-#    Updated: 2024/07/17 10:38:36 by bszilas          ###   ########.fr        #
+#    Updated: 2024/07/20 13:21:57 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,7 +56,7 @@ diagram:
 	cflow --main=main --depth=6 --omit-arguments -f dot $(SRC) | dot -Txlib
 
 parser:
-	$(CC) -g -o parser readline.c $(CFLAGS) $(LFLAGS)
+	$(CC) -g -o parser src/readline.c $(CFLAGS) $(LFLAGS)
 
 push: fclean
 	git add .
