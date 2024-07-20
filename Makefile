@@ -6,7 +6,7 @@
 #    By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 16:17:41 by bszilas           #+#    #+#              #
-#    Updated: 2024/07/20 13:21:57 by bszilas          ###   ########.fr        #
+#    Updated: 2024/07/20 13:32:15 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,16 +55,8 @@ $(DB): $(LIB)
 diagram:
 	cflow --main=main --depth=6 --omit-arguments -f dot $(SRC) | dot -Txlib
 
-parser:
-	$(CC) -g -o parser src/readline.c $(CFLAGS) $(LFLAGS)
-
-push: fclean
-	git add .
-	git commit -m "quickpush $(shell date)"
-	git push
-
 re: fclean all
 
-.PHONY: all clean fclean re push debug diagram
+.PHONY: all clean fclean re debug diagram
 
-.SILENT: clean fclean push
+.SILENT: clean fclean 
