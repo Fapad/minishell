@@ -12,7 +12,7 @@
 
 NAME = minishell
 
-CFILES = readline.c lexer.c lexerutils.c lexerutils2.c
+CFILES = readline.c lexer.c lexerutils.c lexerutils2.c signal.c
 
 CC = cc
 LIBDIR = libft
