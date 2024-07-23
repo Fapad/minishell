@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexerutils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajovanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:44 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/22 10:35:46 by ajovanov         ###   ########.fr       */
+/*   Updated: 2024/07/23 17:37:05 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
+#include "../inc/minishell.h"
 
 int	identify_input_redirection(const char **start, const char **end)
 {
@@ -53,22 +54,22 @@ int	identify_pipe(const char **start, const char **end)
 
 int	identify_general_token(const char **start, const char **end)
 {
-	int	a;
-
-	a = 0;
-	while (**end && **end != ' '
-		&& **end != '|' && **end != '<' && **end != '>')
+	int	type;
+	
+	if (!**start)
+		return (END);
+	type = CMD;
+	while (**end && !ft_strchr("< >|", **end))
 	{
-		a = identify_dollar_sign(start, end);
-		if (a != 0)
-		{	
-			return (VAR);
-		}
+		if (**end == '\'' && identify_single_quotes(end, end))
+			type = INTERPRET;
+		else if (**end == '\"' && identify_double_quotes(end, end))
+			type = INTERPRET;
+		else if (**end == '$')
+			type = INTERPRET;
 		(*end)++;
 	}
-/* 	if (**end == '"')
-		(*end)--; */
-	return (CMD);
+	return (type);
 }
 
 int	identify_single_quotes(const char **start, const char **end)
@@ -81,15 +82,31 @@ int	identify_single_quotes(const char **start, const char **end)
 		while (**end)
 		{
 			if (**end == '\'')
-			{
-				(*end)++;
-				return (10);
-			}
+				return (true);
 			(*end)++;
 		}
 	}
 	*end = tmp;
-	return (0);
+	return (false);
+}
+
+int	identify_double_quotes(const char **start, const char **end)
+{
+ 	const char *tmp = *end;
+
+	if (**start == '\"')
+	{
+		*end = *start;
+		(*end)++;
+		while (**end)
+		{
+			if (**end == '\"')
+				return (true);
+			(*end)++;
+		}
+	}
+	*end = tmp;
+	return (false);
 }
 
 int	identify_dollar_sign(const char **start, const char **end)
@@ -101,36 +118,9 @@ int	identify_dollar_sign(const char **start, const char **end)
 			(*start)++;
 		while (**end != 32 && **end != '\0' && **end != '"')
 			(*end)++;
-		return (40);
+		return (true);
 	}
-	return (0);
-}
-
-int	identify_double_quotes(const char **start, const char **end)
-{
- 	const char *tmp = *end;
-	int	dollar;
-
-	dollar = 0;
-	if (**start == '\"')
-	{
-		*end = *start;
-		(*end)++;
-		while (**end)
-		{
-			//dollar = identify_dollar_sign(start, end);
-			if (dollar != 0)
-				return (VAR);
-			if (**end == '\"')
-			{
-				(*end)++;
-				return (10);
-			}
-			(*end)++;
-		}
-	}
-	*end = tmp;
-	return (0);
+	return (false);
 }
 
 int	identify_token_type(const char **start, const char **end)
@@ -138,12 +128,6 @@ int	identify_token_type(const char **start, const char **end)
 	int	type;
 
 	type = 0;
-	type = identify_single_quotes(start, end);
-	if (type != 0)
-		return (type);
-	type = identify_double_quotes(start, end);
-	if (type != 0)
-		return (type);
 	type = identify_pipe(start, end);
 	if (type != 0)
 		return (type);

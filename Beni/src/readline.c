@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/23 11:06:30 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/23 14:30:37 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,20 @@ int	main(void)
 			printf("exit\n");
 			break ;
 		}
-		tokens = tokenize(line);
-		print_tokens(tokens);
-		var.tokens = tokens;
-		var.line = line;
-		var.list = NULL;
-		if (parse_tokens(&var))
-			print_exec_list(var.list);
-		add_history(line);
+		if (*line)
+		{
+			tokens = tokenize(line);
+			print_tokens(tokens);
+			var.tokens = tokens;
+			var.line = line;
+			var.list = NULL;
+			if (parse_tokens(&var))
+				print_exec_list(var.list);
+			add_history(line);
+			free_linked_lists(&var);
+		}
 		free(line);
 	}
+	rl_clear_history();
 	return (0);
 }

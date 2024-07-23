@@ -6,7 +6,7 @@
 #    By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 16:17:41 by bszilas           #+#    #+#              #
-#    Updated: 2024/07/23 09:23:40 by bszilas          ###   ########.fr        #
+#    Updated: 2024/07/23 11:31:04 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,8 +49,8 @@ fclean: clean
 	$(RM) $(LIBDIR)/$(LIB) $(NAME) $(DB) *.out
 
 $(DB): $(LIB)
-	$(CC) -g -o $(DB) $(CFLAGS) $(BSRC) $(LFLAGS)
-	gdb ./$(DB)
+	$(CC) -g -o $(DB) $(CFLAGS) $(SRC) $(LFLAGS)
+	lldb ./$(DB)
 
 diagram:
 	cflow --main=main --depth=6 --omit-arguments -f dot $(SRC) | dot -Txlib

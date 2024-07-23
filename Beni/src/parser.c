@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/23 11:14:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/23 14:50:06 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ t_node	*new_redirect_node(t_token **current, t_node *this)
 	if ((*current)->type != CMD)
 	{
 		unexpected_token(this->content[1]);
-		return (free(this), free(this->content), NULL);
+		return (free(this->content), free(this), NULL);
 	}
 	this->content[2] = NULL;
 	set_redirect_type(this);

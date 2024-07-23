@@ -3,21 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajovanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/22 10:35:10 by ajovanov         ###   ########.fr       */
+/*   Updated: 2024/07/23 22:05:51 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
+#include "../inc/minishell.h"
 
 t_token	*create_token(int type, const char *str)
 {
 	t_token	*token;
-	int	i;
+	// int	i;
 
-	char	**evnp = __environ;
-	i = 0;
+	// char	**evnp = __environ;
+	// i = 0;
 	//int b = 1;
 	token = (t_token *)malloc(sizeof(t_token));
 	token->type = type;
@@ -56,14 +57,6 @@ t_token	*create_token(int type, const char *str)
 
  */
 
-
-
-
-
-
-
-
-
 	/* 		while (str[b] != '\0')
 			{
 				int sec = b;
@@ -88,12 +81,12 @@ t_token	*create_token(int type, const char *str)
 				b++;
 			}
 		} */
-		while (evnp[i])
-		{
-		if (ft_strncmp(evnp[i], str + 1, (ft_strlen(str) - 1)) == 0)
-			token->str = ft_strdup(evnp[i]);
-		i++;
-		}
+		// while (evnp[i])
+		// {
+		// if (ft_strncmp(evnp[i], str + 1, (ft_strlen(str) - 1)) == 0)
+		// 	token->str = ft_strdup(evnp[i]);
+		// i++;
+		// }
 
 
 	 
@@ -103,15 +96,112 @@ t_token	*create_token(int type, const char *str)
 	return (token);
 }
 
-void	add_token(t_token **head, t_token **current,
-						const char **start)
+size_t	single_quote_len(char *s, char *end, size_t *i)
+{
+	size_t	len;
+
+	len = 0;
+	while (s + len < end)
+	{
+		len++;
+		if (s[len] == '\'')
+		{
+			*i += len;
+			return (len - 1);
+		}
+	}
+	return (1);
+}
+
+size_t	env_var_len(char *s, char *end, size_t *i)
+{
+	size_t	len;
+	char	tmp;
+
+	end = ++s;
+	while (*end && !ft_strchr("\" $", *end))
+		end++;
+	tmp = *end;
+	*end = '\0';
+	len = ft_strlen(getenv(s));
+	*end = tmp;
+	*i += end - s;
+	return (len);
+}
+
+size_t	double_qoute_len(char *s, char *end, size_t *i)
+{
+	size_t	envv_len;
+	size_t	len;
+	size_t	j;
+
+	len = 0;
+	j = 1;
+	while (s + j < end)
+	{
+		envv_len = 1;
+		if (s[j] == '$' && s[j + 1] && s[j + 1] != '\"')
+			envv_len = env_var_len(s + j, end, &j);
+		if (s[j] == '\"')
+		{
+			*i += j;
+			return (len);
+		}
+		len += envv_len;
+		j++;
+	}
+	return (1);
+}
+
+size_t	interpreted_str_len(char *start, char *end)
+{
+	size_t	i;
+	size_t	len;
+	
+	i = 0;
+	len = 0;
+	while (start + i < end)
+	{
+		if (start[i] == '\'')
+			len += single_quote_len(start + i, end, &i);
+		else if (start[i] == '\"')
+			len += double_qoute_len(start + i, end, &i);
+		else if (start[i] == '$' && start[i + 1])
+			len += env_var_len(start + i, end, &i);
+		else
+			len++;
+		i++;
+	}
+	return (len);
+}
+
+char	*malloc_token(char *start, char *end, int type)
+{
+	size_t	len;
+	char	*str;
+
+	str = NULL;
+	len = end - start;
+	if (type != INTERPRET)
+		ft_printf("%u\n", len);
+	else
+	{
+		len = interpreted_str_len(start, end);
+		ft_printf("%u\n", len);
+	}
+	return (str);
+}
+
+void	add_token(t_token **head, t_token **current, const char **start)
 {
 	t_token		*new_token;
 	const char	*end;
 	int			type;
+	char		*str;
 
 	end = *start;
 	type = identify_token_type(start, &end);
+	str = malloc_token((char *)*start, (char *)end, type);
 	new_token = create_token(type, strndup(*start, end - *start));
 	if (!*head)
 		*head = new_token;
@@ -137,5 +227,6 @@ t_token	*tokenize(const char *input)
 			break ;
 		add_token(&head, &current, &start);
 	}
+	add_token(&head, &current, &start);
 	return (head);
 }
