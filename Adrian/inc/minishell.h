@@ -26,6 +26,7 @@
 # define HEREDOC -4
 # define CMD -5
 # define PIPE -6
+# define VAR 300
 # define PROMPT "\033[1;32mminishell>\033[0m "
 
 typedef struct s_token
@@ -54,7 +55,11 @@ int		identify_input_redirection(const char **start, const char **end);
 int		identify_output_redirection(const char **start, const char **end);
 int		identify_pipe(const char **start, const char **end);
 int		identify_general_token(const char **start, const char **end);
+int		identify_single_quotes(const char **start, const char **end);
+
 void	print_tokens(t_token *head);
+int		identify_dollar_sign(const char **start, const char **end);
+
 
 // SIGNAL
 

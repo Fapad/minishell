@@ -14,7 +14,7 @@ NAME = minishell
 
 CFILES = readline.c lexer.c lexerutils.c lexerutils2.c signal.c
 
-CC = cc
+CC = cc -g
 LIBDIR = libft
 SRCDIR = src/
 INCDIR = inc/
