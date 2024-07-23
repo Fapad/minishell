@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/22 20:09:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/23 09:13:07 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ t_node	*last_node(t_token *current, t_node *this);
 int		token_arg_count(t_token *current);
 t_node	*new_command_node(t_token **current, t_node *this);
 t_node	*new_pipe_node(t_token *current, t_node *this);
-void	set_redirect_type(char *type);
+void	set_redirect_type(t_node *this);
 t_node	*new_redirect_node(t_token **current, t_node *this);
 t_node	*new_list_node(t_token **current);
 void	add_to_list(t_var *var, t_node *this);
