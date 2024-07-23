@@ -6,28 +6,11 @@
 /*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/23 09:15:16 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/23 11:14:35 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-/* void	check_redir_file(t_var *var, int type, int next_type)
-{
-	(void)var;
-	(void)type;
-	(void)next_type;
-}
-
-void	check_syntax(t_var *var, t_token *current)
-{
-	int	type;
-	int	next_type;
-
-	type = current->type;
-	next_type = next_token_type(current);
-	check_redir_file(var, type, next_type);
-} */
 
 t_node	*last_node(t_token *current, t_node *this)
 {
@@ -119,6 +102,11 @@ t_node	*new_redirect_node(t_token **current, t_node *this)
 	this->content[0] = (*current)->str;
 	*current = (*current)->right;
 	this->content[1] = (*current)->str;
+	if ((*current)->type != CMD)
+	{
+		unexpected_token(this->content[1]);
+		return (free(this), free(this->content), NULL);
+	}
 	this->content[2] = NULL;
 	set_redirect_type(this);
 	return (this);
@@ -188,30 +176,18 @@ void	print_exec_list(t_node *list)
 	}
 }
 
-void	free_var(t_var *var)
+bool	valid_syntax(t_node *node)
 {
-	t_node	*node;
-	t_token	*token;
-
-	free(var->line);
-	var->line = NULL;
-	while (var->tokens)
+	if ((node->type != CMD && !node->prev) || 
+		(node->type == PIPE && node->prev && node->prev->type == PIPE))
 	{
-		token = var->tokens;
-		var->tokens = token->right;
-		free(token->str);
-		free(token);
+		unexpected_token(node->content[0]);
+		return (false);
 	}
-	while (var->list)
-	{
-		node = var->list;
-		var->list = node->next;
-		free(node->content);
-		free(node);
-	}
+	return (true);
 }
 
-int	parse_tokens(t_var *var)
+bool	parse_tokens(t_var *var)
 {
 	t_token	*current;
 	t_node	*new;
@@ -221,9 +197,10 @@ int	parse_tokens(t_var *var)
 	{
 		new = new_list_node(&current);
 		if (!new)
-			return (free_var(var), 0);
+			return (free_linked_lists(var), 0);
 		add_to_list(var, new);
-		// check_syntax(var, current);
+		if (!valid_syntax(new))
+			return (free_linked_lists(var), 0);
 		current = current->right;
 	}
 	return (1);

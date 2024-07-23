@@ -6,13 +6,13 @@
 #    By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 16:17:41 by bszilas           #+#    #+#              #
-#    Updated: 2024/07/22 19:56:02 by bszilas          ###   ########.fr        #
+#    Updated: 2024/07/23 09:23:40 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CFILES = readline.c lexer.c lexerutils.c lexerutils2.c signal.c parser.c
+CFILES = readline.c lexer.c lexerutils.c lexerutils2.c signal.c parser.c error.c
 
 CC = cc
 LIBDIR = libft

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/23 09:13:07 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/23 11:08:31 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <stdbool.h>
 # include "../libft/libft.h"
 
 # define END 0
@@ -71,8 +72,7 @@ void	setup_signal_handlers();
 
 // PARSER
 
-void	check_redir_file(t_var *var, int type, int next_type);
-void	check_syntax(t_var *var, t_token *current);
+bool	valid_syntax(t_node *node);
 t_node	*last_node(t_token *current, t_node *this);
 int		token_arg_count(t_token *current);
 t_node	*new_command_node(t_token **current, t_node *this);
@@ -82,6 +82,11 @@ t_node	*new_redirect_node(t_token **current, t_node *this);
 t_node	*new_list_node(t_token **current);
 void	add_to_list(t_var *var, t_node *this);
 void	print_exec_list(t_node *list);
-int		parse_tokens(t_var *var);
+bool	parse_tokens(t_var *var);
+
+// ERROR_HANDLING
+
+void	free_linked_lists(t_var *var);
+void	unexpected_token(char *str);
 
 #endif
