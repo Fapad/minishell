@@ -2,8 +2,14 @@
 
 # define PROMPT "\001\033[1;32m\002minishell> \001\033[0m\002"
 
-
 Igy nem ir ra a promptra
+
+MAGYARAZAT:
+
+Ctrl+A: \001 (ASCII Start of Header)
+Ctrl+B: \002 (ASCII Start of Text)
+
+Ha vannak szinek akkor jelezni kell neki, hogy hol kezdodik es vegzodik a prompt, ha nincsennek szinek akkor nem is kell foglalkozni ilyesmivel
 
 
 2. Update
