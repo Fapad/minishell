@@ -1,4 +1,9 @@
+3. Update
 
+# define PROMPT "\001\033[1;32m\002minishell> \001\033[0m\002"
+
+
+Igy nem ir ra a promptra
 
 
 2. Update
