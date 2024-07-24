@@ -17,12 +17,16 @@ t_token	*create_token(int type, char *str)
 	t_token	*token;
 
 	token = (t_token *)malloc(sizeof(t_token));
+	if (!token)
+		return (NULL);
 	token->type = type;
 	token->left = NULL;
 	token->right = NULL;
 	token->str = NULL;
 	if (token->str == NULL)
 		token->str = ft_strdup(str);
+	if (token->str == NULL)
+		return (free(token), NULL);
 	token->str_len = ft_strlen(str);
 	return (token);
 }
@@ -114,7 +118,7 @@ char	*malloc_token(char *start, char *end, int type)
 	str = NULL;
 	len = end - start;
 	if (type != INTERPRET)
-		ft_printf("%u\n", len);
+		str = ft_strndup(start, end - start);
 	else
 	{
 		len = interpreted_str_len(start, end);
@@ -129,22 +133,19 @@ void	add_token(t_token **head, t_token **current, const char **start)
 	const char	*end;
 	int			type;
 	char		*str;
-	char		*test;
 
-	test = NULL;
 	end = *start;
 	type = identify_token_type(start, &end);
 	str = malloc_token((char *)*start, (char *)end, type);
-	test = ft_strndup(*start, end - *start);
-	new_token = create_token(type, test);
+	if (!str)
+		return (free(str));
+	new_token = create_token(type, str);
 	if (!*head)
 		*head = new_token;
 	else
 		(*current)->right = new_token;
 	*current = new_token;
 	*start = end;
-	if (test != NULL)
-		free(test);
 }
 
 t_token	*tokenize(const char *input)
