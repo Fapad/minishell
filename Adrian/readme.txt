@@ -11,6 +11,8 @@ Ctrl+B: \002 (ASCII Start of Text)
 
 Ha vannak szinek akkor jelezni kell neki, hogy hol kezdodik es vegzodik a prompt, ha nincsennek szinek akkor nem is kell foglalkozni ilyesmivel
 
+Stackoverflow: https://unix.stackexchange.com/questions/486789/input-from-readline-owerwrites-the-prompt
+
 
 2. Update
 
