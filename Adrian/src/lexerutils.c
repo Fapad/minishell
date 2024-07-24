@@ -37,3 +37,33 @@ void	skip_whitespace(const char **input)
 	while (**input == ' ')
 		(*input)++;
 }
+
+void	ft_strncpy(char	*dest,const char *str, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n && str[i])
+	{
+		dest[i] = str[i];
+		i++;
+	}
+	dest[i] = '\0';
+
+}
+
+char *ft_strndup(const char *s, size_t n)
+{
+	char	*dest;
+
+	if (!s)
+		return (NULL);
+	dest = malloc(n + 1);
+	if (!dest)
+		return (NULL);
+	ft_strncpy(dest, s, n);
+	return (dest);
+
+}
+
+

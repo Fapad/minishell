@@ -47,7 +47,7 @@ typedef struct s_var
 
 // LEXER
 
-t_token	*create_token(int type, const char *str);
+t_token	*create_token(int type, char *str);
 t_token	*tokenize(const char *input);
 void	free_token(t_token *token);
 void	skip_whitespace(const char **input);
@@ -60,6 +60,8 @@ int		identify_single_quotes(const char **start, const char **end);
 int		identify_double_quotes(const char **start, const char **end);
 void	print_tokens(t_token *head);
 int		identify_dollar_sign(const char **start, const char **end);
+char	*ft_strndup(const char *s, size_t n);
+
 
 
 // SIGNAL

@@ -11,6 +11,48 @@
 /* ************************************************************************** */
 #include "minishell.h"
 
+/* void free_tokens(t_token *root)
+{
+    if (root == NULL)
+        return;
+    free_tokens(root->left);
+    free_tokens(root->right);
+    if (root->str != NULL)
+	{
+        free(root->str);
+        root->str = NULL;
+    }
+    free(root);
+} */
+
+void free_tokens(t_token *root)
+{
+    t_token *temp;
+
+    while (root != NULL)
+	{
+        if (root->left != NULL) 
+		{
+            temp = root->left;
+            root->left = NULL;
+        } 
+		else if (root->right != NULL)
+		{
+            temp = root->right;
+            root->right = NULL;
+        } 
+		else
+            temp = NULL;
+        if (root->str != NULL)
+            free(root->str);
+        free(root);
+        root = temp;
+    }
+}
+
+
+
+
 int	main(void)
 {
 	char	*line;
@@ -28,6 +70,7 @@ int	main(void)
 		tokens = tokenize(line);
 		print_tokens(tokens);
 		add_history(line);
+		free_tokens(tokens);
 		free(line);
 	}
 	return (0);
