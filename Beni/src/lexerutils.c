@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexerutils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajovanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:25 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/22 10:35:27 by ajovanov         ###   ########.fr       */
+/*   Updated: 2024/07/24 17:45:40 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
+#include "../inc/minishell.h"
 
 void	print_tokens(t_token *head)
 {
@@ -23,17 +24,55 @@ void	print_tokens(t_token *head)
 	}
 }
 
-void	free_token(t_token *token)
+void	free_tokens(t_token *root)
 {
-	if (token)
+    t_token *temp;
+
+    while (root != NULL)
 	{
-		free(token->str);
-		free(token);
-	}
+        if (root->right != NULL)
+		{
+            temp = root->right;
+            root->right = NULL;
+        } 
+		else
+            temp = NULL;
+        if (root->str != NULL)
+            free(root->str);
+        free(root);
+        root = temp;
+    }
 }
 
-void	skip_whitespace(const char **input)
+void	skip_whitespace(char **input)
 {
 	while (**input == ' ')
 		(*input)++;
+}
+
+void	ft_strncpy(char	*dest,const char *str, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n && str[i])
+	{
+		dest[i] = str[i];
+		i++;
+	}
+	dest[i] = '\0';
+
+}
+
+char *ft_strndup(const char *s, size_t n)
+{
+	char	*dest;
+
+	if (!s)
+		return (NULL);
+	dest = malloc(n + 1);
+	if (!dest)
+		return (NULL);
+	ft_strncpy(dest, s, n);
+	return (dest);
 }

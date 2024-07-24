@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/24 11:10:03 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/24 11:46:14 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,19 +55,19 @@ typedef struct s_var
 
 // LEXER
 
-t_token	*create_token(int type, const char *str);
-t_token	*tokenize(const char *input);
+t_token	*create_token(int type, char *str);
+t_token	*tokenize(char *input);
 void	free_token(t_token *token);
-void	skip_whitespace(const char **input);
-int		identify_token_type(const char **start, const char **end);
-int		identify_input_redirection(const char **start, const char **end);
-int		identify_output_redirection(const char **start, const char **end);
-int		identify_pipe(const char **start, const char **end);
-int		identify_general_token(const char **start, const char **end);
-int		identify_single_quotes(const char **start, const char **end);
-int		identify_double_quotes(const char **start, const char **end);
+void	skip_whitespace(char **input);
+int		identify_token_type(char **start, char **end);
+int		identify_input_redirection(char **start, char **end);
+int		identify_output_redirection(char **start, char **end);
+int		identify_pipe(char **start, char **end);
+int		identify_general_token(char **start, char **end);
+int		identify_single_quotes(char **start, char **end);
+int		identify_double_quotes(char **start, char **end);
 void	print_tokens(t_token *head);
-int		identify_dollar_sign(const char **start, const char **end);
+int		identify_dollar_sign(char **start, char **end);
 
 
 // SIGNAL

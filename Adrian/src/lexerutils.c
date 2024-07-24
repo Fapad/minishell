@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexerutils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajovanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:25 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/22 10:35:27 by ajovanov         ###   ########.fr       */
+/*   Updated: 2024/07/24 17:01:21 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
+#include "../inc/minishell.h"
 
 void	print_tokens(t_token *head)
 {
@@ -61,9 +62,8 @@ char *ft_strndup(const char *s, size_t n)
 	dest = malloc(n + 1);
 	if (!dest)
 		return (NULL);
-	ft_strncpy(dest, s, n);
+	ft_strncpy(dest, s, n + 1);
 	return (dest);
-
 }
 
 

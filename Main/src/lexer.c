@@ -6,90 +6,22 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/24 11:07:20 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/24 11:52:07 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-t_token	*create_token(int type, const char *str)
+t_token	*create_token(int type, char *str)
 {
 	t_token	*token;
-	// int	i;
 
-	// char	**evnp = __environ;
-	// i = 0;
-	//int b = 1;
 	token = (t_token *)malloc(sizeof(t_token));
 	token->type = type;
 	token->left = NULL;
 	token->right = NULL;
 	token->str = NULL;
-/*  	if (token->type == 10 || token->type == 300)
-	{
-		int q = 0;
-		if (str[0] == '\"')
-		{
-			char	**dest = ft_split(str, ' ')
-			while (dest[q] != NULL)
-			{
-				if (dest[q][0] == '$')
-				{
-					int len = ft_strlen(dest[q]);
-					while (evnp[i])
-					{
-						if (ft_strncmp(evnp[i], (str + 1), (len - 1)) == 0)
-						{
-							char *to_join = malloc(ft_strlen(evnp[i]) + 1);
-							ft_strcpy(to_join, evnp[i]);
-						}
-						i++;
-					}
-					
-				}
-				else
-					ft_strjoin(token->str, dest[q])
-				q++;
-			}
 
-
-
-
- */
-
-	/* 		while (str[b] != '\0')
-			{
-				int sec = b;
-				if (str[b] == '$')
-				{
-					while (str[sec] != 32 && str[sec] != '\0' && str[sec] != '\"')
-						sec++;
-					i = 0;
-
-					while (evnp[i])
-					{
-						if (ft_strncmp(evnp[i], (str + b + 1), (sec - b - 1)) == 0)
-						{	
-							if (token->str == NULL)
-								token->str = ft_strdup(evnp[i]);
-							else 
-								token->str = ft_strjoin(token->str, evnp[i]);
-						}
-						i++;
-					} 					
-				}
-				b++;
-			}
-		} */
-		// while (evnp[i])
-		// {
-		// if (ft_strncmp(evnp[i], str + 1, (ft_strlen(str) - 1)) == 0)
-		// 	token->str = ft_strdup(evnp[i]);
-		// i++;
-		// }
-
-
-	 
 	if (token->str == NULL)
 		token->str = ft_strdup(str);
 	token->str_len = ft_strlen(str);
@@ -175,7 +107,36 @@ size_t	interpreted_str_len(char *start, char *end)
 	return (len);
 }
 
-char	*malloc_token(char *start, char *end, int type)
+char	*copy_intrd_str(char *str, char *start, char *end, size_t len)
+{
+	size_t	i;
+	char	*ptr;
+
+	str = malloc((len + 1) * sizeof (char));
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (start < end)
+	{
+		if (*start == '\'' && identify_single_quotes(&start, &ptr))
+		{
+			*ptr = 0;
+			ft_strlcat(str, start + 1, len + 1);
+			*ptr = '\'';
+			start = ptr + 1;
+		}
+		else if (start[i] == '\"')
+			len += double_qoute_len(start + i, end, &i);
+		else if (start[i] == '$' && start[i + 1])
+			len += env_var_len(start + i, end, &i);
+		else
+			len++;
+		i++;
+	}
+	return (str);
+}
+
+char	*malloc_token_str(char *start, char *end, int type)
 {
 	size_t	len;
 	char	*str;
@@ -187,22 +148,23 @@ char	*malloc_token(char *start, char *end, int type)
 	else
 	{
 		len = interpreted_str_len(start, end);
+		str = copy_intrd_str(str, start, end, len);
 		ft_printf("%u\n", len);
 	}
 	return (str);
 }
 
-void	add_token(t_token **head, t_token **current, const char **start)
+void	add_token(t_token **head, t_token **current, char **start)
 {
 	t_token		*new_token;
-	const char	*end;
+	char	*end;
 	int			type;
 	char		*str;
 
 	end = *start;
 	type = identify_token_type(start, &end);
-	str = malloc_token((char *)*start, (char *)end, type);
-	new_token = create_token(type, strndup(*start, end - *start));
+	str = malloc_token_str(*start, end, type);
+	new_token = create_token(type, str);
 	if (!*head)
 		*head = new_token;
 	else
@@ -211,9 +173,9 @@ void	add_token(t_token **head, t_token **current, const char **start)
 	*start = end;
 }
 
-t_token	*tokenize(const char *input)
+t_token	*tokenize(char *input)
 {
-	const char	*start;
+	char	*start;
 	t_token		*head;
 	t_token		*current;
 

@@ -3,46 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajovanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/22 10:36:15 by ajovanov         ###   ########.fr       */
+/*   Updated: 2024/07/24 17:14:27 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
 
-/* void free_tokens(t_token *root)
-{
-    if (root == NULL)
-        return;
-    free_tokens(root->left);
-    free_tokens(root->right);
-    if (root->str != NULL)
-	{
-        free(root->str);
-        root->str = NULL;
-    }
-    free(root);
-} */
+#include "../inc/minishell.h"
 
 void free_tokens(t_token *root)
 {
-    t_token *temp;
+	t_token *temp;
 
-    while (root != NULL)
+	while (root != NULL)
 	{
-        if (root->right != NULL)
+		if (root->right != NULL)
 		{
-            temp = root->right;
-            root->right = NULL;
-        } 
+			temp = root->right;
+			root->right = NULL;
+		} 
 		else
-            temp = NULL;
-        if (root->str != NULL)
-            free(root->str);
-        free(root);
-        root = temp;
-    }
+			temp = NULL;
+		if (root->str != NULL)
+			free(root->str);
+		free(root);
+		root = temp;
+	}
 }
 
 int	main(void)
