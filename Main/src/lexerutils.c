@@ -1,34 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   readline.c                                         :+:      :+:    :+:   */
+/*   lexerutils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ajovanov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/22 10:36:15 by ajovanov         ###   ########.fr       */
+/*   Created: 2024/07/22 10:35:25 by ajovanov          #+#    #+#             */
+/*   Updated: 2024/07/22 10:35:27 by ajovanov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
 
-int	main(void)
+void	print_tokens(t_token *head)
 {
-	char	*line;
-	t_token	*tokens;
+	t_token	*current;
 
-	setup_signal_handlers();
-	while (1)
+	current = head;
+	while (current)
 	{
-		line = readline(PROMPT);
-		if (!line)
-		{
-			printf("exit\n");
-			break ;
-		}
-		tokens = tokenize(line);
-		print_tokens(tokens);
-		add_history(line);
-		free(line);
+		printf("Type: %d, Str: %s\n", current->type, current->str);
+		current = current->right;
 	}
-	return (0);
+}
+
+void	free_token(t_token *token)
+{
+	if (token)
+	{
+		free(token->str);
+		free(token);
+	}
+}
+
+void	skip_whitespace(const char **input)
+{
+	while (**input == ' ')
+		(*input)++;
 }

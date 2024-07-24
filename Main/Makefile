@@ -6,15 +6,15 @@
 #    By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 16:17:41 by bszilas           #+#    #+#              #
-#    Updated: 2024/07/20 13:32:15 by bszilas          ###   ########.fr        #
+#    Updated: 2024/07/23 20:31:11 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CFILES = 
+CFILES = readline.c lexer.c lexerutils.c lexerutils2.c signal.c
 
-CC = cc
+CC = cc -g
 LIBDIR = libft
 SRCDIR = src/
 INCDIR = inc/
@@ -49,7 +49,7 @@ fclean: clean
 	$(RM) $(LIBDIR)/$(LIB) $(NAME) $(DB) *.out
 
 $(DB): $(LIB)
-	$(CC) -g -o $(DB) $(CFLAGS) $(BSRC) $(LFLAGS)
+	$(CC) -g -o $(DB) $(CFLAGS) $(SRC) $(LFLAGS)
 	gdb ./$(DB)
 
 diagram:
