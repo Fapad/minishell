@@ -6,19 +6,19 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/25 12:21:40 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/25 17:26:35 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-int	main(int argc, const char *argv[], const char *envp[])
+int	main(void)
 {
 	char	*line;
 	t_token	*tokens;
 	t_var	var;
 
-	//setup_signal_handlers();
+	setup_signal_handlers();
 	while (1)
 	{
 		line = readline(PROMPT);

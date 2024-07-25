@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/24 19:56:07 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/25 12:48:29 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@
 # define CMD 5
 # define PIPE 6
 # define INTERPRET 7
-# define PROMPT "\001\033[1;32m\002minishell> \001\033[0m\002"
+# define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
+[1;32m\002ell\001\033[0m\002 > "
 
 typedef struct s_token
 {

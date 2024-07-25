@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/24 19:56:07 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/25 16:23:56 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_var
 	t_token	*tokens;
 	t_node	*list;
 	char	*line;
+	char	**env;
 }			t_var;
 
 // LEXER

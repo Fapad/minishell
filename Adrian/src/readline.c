@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/25 12:29:04 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/25 17:27:19 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int	main(void)
 			var.list = NULL;
 			if (parse_tokens(&var))
 				print_exec_list(var.list);
-			
 			add_history(line);
 			free_linked_lists(&var);
 		}
