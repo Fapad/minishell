@@ -3,20 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajovanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/22 10:36:15 by ajovanov         ###   ########.fr       */
+/*   Updated: 2024/07/25 12:21:40 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
 
-int	main(void)
+#include "../inc/minishell.h"
+
+int	main(int argc, const char *argv[], const char *envp[])
 {
 	char	*line;
 	t_token	*tokens;
+	t_var	var;
 
-	setup_signal_handlers();
+	//setup_signal_handlers();
 	while (1)
 	{
 		line = readline(PROMPT);
@@ -25,10 +27,21 @@ int	main(void)
 			printf("exit\n");
 			break ;
 		}
-		tokens = tokenize(line);
-		print_tokens(tokens);
-		add_history(line);
+		if (*line)
+		{
+			tokens = tokenize(line);
+			print_tokens(tokens);
+			var.tokens = tokens;
+			var.line = line;
+			var.list = NULL;
+			if (parse_tokens(&var))
+				print_exec_list(var.list);
+			
+			add_history(line);
+			free_linked_lists(&var);
+		}
 		free(line);
 	}
+	rl_clear_history();
 	return (0);
 }

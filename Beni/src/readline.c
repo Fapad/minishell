@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/23 14:30:37 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/25 12:21:40 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-int	main(void)
+int	main(int argc, const char *argv[], const char *envp[])
 {
 	char	*line;
 	t_token	*tokens;
@@ -36,6 +36,7 @@ int	main(void)
 			var.list = NULL;
 			if (parse_tokens(&var))
 				print_exec_list(var.list);
+			
 			add_history(line);
 			free_linked_lists(&var);
 		}

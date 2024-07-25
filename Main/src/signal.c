@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajovanov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:22 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/22 10:36:24 by ajovanov         ###   ########.fr       */
+/*   Updated: 2024/07/22 11:25:06 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
+#include "../inc/minishell.h"
 
 void	handle_sigint(int sig)
 {
@@ -20,20 +21,20 @@ void	handle_sigint(int sig)
 	rl_redisplay();
 }
 
-void	setup_signal_handlers(void)
+/* void	setup_signal_handlers(void)
 {
 	signal(SIGINT, handle_sigint);
-}
+} */
 
 /* COMMENT - Main szerint a structot kellene hasznalni, 
-de akkor hibat dob a VSCode ami nem gond.*/
+de akkor hibat dob a VSCode ami nem gond. */
 
-/* void setup_signal_handlers()
+void setup_signal_handlers()
 {
-    struct sigaction sa;
-    
-    sa.sa_handler = handle_sigint;
-    sa.sa_flags = SA_RESTART;
-    sigemptyset(&sa.sa_mask);
-    sigaction(SIGINT, &sa, NULL);
-} */
+	struct sigaction sa;
+
+	sa.sa_handler = handle_sigint;
+	sa.sa_flags = SA_RESTART;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGINT, &sa, NULL);
+}
