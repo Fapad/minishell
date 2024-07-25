@@ -6,14 +6,13 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/25 16:23:56 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/25 18:39:54 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
@@ -28,7 +27,8 @@
 # define CMD 5
 # define PIPE 6
 # define INTERPRET 7
-# define PROMPT "\001\033[1;32m\002minishell> \001\033[0m\002"
+# define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
+[1;32m\002ell\001\033[0m\002 > "
 
 typedef struct s_token
 {
