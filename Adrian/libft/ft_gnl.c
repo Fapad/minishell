@@ -82,7 +82,7 @@ char	*get_next_line(int fd)
 	line = file_to_line(line, stash, fd);
 	return (line);
 }
-
+/* 
 #include <fcntl.h>
 
 int main()
@@ -98,3 +98,4 @@ int main()
 	}
 	return 0;
 }
+ */

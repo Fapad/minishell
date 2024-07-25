@@ -16,8 +16,7 @@
 # define PATH_MAX 4096
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "../inc/minishell.h"
-#include <stdio.h>
+
 
 
 void	command_export(char	*arg)
@@ -33,7 +32,7 @@ void	command_export(char	*arg)
 	cuc = 0;
 	while (arg[cuc - 1] != ' ')
 		cuc++;
-	env[i] = arg+ cuc;
+	env[i] = arg + cuc;
 	env[i + 1] = NULL;
 }
 
@@ -114,39 +113,35 @@ void	command_unset(char *line)
 	}
 
 
+
 int	main(int argc, char **argv)
 {
 	int			flag;
-	char		*cwd;	
-	char	buf[100];	
+	char		*cwd;		
 		
 	while (1)
 	{
-		char	*line = get_next_line(0);
-		if (!line)
-			break;
-	if (strcmp(line, "pwd\n") == 0)
+		char	*line = (0);readline("SMTH: ");
+	if (strcmp(line, "pwd") == 0)
 	{
 			command_pwd(&flag);
 	}
-	else if(strcmp(line, "env\n") == 0)
+	else if(strcmp(line, "env") == 0)
 	{
               command_env();
 	}
-	else if (strncmp(line, "EXPORT\n", 6) == 0)
+	else if (strncmp(line, "EXPORT", 6) == 0)
 	{
 	 		command_export(line);
 	}
-	else if (strcmp(line, "exit\n") == 0)
+	else if (strcmp(line, "exit") == 0)
 	{
 			command_exit(line);
 	}
-	else if (strncmp(line, "unset\n", 5) == 0)
+	else if (strncmp(line, "unset", 5) == 0)
 	{
 			command_unset(line);
-	}
-	else if (strcmp(line, "cd") == 0)		
-	free(line);
+	}		
 	}
 	return (0);
 }
