@@ -3,28 +3,28 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+         #
+#    By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 16:17:41 by bszilas           #+#    #+#              #
-#    Updated: 2024/07/23 20:31:11 by bszilas          ###   ########.fr        #
+#    Updated: 2024/07/24 19:42:48 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CFILES = readline.c lexer.c lexerutils.c lexerutils2.c signal.c
+CFILES = readline.c lexer.c lexerutils.c lexerutils2.c signal.c interpret.c \
+parser.c error.c interpret_utils.c parser_utils.c
 
-CC = cc -g
+CC = cc
 LIBDIR = libft
 SRCDIR = src/
 INCDIR = inc/
 OBJDIR = obj/
 LIB = libft.a
-DB = debug
 RM = rm -rf
 SRC = $(addprefix $(SRCDIR),$(CFILES))
 OBJ = $(addprefix $(OBJDIR),$(CFILES:%.c=%.o))
-CFLAGS = -Wall -Wextra -Werror -I$(INCDIR)
+CFLAGS = -Wall -Wextra -Werror -g -I$(INCDIR)
 LFLAGS = -L$(LIBDIR) -lft -lreadline
 
 all: $(LIB) $(OBJDIR) $(NAME)
@@ -47,10 +47,6 @@ clean:
 
 fclean: clean
 	$(RM) $(LIBDIR)/$(LIB) $(NAME) $(DB) *.out
-
-$(DB): $(LIB)
-	$(CC) -g -o $(DB) $(CFLAGS) $(SRC) $(LFLAGS)
-	gdb ./$(DB)
 
 diagram:
 	cflow --main=main --depth=6 --omit-arguments -f dot $(SRC) | dot -Txlib

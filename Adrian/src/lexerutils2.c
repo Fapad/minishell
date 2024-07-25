@@ -6,13 +6,13 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:44 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/24 11:44:56 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/24 11:45:08 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-int	identify_input_redirection(const char **start, const char **end)
+int	identify_input_redirection(char **start, char **end)
 {
 	if (**start == '<')
 	{
@@ -27,7 +27,7 @@ int	identify_input_redirection(const char **start, const char **end)
 	return (0);
 }
 
-int	identify_output_redirection(const char **start, const char **end)
+int	identify_output_redirection(char **start, char **end)
 {
 	if (**start == '>')
 	{
@@ -42,7 +42,7 @@ int	identify_output_redirection(const char **start, const char **end)
 	return (0);
 }
 
-int	identify_pipe(const char **start, const char **end)
+int	identify_pipe(char **start, char **end)
 {
 	if (**start == '|')
 	{
@@ -52,7 +52,7 @@ int	identify_pipe(const char **start, const char **end)
 	return (0);
 }
 
-int	identify_general_token(const char **start, const char **end)
+int	identify_general_token(char **start, char **end)
 {
 	int	type;
 	
@@ -72,9 +72,9 @@ int	identify_general_token(const char **start, const char **end)
 	return (type);
 }
 
-int	identify_single_quotes(const char **start, const char **end)
+int	identify_single_quotes(char **start, char **end)
 {
-	const char *tmp = *end;
+	char *tmp = *end;
 	if (**start == '\'')
 	{
 		*end = *start;
@@ -90,9 +90,9 @@ int	identify_single_quotes(const char **start, const char **end)
 	return (false);
 }
 
-int	identify_double_quotes(const char **start, const char **end)
+int	identify_double_quotes(char **start, char **end)
 {
- 	const char *tmp = *end;
+ 	char *tmp = *end;
 
 	if (**start == '\"')
 	{
@@ -109,7 +109,7 @@ int	identify_double_quotes(const char **start, const char **end)
 	return (false);
 }
 
-int	identify_dollar_sign(const char **start, const char **end)
+int	identify_dollar_sign(char **start, char **end)
 {
 	
 	if (**end == '$')
@@ -123,7 +123,7 @@ int	identify_dollar_sign(const char **start, const char **end)
 	return (false);
 }
 
-int	identify_token_type(const char **start, const char **end)
+int	identify_token_type(char **start, char **end)
 {
 	int	type;
 

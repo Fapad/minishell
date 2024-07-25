@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:25 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/24 17:01:21 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/24 17:45:40 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,27 @@ void	print_tokens(t_token *head)
 	}
 }
 
-void	free_token(t_token *token)
+void	free_tokens(t_token *root)
 {
-	if (token)
+    t_token *temp;
+
+    while (root != NULL)
 	{
-		free(token->str);
-		free(token);
-	}
+        if (root->right != NULL)
+		{
+            temp = root->right;
+            root->right = NULL;
+        } 
+		else
+            temp = NULL;
+        if (root->str != NULL)
+            free(root->str);
+        free(root);
+        root = temp;
+    }
 }
 
-void	skip_whitespace(const char **input)
+void	skip_whitespace(char **input)
 {
 	while (**input == ' ')
 		(*input)++;
@@ -62,8 +73,6 @@ char *ft_strndup(const char *s, size_t n)
 	dest = malloc(n + 1);
 	if (!dest)
 		return (NULL);
-	ft_strncpy(dest, s, n + 1);
+	ft_strncpy(dest, s, n);
 	return (dest);
 }
-
-
