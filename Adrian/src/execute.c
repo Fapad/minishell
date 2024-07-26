@@ -12,17 +12,76 @@
 
 #include "../inc/minishell.h"
 
-void	execute(t_var *var)
+/* void	command_echo(char *list)
+{
+	//	printf("%s", var->list->content[1]);
+	//printf("%s\n", var->list->content[1]);
+	//printf("%s%s\n", PROMPT, var->list->content[1]);
+	int	i;
+
+	i = 1;
+	while (list[i])
+	{}
+	ft_printf("%s", var->list->content[1]);
+		
+	
+
+} */
+
+
+int cd_export_exit_or_unset(t_var *var)
 {
 	t_node	*node;
-	pid_t	pid;
 
-	write_here_docs(var);
-	if (no_pipes(var->list))
+	node = var->list;
+	if (ft_strncmp(var->list->content[0], "echo", 5) == 0)
+		command_echo(var->list);
+	if (ft_strncmp(var->list->content[0], "export", 7) == 0)
+		var->env = command_export(var->env, var->list->content[1]);
+	if (ft_strncmp(var->list->content[0], "env", 4) == 0)
+		command_env(var);
+	if (ft_strncmp(var->list->content[0], "unset", 6) == 0)
+		 var->env = command_unset(var);
+	if (ft_strncmp(var->list->content[0], "pwd", 4) == 0)
+		command_pwd();
+	if (ft_strncmp(var->list->content[0], "cd", 3) == 0)
+		command_cd(var);
+	if (ft_strncmp(var->list->content[0], "exit", 5) == 0)
+		command_exit(var);
+	return (1);
+}
+
+int	no_pipes(t_node *list)
+{
+	t_node *temp;
+
+	temp = list;
+	while (temp)
 	{
-		if (cd_export_exit_or_unset(var))
-			return ;
-		else
+		if (temp->type == PIPE)
+			return (1);
+		temp = temp->next;
+	}
+	return (0);
+}
+
+void	execute(t_var *var)
+{
+	//t_node	*node;
+	//pid_t	pid;
+
+	
+	//cd_export_exit_or_unset(var);
+	
+	//write_here_docs(var);
+	
+	if (no_pipes(var->list) == 0)
+	{
+		cd_export_exit_or_unset(var);
+		/* if (cd_export_exit_or_unset(var))
+			return ; */
+	}
+		/* else
 		pid = fork();
 		if (pid == 0)
 		{
@@ -48,5 +107,5 @@ void	execute(t_var *var)
 			close_pipe();
 		go_to_next_cmd(node);
 	}
-	wait_children(var);
+	wait_children(var); */
 }

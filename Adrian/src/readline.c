@@ -12,10 +12,13 @@
 
 #include "../inc/minishell.h"
 
-int	main(int agrc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_var	var;
 
+	(void)argc;
+	(void)argv;
+	(void)envp;
 	setup_signal_handlers();
 	var.env = malloc_envps(envp);
 	while (1)
@@ -28,7 +31,7 @@ int	main(int agrc, char **argv, char **envp)
 			var.tokens = tokenize(var.line);
 			if (parse_tokens(&var))
 			{
-				print_exec_list(var.list);
+			//	print_exec_list(var.list);
 				execute(&var);
 			}
 			add_history(var.line);

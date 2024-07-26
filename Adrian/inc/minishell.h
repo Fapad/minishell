@@ -19,6 +19,7 @@
 # include <stdbool.h>
 # include "../libft/libft.h"
 
+
 # define END 0
 # define IN_R 1
 # define OUT_R 2
@@ -29,6 +30,7 @@
 # define INTERPRET 7
 # define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
 [1;32m\002ell\001\033[0m\002 > "
+# define PATH_MAX 4096
 
 typedef struct s_token
 {
@@ -111,11 +113,22 @@ void	unexpected_token(char *str);
 
 // BUILTINS
 
-void	command_env(char **envp);
 char	**malloc_envps(char **envp);
-char	**command_unset(char **env, char *line);
-char	**malloc_envps(char **envp);
+char	**command_unset(t_var *var);
 char	**command_export(char **old_envp, char *str);
 size_t	envp_string_count(char **envp);
+void 	command_exit(t_var *var);
+void	command_cd(t_var *var);
+void	command_pwd(void);
+int  command_unset_util(t_var *var, char *dest, size_t to_compare, char **new_env);
+
+
+// execute
+
+void	execute(t_var *var);
+int		cd_export_exit_or_unset(t_var *var);
+void	command_env(t_var *var);
+
+
 
 #endif

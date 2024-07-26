@@ -13,7 +13,7 @@
 NAME = minishell
 
 CFILES = readline.c lexer.c lexerutils.c lexerutils2.c signal.c interpret.c \
-parser.c error.c interpret_utils.c parser_utils.c
+parser.c error.c interpret_utils.c parser_utils.c execute.c builtin.c environment.c
 
 CC = cc
 LIBDIR = libft
