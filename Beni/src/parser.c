@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/25 18:39:19 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/26 17:52:50 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,23 +52,27 @@ t_node	*new_pipe_node(t_token *current, t_node *this)
 
 t_node	*new_redirect_node(t_token **current, t_node *this)
 {
-	this->content = malloc(3 * sizeof (char *));
+	int	i;
+
+	i = 0;
+	if ((*current)->type == HEREDOC)
+		this->content = malloc(4 * sizeof (char *));
+	else
+		this->content = malloc(3 * sizeof (char *));
 	if (!this->content)
-	{
-		free(this);
-		return (NULL);
-	}
-	this->content[0] = (*current)->str;
+		return (free(this), NULL);
+	this->content[i++] = (*current)->str;
+	if ((*current)->type == HEREDOC)
+		i++;
 	*current = (*current)->right;
-	this->content[1] = (*current)->str;
 	if ((*current)->type != CMD)
 	{
-		unexpected_token(this->content[1]);
+		unexpected_token((*current)->str);
 		return (free(this->content), free(this), NULL);
 	}
-	this->content[2] = NULL;
-	set_redirect_type(this);
-	return (this);
+	this->content[i++] = (*current)->str;
+	this->content[i] = NULL;
+	return (set_redirect_type(this), this);
 }
 
 t_node	*new_list_node(t_token **current)

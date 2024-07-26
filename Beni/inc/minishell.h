@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/25 21:00:08 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/26 18:26:37 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,26 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <stdbool.h>
+# include <fcntl.h>
 # include "../libft/libft.h"
 
-# define END 0
-# define IN_R 1
-# define OUT_R 2
-# define OUT_APPEND 3
-# define HEREDOC 4
-# define CMD 5
-# define PIPE 6
-# define INTERPRET 7
+# define END 0x1
+# define OUT_R O_TRUNC
+# define OUT_APPEND O_APPEND
+# define IN_R 0x2
+# define HEREDOC 0x4
+# define CMD 0x8
+# define PIPE 0x10
+# define INTERPRET 0x20
+# define READ_END 0
+# define WRITE_END 1
 # define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
 [1;32m\002ell\001\033[0m\002 > "
+# define HD_PROMPT "\001\033[1;31m\002her\001\033[1;37m\002edo\001\033\
+[1;32m\002c > \001\033[0m\002"
+# define TMP_PATH "/tmp/.tmp"
+# define FILENAME 1
+# define PATH_MAX FILENAME_MAX
 
 typedef struct s_token
 {
@@ -48,12 +56,17 @@ typedef struct s_node
 typedef struct s_var
 {
 	t_token	*tokens;
+	t_node	*current;
 	t_node	*list;
 	char	*line;
 	char	**env;
+	char	**here_docs;
 	pid_t	pid;
 	int		pfd[2];
+	int		in_fd;
+	int		out_fd;
 	int		cmds;
+	int		status;
 }			t_var;
 
 // LEXER
@@ -108,5 +121,30 @@ bool	parse_tokens(t_var *var);
 bool	valid_syntax(t_token *token);
 void	free_linked_lists(t_var *var);
 void	unexpected_token(char *str);
+
+// BUILTINS
+
+char	**malloc_envps(char **envp);
+char	**command_unset(t_var *var);
+char	**command_export(char **old_envp, char *str);
+size_t	envp_string_count(char **envp);
+void 	command_exit(t_var *var);
+void	command_cd(t_var *var);
+void	command_pwd(void);
+int  command_unset_util(t_var *var, char *dest, size_t to_compare, char **new_env);
+
+
+// execute
+
+void	execute(t_var *var);
+int		cd_export_exit_or_unset(t_var *var);
+void	command_env(t_var *var);
+void	write_here_docs(t_var *var);
+int		count_node_types(t_node *node, int type);
+t_node	*get_next_node(t_node *node, int get_type);
+void	in_redir_or_exit(t_var *var);
+void	out_redir_or_exit(t_var *var);
+int		out_redir_never_exit(t_var *var);
+int		in_redir_never_exit(t_var *var);
 
 #endif
