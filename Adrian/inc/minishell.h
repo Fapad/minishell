@@ -6,14 +6,13 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/25 18:17:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/26 11:07:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-// # include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
@@ -51,6 +50,10 @@ typedef struct s_var
 	t_token	*tokens;
 	t_node	*list;
 	char	*line;
+	char	**env;
+	pid_t	pid;
+	int		pfd[2];
+	int		cmds;
 }			t_var;
 
 // LEXER
@@ -105,5 +108,14 @@ bool	parse_tokens(t_var *var);
 bool	valid_syntax(t_token *token);
 void	free_linked_lists(t_var *var);
 void	unexpected_token(char *str);
+
+// BUILTINS
+
+void	command_env(char **envp);
+char	**malloc_envps(char **envp);
+char	**command_unset(char **env, char *line);
+char	**malloc_envps(char **envp);
+char	**command_export(char **old_envp, char *str);
+size_t	envp_string_count(char **envp);
 
 #endif
