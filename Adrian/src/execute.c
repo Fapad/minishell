@@ -12,21 +12,35 @@
 
 #include "../inc/minishell.h"
 
-/* void	command_echo(char *list)
+void	command_echo(t_node *list)
 {
-	//	printf("%s", var->list->content[1]);
-	//printf("%s\n", var->list->content[1]);
-	//printf("%s%s\n", PROMPT, var->list->content[1]);
 	int	i;
 
 	i = 1;
-	while (list[i])
-	{}
-	ft_printf("%s", var->list->content[1]);
+	if (strcmp(list->content[1], "-n") == 0)
+	{
+		i++;
+		while (list->content[i] != NULL)
+		{
+			ft_printf("%s", list->content[i]);
+			if (list->content[i + 1] != NULL)
+				ft_printf(" ");
+			i++;
+		}
+		return ;
+	}
+	while (list->content[i] != NULL)
+	{
+		ft_printf("%s", list->content[i]);
+		if (list->content[i + 1] != NULL)
+			ft_printf(" ");
+		i++;
+	}
+	ft_printf("\n");
 		
 	
 
-} */
+}
 
 
 int cd_export_exit_or_unset(t_var *var)
