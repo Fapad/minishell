@@ -6,13 +6,14 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/25 21:00:08 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/25 18:17:35 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+// # include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
@@ -50,10 +51,6 @@ typedef struct s_var
 	t_token	*tokens;
 	t_node	*list;
 	char	*line;
-	char	**env;
-	pid_t	pid;
-	int		pfd[2];
-	int		cmds;
 }			t_var;
 
 // LEXER

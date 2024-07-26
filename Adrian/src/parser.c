@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/25 18:39:19 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/24 19:43:12 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,19 +93,16 @@ bool	parse_tokens(t_var *var)
 	t_token	*current;
 	t_node	*new;
 
-	var->list = NULL;
-	if (!var->tokens)
-		return (false);
 	if (!valid_syntax(var->tokens))
-		return (free_linked_lists(var), false);
+		return (free_linked_lists(var), 0);
 	current = var->tokens;
 	while (current)
 	{
 		new = new_list_node(&current);
 		if (!new)
-			return (free_linked_lists(var), false);
+			return (free_linked_lists(var), 0);
 		add_to_list(var, new);
 		current = current->right;
 	}
-	return (true);
+	return (1);
 }
