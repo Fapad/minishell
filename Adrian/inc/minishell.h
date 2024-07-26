@@ -6,13 +6,14 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/25 18:39:54 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/24 19:56:07 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
@@ -27,8 +28,9 @@
 # define CMD 5
 # define PIPE 6
 # define INTERPRET 7
-# define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
-[1;32m\002ell\001\033[0m\002 > "
+# define PROMPT "\001\e[45m\002>>> \001\e[0m\e[33m\002 Minishell>$ \001\e[0m\002"
+
+
 
 typedef struct s_token
 {
@@ -50,7 +52,6 @@ typedef struct s_var
 	t_token	*tokens;
 	t_node	*list;
 	char	*line;
-	char	**env;
 }			t_var;
 
 // LEXER
