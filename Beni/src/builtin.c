@@ -2,20 +2,20 @@
 
 void   command_exit(t_var *var)
 {
-	(void)var;
-    printf("exit\n");
-    exit(0);
+	free_all(var);
+	rl_clear_history();
+	ft_printf("exit\n");
+	exit(0);
 }
 
  void	command_cd(t_var *var)
 {
-		char	*path;
+	char	*path;
 
-		path = var->tokens->right->str;
-		if (*path == '\0')
-			path = getenv("HOME");
-		chdir(path);
-
+	path = var->current->content[1];
+	if (!path)
+		path = getenv("HOME");
+	chdir(path);
 }
 
 void	command_pwd(void)

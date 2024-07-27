@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/26 18:26:37 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/27 22:47:55 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,17 @@
 # include <signal.h>
 # include <stdbool.h>
 # include <fcntl.h>
+# include <sys/wait.h>
 # include "../libft/libft.h"
 
 # define END 0x1
-# define OUT_R O_TRUNC
-# define OUT_APPEND O_APPEND
 # define IN_R 0x2
 # define HEREDOC 0x4
 # define CMD 0x8
 # define PIPE 0x10
 # define INTERPRET 0x20
+# define OUT_R O_TRUNC
+# define OUT_APPEND O_APPEND
 # define READ_END 0
 # define WRITE_END 1
 # define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
@@ -36,7 +37,9 @@
 [1;32m\002c > \001\033[0m\002"
 # define TMP_PATH "/tmp/.tmp"
 # define FILENAME 1
-# define PATH_MAX FILENAME_MAX
+# ifndef PATH_MAX
+#  define PATH_MAX FILENAME_MAX
+# endif
 
 typedef struct s_token
 {
@@ -56,11 +59,11 @@ typedef struct s_node
 typedef struct s_var
 {
 	t_token	*tokens;
-	t_node	*current;
 	t_node	*list;
+	t_node	*current;
 	char	*line;
 	char	**env;
-	char	**here_docs;
+	char	**stack_env;
 	pid_t	pid;
 	int		pfd[2];
 	int		in_fd;
@@ -118,33 +121,39 @@ bool	parse_tokens(t_var *var);
 
 // ERROR_HANDLING
 
+void	init_var(t_var *var, int argc, char **argv, char **envp);
 bool	valid_syntax(t_token *token);
 void	free_linked_lists(t_var *var);
 void	unexpected_token(char *str);
+void	free_all(t_var *var);
+void	restore_environment(t_var *var);
 
 // BUILTINS
 
-char	**malloc_envps(char **envp);
-char	**command_unset(t_var *var);
+void	malloc_envps(t_var *var, char **envp);
+char	**command_unset(char **old_envp, char *str);
 char	**command_export(char **old_envp, char *str);
 size_t	envp_string_count(char **envp);
 void 	command_exit(t_var *var);
 void	command_cd(t_var *var);
 void	command_pwd(void);
-int  command_unset_util(t_var *var, char *dest, size_t to_compare, char **new_env);
+int		unset2(char **old_envp, char *dest, size_t to_compare, char **new_env);
 
-
-// execute
+// EXECUTE
 
 void	execute(t_var *var);
 int		cd_export_exit_or_unset(t_var *var);
+void	one_simple_cmd(t_var *var);
+void	exec_other_builtin(t_var *var);
 void	command_env(t_var *var);
 void	write_here_docs(t_var *var);
 int		count_node_types(t_node *node, int type);
-t_node	*get_next_node(t_node *node, int get_type);
-void	in_redir_or_exit(t_var *var);
-void	out_redir_or_exit(t_var *var);
-int		out_redir_never_exit(t_var *var);
-int		in_redir_never_exit(t_var *var);
+t_node	*get_next_node(t_node *node, int get_type, int before_type);
+void	in_open_or_exit(t_var *var);
+void	out_open_or_exit(t_var *var);
+int		out_open_return_status(t_var *var);
+int		in_open_return_status(t_var *var);
+void	file_redirect(t_var *var);
+void	close_in_and_out(t_var *var);
 
 #endif

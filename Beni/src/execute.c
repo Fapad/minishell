@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/26 18:18:27 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/27 21:59:33 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,35 +23,42 @@ void	command_echo(t_node *list)
 
 }
 
-
 int cd_export_exit_or_unset(t_var *var)
 {
-	t_node	*node;
-
-	node = get_next_node(var->list, CMD);
-	if (!node)
-		return (0);
-	var->status = in_redir_never_exit(var);
-	if (var->status)
-		return (1);
-	var->status = out_redir_never_exit(var);
-	if (var->status)
-		return (1);
-	if (ft_strncmp(node->content[0], "echo", 5) == 0)
-		command_echo(var->list);
-	if (ft_strncmp(node->content[0], "export", 7) == 0)
-		var->env = command_export(var->env, node->content[1]);
-	if (ft_strncmp(node->content[0], "env", 4) == 0)
-		command_env(var);
-	if (ft_strncmp(node->content[0], "unset", 6) == 0)
-		 var->env = command_unset(var);
-	if (ft_strncmp(node->content[0], "pwd", 4) == 0)
-		command_pwd();
-	if (ft_strncmp(node->content[0], "cd", 3) == 0)
+	t_node *cmd;
+	
+	cmd = var->current;
+	if (ft_strncmp(cmd->content[0], "export", 7) == 0)
+		var->env = command_export(var->env, cmd->content[1]);
+	else if (ft_strncmp(cmd->content[0], "unset", 6) == 0)
+		var->env = command_unset(var->env, cmd->content[1]);
+	else if (ft_strncmp(cmd->content[0], "cd", 3) == 0)
 		command_cd(var);
-	if (ft_strncmp(node->content[0], "exit", 5) == 0)
+	else if (ft_strncmp(cmd->content[0], "exit", 5) == 0)
 		command_exit(var);
-	return (1);
+	else
+		return (false);
+	if (!var->env)
+		restore_environment(var);
+	return (true);
+}
+
+void	exec_other_builtin(t_var *var)
+{
+	t_node *cmd;
+	
+	cmd = var->current;
+	if (ft_strncmp(cmd->content[0], "echo", 5) == 0)
+		command_echo(cmd);
+	else if (ft_strncmp(cmd->content[0], "env", 4) == 0)
+		command_env(var);
+	else if (ft_strncmp(cmd->content[0], "pwd", 4) == 0)
+		command_pwd();
+	else
+		return ;
+	close_in_and_out(var);
+	free_all(var);
+	exit(EXIT_SUCCESS);
 }
 
 int	no_pipes(t_node *list)
@@ -62,32 +69,43 @@ int	no_pipes(t_node *list)
 	while (temp)
 	{
 		if (temp->type == PIPE)
-			return (1);
+			return (false);
 		temp = temp->next;
 	}
-	return (0);
+	return (true);
+}
+
+void	one_simple_cmd(t_var *var)
+{
+	var->status = in_open_return_status(var);
+	if (var->status)
+		return ;
+	var->status = out_open_return_status(var);
+	if (var->status)
+		return ;
+	var->current = get_next_node(var->list, CMD, END | PIPE);
+	if (!var->current)
+		return ;
+	if (cd_export_exit_or_unset(var))
+		return ;
+	var->pid = fork();
+	if (var->pid == 0)
+	{
+		file_redirect(var);
+		exec_other_builtin(var);
+		exit(EXIT_SUCCESS);
+	}
+	if (wait(&var->status) == -1)
+		perror("wait");
 }
 
 void	execute(t_var *var)
 {
-	pid_t	pid;
-
-	pid = 0;
 	write_here_docs(var);
+	if (no_pipes(var->list))
+		one_simple_cmd(var);
 	var->cmds = count_node_types(var->list, PIPE | END);
-	if (var->cmds == 1)
-	{
-		if (cd_export_exit_or_unset(var))
-			return ;
-	}
 		/* else
-		pid = fork();
-		if (pid == 0)
-		{
-			redir_or_exit();
-			exec_builtin();
-			
-		}
 		return ;
 	}
 	var->cmds = count_commands(var->list);
