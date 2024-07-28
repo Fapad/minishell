@@ -1,3 +1,9 @@
+5. Update
+
+
+Az exportnal az env-t abc sorrendbe kell csatolni
+
+
 4. Update
 
 Jelenlegi állapotban egy beépített parancsot elvégez egy parancssorban.
