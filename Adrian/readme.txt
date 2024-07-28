@@ -1,3 +1,11 @@
+5. Update
+
+Az exprot command magaba kikell adja az env-t
+
+Elkezdtem a nem beepitett parancsok executalasat
+
+
+
 4. Update
 
 Jelenlegi állapotban egy beépített parancsot elvégez egy parancssorban.
