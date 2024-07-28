@@ -1,3 +1,14 @@
+4. Update
+
+Jelenlegi állapotban egy beépített parancsot elvégez egy parancssorban.
+
+TODO: 
+--$ jel kibontás véglegesíteni (var->env-böl) és $?-t megírni
+--beépített parancsok hibaüzenete és hibakezelése
+	pl. nem létezö directory, unsetelt HOME stb.
+--nem beépített parancsok elvégzése
+
+
 3. Update
 
 # define PROMPT "\001\033[1;32m\002minishell> \001\033[0m\002"
@@ -30,4 +41,4 @@ Valamint a norminette is hibatlan jeneleg
 
 
 # VALGRIND
-valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp
+valgrind --leak-check=full --suppressions=readline.supp --trace-children=yes --track-fds=yes ./minishell

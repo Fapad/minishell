@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/24 19:39:40 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/27 17:47:02 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	free_linked_lists(t_var *var)
 	{
 		node = var->list;
 		var->list = node->next;
+		if (node->type == HEREDOC)
+			free(node->content[FILENAME]);
 		free(node->content);
 		free(node);
 	}
@@ -31,9 +33,14 @@ void	free_linked_lists(t_var *var)
 void	unexpected_token(char *str)
 {
 	if (!*str)
-		ft_printf("syntax error near unexpected token `newline'\n");
+		ft_putstr_fd("syntax error near unexpected token `newline'\n", 
+		STDERR_FILENO);
 	else
-		ft_printf("syntax error near unexpected token `%s'\n", str);
+	{
+		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putstr_fd("\'\n", STDERR_FILENO);	
+	}
 }
 
 bool	valid_syntax(t_token *token)
@@ -48,4 +55,10 @@ bool	valid_syntax(t_token *token)
 		token = token->right;
 	}
 	return (true);
+}
+
+void	restore_environment(t_var *var)
+{
+	perror("Could not change environment");
+	malloc_envps(var, var->stack_env);
 }

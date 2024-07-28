@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:44 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/24 11:45:08 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/27 17:57:06 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,6 @@ int	identify_token_type(char **start, char **end)
 {
 	int	type;
 
-	type = 0;
 	type = identify_pipe(start, end);
 	if (type != 0)
 		return (type);

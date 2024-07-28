@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/26 11:06:42 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/27 21:45:30 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,96 +31,95 @@ size_t	envp_string_count(char **envp)
 	return (string_count);
 }
 
-char	**malloc_envps(char **envp)
+void	malloc_envps(t_var *var, char **envp)
 {
-	char	**heap_envp;
 	size_t	len;
 	size_t	i;
 
 	len = envp_string_count(envp);
-	heap_envp = malloc((len + 1) * sizeof (char *));
-	if (!heap_envp)
-		exit(EXIT_FAILURE);
+	var->env = malloc((len + 1) * sizeof (char *));
+	if (!var->env)
+		return (free_all(var), exit(EXIT_FAILURE));
 	i = 0;
 	while (i < len)
 	{
-		heap_envp[i] = ft_strdup(envp[i]);
-		if (!heap_envp[i])
-			return (free_string_array(heap_envp), exit(EXIT_FAILURE), NULL);
+		var->env[i] = ft_strdup(envp[i]);
+		if (!var->env[i])
+			return (free_all(var), exit(EXIT_FAILURE));
 		i++;
 	}
-	heap_envp[i] = NULL;
-	return (heap_envp);
+	var->env[i] = NULL;
 }
 
-char	**command_unset(t_var *var)
+char	**command_unset(char **old_envp, char *str)
 {
 	size_t	to_compare;
 	size_t	len;
 	char	*dest;
 	char	**new_env;
 
-	if (!var->list->content[1])
-		return (var->env);
-	to_compare = 0;
-	len = envp_string_count(var->env);
+	if (!str)
+		return (old_envp);
+	len = envp_string_count(old_envp);
 	if (!len)
-		return (var->env);
-	while (var->list->content[1][to_compare])
+		return (old_envp);
+	to_compare = 0;
+	while (str[to_compare])
 		to_compare++;
 	dest = malloc(to_compare + 2);
 	if (!dest)
-		return (NULL);
-	strcpy(dest, var->list->content[1]);
+		return (free(old_envp), NULL);
+	strcpy(dest, str);
 	strcpy((dest + to_compare), "=");
 	new_env = malloc(len * sizeof (char *));
 	if (!new_env)
-		return (free(var->env), NULL);
-	if (command_unset_util(var, dest, to_compare, new_env) == 0)
-		return (free(var->env), free(dest), new_env);
-	return (free(new_env), free(dest), var->env);
+		return (free(old_envp), free(dest), NULL);
+	if (unset2(old_envp, dest, to_compare, new_env))
+		return (free(old_envp), free(dest), new_env);
+	return (free(new_env), free(dest), old_envp);
 }
 
-int  command_unset_util(t_var *var, char *dest, size_t to_compare, char **new_env)
+int  unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
 {
 	int	i;
 
 	i = 0;
-	while (var->env[i])
+	while (old_envp[i])
 	{
-		new_env[i] = var->env[i];
-		if (strncmp(var->env[i], dest, to_compare + 1) == 0)
+		new_env[i] = old_envp[i];
+		if (strncmp(old_envp[i], dest, to_compare + 1) == 0)
 		{
-			free(var->env[i++]);
-			while (var->env[i])
+			free(old_envp[i++]);
+			while (old_envp[i])
 			{
-				new_env[i - 1] = var->env[i];
+				new_env[i - 1] = old_envp[i];
 				i++;
 			}
 			new_env[i - 1] = NULL;
-			return (0);
+			return (true);
 		}
 		i++;
 	}
-	return (1);
+	return (false);
 }
 
-int	command_export_util(char	*str)
+int	command_export_util(char *str)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
+	if (!str)
+		return (true);
 	while (str[i] != '=' && str[i])
 	{
-		if (!isalnum(str[i]) && str[i] != '_')
+		if (!ft_isalpha(str[i]) && str[i] != '_')
 		{
-			return (1);
+			return (true);
 		}
 		i++;
 	}
-	return (0);
+	return (false);
 }
-
 
 char	**command_export(char **old_envp, char *str)
 {
@@ -135,7 +134,6 @@ char	**command_export(char **old_envp, char *str)
 	if (!new_envp)
 		return (free_string_array(old_envp), NULL);
 	i = 0;
-	
 	while (i < len)
 	{
 		new_envp[i] = old_envp[i];

@@ -6,14 +6,15 @@
 #    By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 16:17:41 by bszilas           #+#    #+#              #
-#    Updated: 2024/07/24 19:42:48 by bszilas          ###   ########.fr        #
+#    Updated: 2024/07/26 18:23:15 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
 CFILES = readline.c lexer.c lexerutils.c lexerutils2.c signal.c interpret.c \
-parser.c error.c interpret_utils.c parser_utils.c execute.c builtin.c environment.c
+parser.c error.c interpret_utils.c parser_utils.c execute.c builtin.c environment.c \
+exec_utils.c file_redirections.c here_doc.c
 
 CC = cc
 LIBDIR = libft
