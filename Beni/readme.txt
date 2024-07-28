@@ -2,11 +2,13 @@
 
 
 Az exportnal az env-t abc sorrendbe kell csatolni
+ha csak exportot irunk be akkor is ki kell irja az env-t
 
 
 4. Update
 
 Jelenlegi állapotban egy beépített parancsot elvégez egy parancssorban.
+
 
 TODO: 
 --$ jel kibontás véglegesíteni (var->env-böl) és $?-t megírni
