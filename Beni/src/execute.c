@@ -6,22 +6,11 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/27 21:59:33 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/28 21:14:38 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-void	command_echo(t_node *list)
-{
-	//	printf("%s", var->list->content[1]);
-	//printf("%s\n", var->list->content[1]);
-	//printf("%s%s\n", PROMPT, var->list->content[1]);
-	ft_printf("%s", list->content[1]);
-		
-	
-
-}
 
 int cd_export_exit_or_unset(t_var *var)
 {
@@ -29,7 +18,7 @@ int cd_export_exit_or_unset(t_var *var)
 	
 	cmd = var->current;
 	if (ft_strncmp(cmd->content[0], "export", 7) == 0)
-		var->env = command_export(var->env, cmd->content[1]);
+		var->env = command_export(var, cmd->content[1]);
 	else if (ft_strncmp(cmd->content[0], "unset", 6) == 0)
 		var->env = command_unset(var->env, cmd->content[1]);
 	else if (ft_strncmp(cmd->content[0], "cd", 3) == 0)
