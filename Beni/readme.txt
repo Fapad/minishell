@@ -1,7 +1,5 @@
 5. Update
 
-
-Az exportnal az env-t abc sorrendbe kell csatolni
 ha csak exportot irunk be akkor is ki kell irja az env-t
 
 
