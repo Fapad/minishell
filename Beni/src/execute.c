@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/28 21:14:38 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/29 19:10:35 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@ int cd_export_exit_or_unset(t_var *var)
 {
 	t_node *cmd;
 	
-	cmd = var->current;
+	cmd = get_next_node(var->current, CMD, END);
+	if (!cmd)
+		return (close_in_and_out(var), free_all(var), EXIT_SUCCESS);
 	if (ft_strncmp(cmd->content[0], "export", 7) == 0)
 		var->env = command_export(var, cmd->content[1]);
 	else if (ft_strncmp(cmd->content[0], "unset", 6) == 0)
@@ -32,11 +34,13 @@ int cd_export_exit_or_unset(t_var *var)
 	return (true);
 }
 
-void	exec_other_builtin(t_var *var)
+void	exec_other_commands(t_var *var)
 {
 	t_node *cmd;
-	
-	cmd = var->current;
+
+	cmd = get_next_node(var->current, CMD, END);
+	if (!cmd)
+		return (close_in_and_out(var), free_all(var), exit(EXIT_SUCCESS));
 	if (ft_strncmp(cmd->content[0], "echo", 5) == 0)
 		command_echo(cmd);
 	else if (ft_strncmp(cmd->content[0], "env", 4) == 0)
@@ -44,24 +48,141 @@ void	exec_other_builtin(t_var *var)
 	else if (ft_strncmp(cmd->content[0], "pwd", 4) == 0)
 		command_pwd();
 	else
-		return ;
+		exec_system_commands(var);
 	close_in_and_out(var);
 	free_all(var);
 	exit(EXIT_SUCCESS);
 }
 
-int	no_pipes(t_node *list)
+void	exec_builtins(t_var *var)
 {
-	t_node *temp;
+	t_node	*cmd;
 
-	temp = list;
-	while (temp)
+	cmd = get_next_node(var->current, CMD, PIPE | END);
+	if (!cmd)
+		return (close_in_and_out(var), free_all(var), exit(EXIT_SUCCESS));
+	if (ft_strncmp(cmd->content[0], "export", 7) == 0)
+		var->env = command_export(var, cmd->content[1]);
+	else if (ft_strncmp(cmd->content[0], "unset", 6) == 0)
+		var->env = command_unset(var->env, cmd->content[1]);
+	else if (ft_strncmp(cmd->content[0], "cd", 3) == 0)
+		command_cd(var);
+	else if (ft_strncmp(cmd->content[0], "exit", 5) == 0)
+		command_exit(var);
+	else if (ft_strncmp(cmd->content[0], "echo", 5) == 0)
+		command_echo(cmd);
+	else if (ft_strncmp(cmd->content[0], "env", 4) == 0)
+		command_env(var);
+	else if (ft_strncmp(cmd->content[0], "pwd", 4) == 0)
+		command_pwd();
+	else
+		return ;
+	return (close_in_and_out(var), free_all(var), exit(EXIT_SUCCESS));
+}
+
+char	**splitted_path(t_var *var)
+{
+	int	i;
+	char	*path;
+
+	i = 0;
+	path = NULL;
+	while (var->env[i])
 	{
-		if (temp->type == PIPE)
-			return (false);
-		temp = temp->next;
+		if (strncmp(var->env[i], "PATH=", 5) == 0)
+			path = var->env[i];
+		i++;
 	}
-	return (true);
+	var->splitted_path = ft_split(path, ':');
+	if (var->splitted_path == NULL)
+		return (NULL);
+	return (var->splitted_path);
+}
+
+char	*get_cmd(t_var *var)
+{	
+	char	*executable_command;
+	int		i;
+
+	i = 0;
+	while (var->splitted_path)
+	{
+		executable_command = ft_strjoin_three(var->splitted_path[i], var->current->content[0]);
+		if (!executable_command)
+			return (NULL);
+		if (access(executable_command, X_OK) == 0)
+			return (executable_command);
+		i++;
+	}
+	return (NULL);
+}
+
+void	exec_system_commands(t_var *var)
+{
+	
+	char	*executable_command;
+	
+	executable_command = get_cmd(var);
+	execve(executable_command, var->current->content,  NULL);
+}
+
+void	first_cmd(t_var *var)
+{
+	if (pipe(var->pfd) == -1)
+		return (perror("pipe"), free_all(var), close_in_and_out(var), exit(EXIT_FAILURE));
+	var->pid = fork();
+	if (var->pid == 0)
+	{
+		dup2(var->pfd[WRITE_END], STDOUT_FILENO);
+		close_pipe(var->pfd);
+		in_open_or_exit(var);
+		out_open_or_exit(var);
+		file_redirect(var);
+		exec_builtins(var);
+		exec_system_commands(var);
+	}
+	close(var->pfd[WRITE_END]);
+	var->current = get_next_node(var->current, PIPE, END)->next;
+}
+
+void	middle_cmd(t_var *var)
+{
+	var->current = get_next_node(var->current, PIPE, END)->next;
+}
+
+void	last_cmd(t_var *var)
+{
+	var->pid = fork();
+	if (var->pid == 0)
+	{
+		dup2(var->pfd[READ_END], STDIN_FILENO);
+		close(var->pfd[READ_END]);
+		in_open_or_exit(var);
+		out_open_or_exit(var);
+		file_redirect(var);
+		exec_builtins(var);
+		exec_system_commands(var);
+	}
+	close(var->pfd[READ_END]);
+}
+
+void	wait_children(t_var *var)
+{
+	int		status;
+	pid_t	pid;
+
+	pid = wait(&status);
+	if (pid == var->pid)
+	{
+		var->status = status;
+		pid = wait(&status);
+	}
+	else if (pid != -1)
+		pid = waitpid(var->pid, &var->status, 0);
+	else
+		perror("wait");
+	if (WIFEXITED(var->status))
+		var->status = WEXITSTATUS(var->status);
 }
 
 void	one_simple_cmd(t_var *var)
@@ -81,37 +202,59 @@ void	one_simple_cmd(t_var *var)
 	if (var->pid == 0)
 	{
 		file_redirect(var);
-		exec_other_builtin(var);
+		exec_other_commands(var);
 		exit(EXIT_SUCCESS);
 	}
 	if (wait(&var->status) == -1)
 		perror("wait");
+	if (WIFEXITED(var->status))
+		var->status = WEXITSTATUS(var->status);
 }
 
 void	execute(t_var *var)
 {
 	write_here_docs(var);
-	if (no_pipes(var->list))
-		one_simple_cmd(var);
+	var->current = var->list;
 	var->cmds = count_node_types(var->list, PIPE | END);
-		/* else
-		return ;
-	}
-	var->cmds = count_commands(var->list);
-	node = var->list;
-	while (var->cmds--)
+	var->splitted_path = splitted_path(var);
+	if (var->cmds == 1)
+		return (one_simple_cmd(var));
+	var->i = 0;
+	while (var->i < var->cmds)
 	{
-		if (var->cmds && pipe(var->pfd) == -1)
-			return (free_everything(), exit(EXIT_FAILURE));
-		pid = fork();
-		if (pid == 0)
-		{
-			redir_or_exit();
-			exec_builtin();
-		}
-		if (var->cmds)
-			close_pipe();
-		go_to_next_cmd(node);
+		if (var->i == 0)
+			first_cmd(var);
+		else if (var->i == var->cmds - 1)
+			last_cmd(var);
+		var->i++;
 	}
-	wait_children(var); */
+	wait_children(var);
+}
+
+char	*ft_strjoin_three(char *s1, char *s2)
+{
+	int		len1;
+	int		len2;
+	char	*res;
+	int		i;
+
+	i = 0;
+	len1 = 0;
+	len2 = 0;
+	if (!s1 && s2)
+		return (NULL);
+	if (s1)
+		len1 = ft_strlen(s1);
+	if (s2)
+		len2 = ft_strlen(s2);
+	res = (char *)malloc((len1 + len2 +2) * sizeof(char));
+	if (!res)
+		return (NULL);
+	while (s1 && *s1)
+		res[i++] = *s1++;
+	res[i++] = '/';
+	while (s2 && *s2)
+		res[i++] = *s2++;
+	res[i] = '\0';
+	return (res);
 }

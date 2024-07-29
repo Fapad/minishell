@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/29 16:42:28 by bszilas           #+#    #+#             */
+/*   Updated: 2024/07/29 17:56:42 by bszilas          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/minishell.h"
 
 void   command_exit(t_var *var)
@@ -25,7 +37,7 @@ void	command_pwd(void)
 
 	cwd = malloc(PATH_MAX);
 	path = getcwd(cwd, PATH_MAX);
-	printf("%s\n", path);
+	ft_printf("%s\n", path);
 	if (path != NULL)
 		free(path);
 }

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/27 22:09:17 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/29 17:18:03 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void	free_all(t_var *var)
 	free_linked_lists(var);
 	free_string_array(var->env);
 	var->env = NULL;
+	free_string_array(var->splitted_path);
+	var->splitted_path = NULL;
 	free(var->line);
 	var->line = NULL;
 }
@@ -52,4 +54,10 @@ void	close_in_and_out(t_var *var)
 		close(var->in_fd);
 	if (var->out_fd != STDOUT_FILENO && var->out_fd != -1)
 		close(var->out_fd);
+}
+
+void	close_pipe(int pfd[])
+{
+	close(pfd[WRITE_END]);
+	close(pfd[READ_END]);
 }

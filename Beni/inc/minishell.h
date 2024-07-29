@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/28 22:26:42 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/29 17:49:50 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,16 @@ typedef struct s_var
 	char	*line;
 	char	**env;
 	char	**stack_env;
+	char	**splitted_path;
 	pid_t	pid;
 	size_t	len;
 	int		pfd[2];
+	int		old_pfd[2];
 	int		in_fd;
 	int		out_fd;
 	int		cmds;
 	int		status;
+	int		i;
 }			t_var;
 
 // LEXER
@@ -150,7 +153,7 @@ int		unset2(char **old_envp, char *dest, size_t to_compare, char **new_env);
 void	execute(t_var *var);
 int		cd_export_exit_or_unset(t_var *var);
 void	one_simple_cmd(t_var *var);
-void	exec_other_builtin(t_var *var);
+void	exec_other_commands(t_var *var);
 void	write_here_docs(t_var *var);
 int		count_node_types(t_node *node, int type);
 t_node	*get_next_node(t_node *node, int get_type, int before_type);
@@ -160,5 +163,9 @@ int		out_open_return_status(t_var *var);
 int		in_open_return_status(t_var *var);
 void	file_redirect(t_var *var);
 void	close_in_and_out(t_var *var);
+void	exec_system_commands(t_var *var);
+char	**splitted_path(t_var *var);
+char	*ft_strjoin_three(char *s1, char *s2);
+void	close_pipe(int pfd[]);
 
 #endif
