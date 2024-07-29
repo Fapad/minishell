@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/27 22:47:55 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/29 12:18:37 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,21 +64,21 @@ typedef struct s_var
 	char	*line;
 	char	**env;
 	char	**stack_env;
-	//char	*path;
 	char	**splitted_path;
 	pid_t	pid;
+	size_t	len;
 	int		pfd[2];
 	int		in_fd;
 	int		out_fd;
 	int		cmds;
 	int		status;
-
 }			t_var;
 
 // LEXER
 
 t_token	*create_token(int type, char *str);
-t_token	*tokenize(char *input);
+t_token	*tokenize(t_var *var);
+int		add_token(t_var *var, t_token **current, char **start);
 void 	free_tokens(t_token *root);
 void	skip_whitespace(char **input);
 int		identify_token_type(char **start, char **end);
@@ -97,13 +97,14 @@ char 	*ft_strndup(const char *s, size_t n);
 
 void	cat_char_to_str(char *str, char c, size_t len);
 void	cat_single_qoutes(char *str, char **start, char *end, size_t len);
-void	cat_env_var(char *str, char **start, char *end, size_t len);
-void	cat_double_qoutes(char *str, char **start, char *end, size_t len);
-char	*cat_intrd_str(char *str, char *start, char *end, size_t len);
+void	cat_env_var(t_var *var, char *str, char **start, char *end);
+void	cat_double_qoutes(t_var *var, char *str, char **start, char *end);
+char	*cat_intrd_str(t_var *var, char *start, char *end);
 size_t	single_quote_len(char *s, char *end, size_t *i);
-size_t	env_var_len(char *s, char *end, size_t *i);
-size_t	double_qoute_len(char *s, char *end, size_t *i);
-size_t	interpreted_str_len(char *start, char *end);
+size_t	env_var_len(char *s, char *end, size_t *i, char **env);
+size_t	double_qoute_len(char *s, char *end, size_t *i, char **env);
+size_t	interpreted_str_len(char **env, char *start, char *end);
+char	*ft_getenv(char **env, char *s);
 
 // SIGNAL
 
@@ -135,11 +136,14 @@ void	restore_environment(t_var *var);
 
 void	malloc_envps(t_var *var, char **envp);
 char	**command_unset(char **old_envp, char *str);
-char	**command_export(char **old_envp, char *str);
+char	**command_export(t_var *var, char *str);
+int		command_export_util(t_var *var, char *str);
+void	command_echo(t_node *list);
 size_t	envp_string_count(char **envp);
 void 	command_exit(t_var *var);
 void	command_cd(t_var *var);
 void	command_pwd(void);
+void	command_env(t_var *var);
 int		unset2(char **old_envp, char *dest, size_t to_compare, char **new_env);
 
 // EXECUTE
@@ -148,7 +152,6 @@ void	execute(t_var *var);
 int		cd_export_exit_or_unset(t_var *var);
 void	one_simple_cmd(t_var *var);
 void	exec_other_builtin(t_var *var);
-void	command_env(t_var *var);
 void	write_here_docs(t_var *var);
 int		count_node_types(t_node *node, int type);
 t_node	*get_next_node(t_node *node, int get_type, int before_type);
@@ -161,6 +164,5 @@ void	close_in_and_out(t_var *var);
 void	exec_system_commands(t_var *var);
 char	**splitted_path(t_var *var);
 char	*ft_strjoin_three(char *s1, char *s2);
-
 
 #endif

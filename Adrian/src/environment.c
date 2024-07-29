@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/27 21:45:30 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/28 22:33:01 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int  unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
 	while (old_envp[i])
 	{
 		new_env[i] = old_envp[i];
-		if (strncmp(old_envp[i], dest, to_compare + 1) == 0)
+		if (ft_strncmp(old_envp[i], dest, to_compare + 1) == 0)
 		{
 			free(old_envp[i++]);
 			while (old_envp[i])
@@ -103,43 +103,94 @@ int  unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
 	return (false);
 }
 
-int	command_export_util(char *str)
+int	command_export_util(t_var *var, char *str)
 {
 	size_t	i;
 
 	i = 0;
-	if (!str)
-		return (true);
-	while (str[i] != '=' && str[i])
+	if (!str || !ft_strchr(str, '='))
+		return (false);
+	while (str[i] && str[i] != '=')
 	{
-		if (!ft_isalpha(str[i]) && str[i] != '_')
+		if ((i == 0 && !ft_isalpha(str[0])) || (!ft_isalnum(str[i]) && str[i] != '_'))
 		{
-			return (true);
+			ft_putstr_fd("export: `", STDERR_FILENO);
+			ft_putstr_fd(str, STDERR_FILENO);
+			ft_putstr_fd("\': not a valid identifier\n", STDERR_FILENO);
+			var->status = EXIT_FAILURE;
+			return (false);
 		}
 		i++;
 	}
-	return (false);
+	return (true);
 }
 
-char	**command_export(char **old_envp, char *str)
+int	existing_env_var(char **env, char *str)
+{
+	char	*tmp;
+	char	*var;
+	
+	tmp = ft_strchr(str, '=');
+	if (!tmp)
+		return (false);
+	*tmp = 0;
+	var = ft_getenv(env, str);
+	*tmp = '=';
+	return (var != NULL);
+}
+
+char	**change_var(char **env, char *str)
+{
+	char	*var;
+	char	tmp;
+	size_t	len;
+	size_t	i;
+
+	len = ft_strchr(str, '=') + 1 - str;
+	tmp = str[len];
+	str[len] = 0;
+	i = 0;
+	while (env[i])
+	{
+		if (!ft_strncmp(env[i], str, len))
+		{
+			str[len] = tmp;
+			len = ft_strlen(str);
+			var = malloc((len + 1) * sizeof (char));
+			if (!var)
+				return (free_string_array(env), NULL);
+			ft_strlcpy(var, str, len + 1);
+			free(env[i]);
+			env[i] = var;
+			return (env);
+		}
+		i++;
+	}
+	str[len] = tmp;
+	return (NULL);
+}
+
+char	**command_export(t_var *var, char *str)
 {
 	char	**new_envp;
 	size_t	len;
 	size_t	i;
 
-	if (command_export_util(str) == 1)
-		return (old_envp);
-	len = envp_string_count(old_envp);
+	if (!command_export_util(var, str))
+		return (var->env);
+	if (existing_env_var(var->env, str))
+		return (change_var(var->env, str));
+	len = envp_string_count(var->env);
 	new_envp = malloc((len + 1 + 1) * sizeof (char *));
 	if (!new_envp)
-		return (free_string_array(old_envp), NULL);
+		return (free_string_array(var->env), NULL);
 	i = 0;
 	while (i < len)
 	{
-		new_envp[i] = old_envp[i];
+		new_envp[i] = var->env[i];
 		i++;
 	}
-	free(old_envp);
+	free(var->env);
 	new_envp[i] = ft_strdup(str);
 	if (!str)
 		return (free(new_envp), NULL);

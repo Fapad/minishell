@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/27 21:59:33 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/29 12:19:52 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int cd_export_exit_or_unset(t_var *var)
 	
 	cmd = var->current;
 	if (ft_strncmp(cmd->content[0], "export", 7) == 0)
-		var->env = command_export(var->env, cmd->content[1]);
+		var->env = command_export(var, cmd->content[1]);
 	else if (ft_strncmp(cmd->content[0], "unset", 6) == 0)
 		var->env = command_unset(var->env, cmd->content[1]);
 	else if (ft_strncmp(cmd->content[0], "cd", 3) == 0)
@@ -59,7 +59,7 @@ int cd_export_exit_or_unset(t_var *var)
 	return (true);
 }
 
-void	exec_other_builtin(t_var *var)
+void	exec_other_commands(t_var *var)
 {
 	t_node *cmd;
 	
@@ -108,12 +108,12 @@ void	one_simple_cmd(t_var *var)
 	if (var->pid == 0)
 	{
 		file_redirect(var);
-		exec_other_builtin(var);
-		exit(EXIT_SUCCESS);
+		exec_other_commands(var);
 	}
 	if (wait(&var->status) == -1)
 		perror("wait");
 }
+
 char	**splitted_path(t_var *var)
 {
 	int	i;
@@ -163,29 +163,45 @@ void	exec_system_commands(t_var *var)
 
 void	execute(t_var *var)
 {
+	// int i;
+
 	var->splitted_path = splitted_path(var);
 	write_here_docs(var);
 	if (no_pipes(var->list))
 		one_simple_cmd(var);
-	var->cmds = count_node_types(var->list, PIPE | END);
-		/* else
+/* 	var->cmds = count_node_types(var->list, PIPE | END);
+		else
 		return ;
 	}
 	var->cmds = count_commands(var->list);
 	node = var->list;
-	while (var->cmds--)
+	i = 0;
+	while (i < var.cmds)
 	{
 		if (var->cmds && pipe(var->pfd) == -1)
 			return (free_everything(), exit(EXIT_FAILURE));
 		pid = fork();
 		if (pid == 0)
 		{
-			redir_or_exit();
-			exec_builtin();
+			if (i != 0)
+				var.in_fd = var.pipe[READ_END];
+			else
+				close(var.pipe[READ_END]);
+			in_open_or_exit(var->current);
+			out_open_or_exit(var->current);
+			if (i < var.cmds - 1)
+				var.out_fd = var->pipe[WRITE_END];
+			else
+				close(var->pipe[WRITE_END]);
+			file_redirect(var);
+			exec_builtins();
+			exec_system_commands();
 		}
 		if (var->cmds)
 			close_pipe();
-		go_to_next_cmd(node);
+		var->current = get_next_node(var->current)
+		i++;
+		
 	}
 	wait_children(var); */
 }

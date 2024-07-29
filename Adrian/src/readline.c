@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/27 21:22:47 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/29 12:19:19 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	main(int argc, char **argv, char **envp)
 		if (*var.line)
 		{
 			add_history(var.line);
-			var.tokens = tokenize(var.line);
+			var.tokens = tokenize(&var);
 			if (parse_tokens(&var))
 				execute(&var);
 			close_in_and_out(&var);

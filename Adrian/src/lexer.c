@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/24 17:31:36 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/28 18:37:34 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,25 +25,24 @@ t_token	*create_token(int type, char *str)
 	return (token);
 }
 
-char	*tokenize_str(char *start, char *end, int *type)
+char	*tokenize_str(t_var *var, char *start, char *end, int *type)
 {
-	size_t	len;
 	char	*str;
 
 	str = NULL;
-	len = end - start;
+	var->len = end - start;
 	if (*type != INTERPRET)
-		str = ft_strndup(start, len);
+		str = ft_strndup(start, var->len);
 	else
 	{
-		len = interpreted_str_len(start, end);
-		str = cat_intrd_str(str, start, end, len);
+		var->len = interpreted_str_len(var->env, start, end);
+		str = cat_intrd_str(var, start, end);
 		*type = CMD;
 	}
 	return (str);
 }
 
-int	add_token(t_token **head, t_token **current, char **start)
+int	add_token(t_var *var, t_token **last, char **start)
 {
 	t_token	*new_token;
 	char	*end;
@@ -52,39 +51,37 @@ int	add_token(t_token **head, t_token **current, char **start)
 
 	end = *start;
 	type = identify_token_type(start, &end);
-	str = tokenize_str(*start, end, &type);
+	str = tokenize_str(var, *start, end, &type);
 	if (!str)
-		return (free_tokens(*head), false);
+		return (free_tokens(var->tokens), false);
 	new_token = create_token(type, str);
 	if (!new_token)
-		return (free_tokens(*head), false);
-	if (!*head)
-		*head = new_token;
+		return (free_tokens(var->tokens), false);
+	if (!var->tokens)
+		var->tokens = new_token;
 	else
-		(*current)->right = new_token;
-	*current = new_token;
+		(*last)->right = new_token;
+	*last = new_token;
 	*start = end;
 	return (true);
 }
 
-t_token	*tokenize(char *input)
+t_token	*tokenize(t_var *var)
 {
 	char	*start;
-	t_token	*head;
-	t_token	*current;
+	t_token	*last;
 
-	head = NULL;
-	current = NULL;
-	start = input;
+	last = NULL;
+	start = var->line;
 	while (*start != '\0')
 	{
 		skip_whitespace(&start);
 		if (*start == '\0')
 			break ;
-		if (!add_token(&head, &current, &start))
+		if (!add_token(var, &last, &start))
 			return (NULL);
 	}
-	if (!add_token(&head, &current, &start))
+	if (!add_token(var, &last, &start))
 		return (NULL);
-	return (head);
+	return (var->tokens);
 }
