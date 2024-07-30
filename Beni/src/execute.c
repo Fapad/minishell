@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 10:53:13 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 11:03:57 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,16 @@
 
 int cd_export_exit_or_unset(t_var *var)
 {
-	t_node *cmd;
-	
-	cmd = get_next_node(var->current, CMD, END);
-	if (!cmd)
+	var->current = get_next_node(var->current, CMD, END);
+	if (!var->current)
 		return (close_in_and_out(var), free_all(var), EXIT_SUCCESS);
-	var->current = cmd;
-	if (ft_strncmp(cmd->content[0], "export", 7) == 0)
-		var->env = command_export(var, cmd->content[1]);
-	else if (ft_strncmp(cmd->content[0], "unset", 6) == 0)
-		var->env = command_unset(var->env, cmd->content[1]);
-	else if (ft_strncmp(cmd->content[0], "cd", 3) == 0)
+	if (ft_strncmp(var->current->content[0], "export", 7) == 0)
+		var->env = command_export(var, var->current->content[1]);
+	else if (ft_strncmp(var->current->content[0], "unset", 6) == 0)
+		var->env = command_unset(var->env, var->current->content[1]);
+	else if (ft_strncmp(var->current->content[0], "cd", 3) == 0)
 		command_cd(var);
-	else if (ft_strncmp(cmd->content[0], "exit", 5) == 0)
+	else if (ft_strncmp(var->current->content[0], "exit", 5) == 0)
 		command_exit(var);
 	else
 		return (false);
@@ -37,16 +34,11 @@ int cd_export_exit_or_unset(t_var *var)
 
 void	exec_other_commands(t_var *var)
 {
-	t_node *cmd;
-
-	cmd = get_next_node(var->current, CMD, END);
-	if (!cmd)
-		return (close_in_and_out(var), free_all(var), exit(EXIT_SUCCESS));
-	if (ft_strncmp(cmd->content[0], "echo", 5) == 0)
-		command_echo(cmd);
-	else if (ft_strncmp(cmd->content[0], "env", 4) == 0)
+	if (ft_strncmp(var->current->content[0], "echo", 5) == 0)
+		command_echo(var->current);
+	else if (ft_strncmp(var->current->content[0], "env", 4) == 0)
 		command_env(var);
-	else if (ft_strncmp(cmd->content[0], "pwd", 4) == 0)
+	else if (ft_strncmp(var->current->content[0], "pwd", 4) == 0)
 		command_pwd();
 	else
 		exec_system_commands(var);
