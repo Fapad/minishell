@@ -1,3 +1,11 @@
+TODO
+--PWD és OLDPWD változókat updatelni cd parancs után
+--alsó edge caseben kinyomtatni a pwdt
+--beépített parancsok hibaüzenete és hibakezelése
+	pl. nem létezö directory, unsetelt HOME stb.
+--absolute és relative path executable keresés (ha / jelet tartalmaz)
+--$+nem alpha esetén a nyomtatás rossz...
+
 5. Update
 
 ha csak exportot irunk be akkor is ki kell irja az env-t
@@ -6,13 +14,6 @@ ha csak exportot irunk be akkor is ki kell irja az env-t
 4. Update
 
 Jelenlegi állapotban egy beépített parancsot elvégez egy parancssorban.
-
-
-TODO: 
---$ jel kibontás véglegesíteni (var->env-böl) és $?-t megírni
---beépített parancsok hibaüzenete és hibakezelése
-	pl. nem létezö directory, unsetelt HOME stb.
---nem beépített parancsok elvégzése
 
 
 3. Update

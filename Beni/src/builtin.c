@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 16:42:28 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 21:45:09 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 21:49:44 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ void	command_pwd(t_var *var)
 		return (perror("pwd"), free(cwd), free_all(var), exit(EXIT_FAILURE));
 	ft_printf("%s\n", path);
 	free(path);
-	path = NULL;
-	free(cwd);
 }
 
 void	command_echo(t_node *list)
