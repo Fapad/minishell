@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 10:37:01 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 10:53:13 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int cd_export_exit_or_unset(t_var *var)
 	cmd = get_next_node(var->current, CMD, END);
 	if (!cmd)
 		return (close_in_and_out(var), free_all(var), EXIT_SUCCESS);
+	var->current = cmd;
 	if (ft_strncmp(cmd->content[0], "export", 7) == 0)
 		var->env = command_export(var, cmd->content[1]);
 	else if (ft_strncmp(cmd->content[0], "unset", 6) == 0)
@@ -58,7 +59,7 @@ void	exec_builtins(t_var *var)
 {
 	var->current = get_next_node(var->current, CMD, PIPE | END);
 	if (!var->current)
-		return (close_in_and_out(var), free_all(var), exit(EXIT_SUCCESS));
+		return (free_all(var), exit(EXIT_SUCCESS));
 	if (ft_strncmp(var->current->content[0], "export", 7) == 0)
 		var->env = command_export(var, var->current->content[1]);
 	else if (ft_strncmp(var->current->content[0], "unset", 6) == 0)
@@ -75,7 +76,7 @@ void	exec_builtins(t_var *var)
 		command_pwd();
 	else
 		return ;
-	return (close_in_and_out(var), free_all(var), exit(EXIT_SUCCESS));
+	return (free_all(var), exit(EXIT_SUCCESS));
 }
 
 char	**splitted_path(t_var *var)
@@ -120,7 +121,6 @@ void	exec_system_commands(t_var *var)
 {
 	
 	char	*executable_command;
-	// char	*args[] = {"/bin/cat", NULL};
 	
 	executable_command = get_cmd(var);
 	if (!executable_command)
@@ -131,7 +131,7 @@ void	exec_system_commands(t_var *var)
 void	first_cmd(t_var *var)
 {
 	if (pipe(var->pfd) == -1)
-		return (perror("pipe"), free_all(var), close_in_and_out(var), exit(EXIT_FAILURE));
+		return (perror("pipe"), free_all(var), exit(EXIT_FAILURE));
 	var->pid = fork();
 	if (var->pid == 0)
 	{
@@ -171,17 +171,14 @@ void	wait_children(t_var *var)
 	int		status;
 	pid_t	pid;
 
-/* 	waitpid(var->pid, &status, 0);
-	waitpid(var->pid2, &var->status, 0); */
-
 	pid = wait(&status);
 	if (pid == var->pid)
 	{
 		var->status = status;
 		pid = waitpid(var->pid2, &var->status, 0);
 	}
-	/* else if (pid == var->pid2)
-		pid = waitpid(var->pid, &status, 0); */
+	else if (pid == var->pid2)
+		pid = waitpid(var->pid, &status, 0);
 	if (WIFEXITED(var->status))
 		var->status = WEXITSTATUS(var->status);
 	return ;
