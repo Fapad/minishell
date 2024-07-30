@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 18:01:29 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 21:43:26 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,6 @@
 [1;32m\002c > \001\033[0m\002"
 # define TMP_PATH "/tmp/.tmp"
 # define FILENAME 1
-# ifndef PATH_MAX
-#  define PATH_MAX FILENAME_MAX
-# endif
 
 typedef struct s_token
 {
@@ -147,7 +144,7 @@ void	command_echo(t_node *list);
 size_t	envp_string_count(char **envp);
 void 	command_exit(t_var *var);
 void	command_cd(t_var *var);
-void	command_pwd(void);
+void	command_pwd(t_var *var);
 void	command_env(t_var *var);
 int		unset2(char **old_envp, char *dest, size_t to_compare, char **new_env);
 

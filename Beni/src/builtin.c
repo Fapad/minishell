@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 16:42:28 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 16:33:03 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 21:45:09 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,19 @@ void   command_exit(t_var *var)
 	chdir(path);
 }
 
-void	command_pwd(void)
+void	command_pwd(t_var *var)
 {
 	char	*cwd;
 	char	*path;
 
 	cwd = malloc(PATH_MAX);
 	path = getcwd(cwd, PATH_MAX);
+	if (!path)
+		return (perror("pwd"), free(cwd), free_all(var), exit(EXIT_FAILURE));
 	ft_printf("%s\n", path);
-	if (path != NULL)
-		free(path);
+	free(path);
+	path = NULL;
+	free(cwd);
 }
 
 void	command_echo(t_node *list)
@@ -47,7 +50,7 @@ void	command_echo(t_node *list)
 	int	i;
 
 	i = 1;
-	if (strcmp(list->content[1], "-n") == 0)
+	if (ft_strncmp(list->content[1], "-n", 3) == 0)
 	{
 		i++;
 		while (list->content[i] != NULL)

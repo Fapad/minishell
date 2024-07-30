@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 18:19:05 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 21:10:04 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	exec_other_commands(t_var *var)
 	else if (ft_strncmp(var->current->content[0], "env", 4) == 0)
 		command_env(var);
 	else if (ft_strncmp(var->current->content[0], "pwd", 4) == 0)
-		command_pwd();
+		command_pwd(var);
 	else
 		exec_system_commands(var);
 	free_all(var);
@@ -65,7 +65,7 @@ void	exec_builtins(t_var *var)
 	else if (ft_strncmp(var->current->content[0], "env", 4) == 0)
 		command_env(var);
 	else if (ft_strncmp(var->current->content[0], "pwd", 4) == 0)
-		command_pwd();
+		command_pwd(var);
 	else
 		return ;
 	return (free_all(var), exit(EXIT_SUCCESS));
@@ -73,10 +73,8 @@ void	exec_builtins(t_var *var)
 
 char	**splitted_path(t_var *var)
 {
-	int		i;
 	char	*path;
 
-	i = 0;
 	path = ft_getenv(var->env, "PATH");
 	if (!path)
 		return (NULL);
@@ -172,6 +170,7 @@ void	last_cmd(t_var *var)
 		exec_system_commands(var);
 	}
 	close(var->pfd[READ_END]);
+	var->in_fd = STDIN_FILENO;
 }
 
 void	wait_children(t_var *var)

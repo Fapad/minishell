@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/30 13:55:57 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 20:20:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,15 @@ int	add_token(t_var *var, t_token **last, char **start)
 	if (!new_token)
 		return (free_tokens(var->tokens), false);
 	if (!var->tokens)
+	{
 		var->tokens = new_token;
-	else if (*last)
+		*last = new_token;
+	}
+	else
+	{
 		(*last)->right = new_token;
-	*last = new_token;
+		*last = new_token;
+	}
 	*start = end;
 	return (true);
 }
