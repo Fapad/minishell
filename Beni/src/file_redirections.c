@@ -25,13 +25,11 @@ void	in_open_or_exit(t_var *var)
 			return (free_all(var), perror("infile"), exit(EXIT_FAILURE));
 		var->in_fd = open(node->content[FILENAME], O_RDONLY);
 		if (var->in_fd == -1)
-		{
-			perror(node->content[FILENAME]);
-			return (free_all(var), close(var->pfd[READ_END]), exit(EXIT_FAILURE));
-		}
+			return (perror(node->content[FILENAME]), free_all(var), exit(EXIT_FAILURE));
+		if (dup2(var->in_fd, STDIN_FILENO) == -1)
+			return (perror("infile: dup2"), free_all(var), close(var->in_fd), exit(EXIT_FAILURE));
+		close(var->in_fd);
 		node = get_next_node(node->next, IN_R, PIPE | END);
-		if (node)
-			close(var->in_fd);
 	}
 }
 
@@ -46,13 +44,11 @@ void	out_open_or_exit(t_var *var)
 	{
 		var->out_fd = open(node->content[FILENAME], O_WRONLY | O_CREAT | node->type, 0644);
 		if (var->out_fd == -1)
-		{
-			perror(node->content[FILENAME]);
-			return (free_all(var), close(var->pfd[WRITE_END]), exit(EXIT_FAILURE));
-		}
+			return (perror(node->content[FILENAME]), free_all(var), exit(EXIT_FAILURE));
+		if (dup2(var->out_fd, STDOUT_FILENO) == -1)
+			return (perror("outfile: dup2"), free_all(var), close(var->out_fd), exit(EXIT_FAILURE));
+		close(var->out_fd);
 		node = get_next_node(node->next, OUT_R | OUT_APPEND, PIPE | END);
-		if (node)
-			close(var->out_fd);
 	}
 }
 
@@ -98,12 +94,11 @@ int	in_open_return_status(t_var *var)
 
 void	file_redirect(t_var *var)
 {
-	char c = var->i + '0';
 	if (var->in_fd == -1 || var->out_fd == -1)
 		return (free_all(var), exit(EXIT_FAILURE));
 	if (dup2(var->in_fd, STDIN_FILENO) == -1)
-		return (perror("infile: dup2"), ft_putchar_fd(c, 2), ft_putchar_fd('\n', 2), free_all(var), exit(EXIT_FAILURE));
+		return (perror("infile: dup2"), free_all(var), exit(EXIT_FAILURE));
 	if (dup2(var->out_fd, STDOUT_FILENO) == -1)
-		return (perror("outfile: dup2"), ft_putchar_fd(c, 2), ft_putchar_fd('\n', 2), free_all(var), exit(EXIT_FAILURE));
+		return (perror("outfile: dup2"), free_all(var), exit(EXIT_FAILURE));
 	(close_in_and_out(var));
 }

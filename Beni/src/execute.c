@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/29 19:10:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 10:37:01 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,24 +56,22 @@ void	exec_other_commands(t_var *var)
 
 void	exec_builtins(t_var *var)
 {
-	t_node	*cmd;
-
-	cmd = get_next_node(var->current, CMD, PIPE | END);
-	if (!cmd)
+	var->current = get_next_node(var->current, CMD, PIPE | END);
+	if (!var->current)
 		return (close_in_and_out(var), free_all(var), exit(EXIT_SUCCESS));
-	if (ft_strncmp(cmd->content[0], "export", 7) == 0)
-		var->env = command_export(var, cmd->content[1]);
-	else if (ft_strncmp(cmd->content[0], "unset", 6) == 0)
-		var->env = command_unset(var->env, cmd->content[1]);
-	else if (ft_strncmp(cmd->content[0], "cd", 3) == 0)
+	if (ft_strncmp(var->current->content[0], "export", 7) == 0)
+		var->env = command_export(var, var->current->content[1]);
+	else if (ft_strncmp(var->current->content[0], "unset", 6) == 0)
+		var->env = command_unset(var->env, var->current->content[1]);
+	else if (ft_strncmp(var->current->content[0], "cd", 3) == 0)
 		command_cd(var);
-	else if (ft_strncmp(cmd->content[0], "exit", 5) == 0)
+	else if (ft_strncmp(var->current->content[0], "exit", 5) == 0)
 		command_exit(var);
-	else if (ft_strncmp(cmd->content[0], "echo", 5) == 0)
-		command_echo(cmd);
-	else if (ft_strncmp(cmd->content[0], "env", 4) == 0)
+	else if (ft_strncmp(var->current->content[0], "echo", 5) == 0)
+		command_echo(var->current);
+	else if (ft_strncmp(var->current->content[0], "env", 4) == 0)
 		command_env(var);
-	else if (ft_strncmp(cmd->content[0], "pwd", 4) == 0)
+	else if (ft_strncmp(var->current->content[0], "pwd", 4) == 0)
 		command_pwd();
 	else
 		return ;
@@ -112,6 +110,7 @@ char	*get_cmd(t_var *var)
 			return (NULL);
 		if (access(executable_command, X_OK) == 0)
 			return (executable_command);
+		free(executable_command);
 		i++;
 	}
 	return (NULL);
@@ -121,9 +120,12 @@ void	exec_system_commands(t_var *var)
 {
 	
 	char	*executable_command;
+	// char	*args[] = {"/bin/cat", NULL};
 	
 	executable_command = get_cmd(var);
-	execve(executable_command, var->current->content,  NULL);
+	if (!executable_command)
+		return (perror(var->current->content[0]), free_all(var), exit(EXIT_FAILURE));
+	execve(executable_command, var->current->content, var->env);
 }
 
 void	first_cmd(t_var *var)
@@ -137,7 +139,6 @@ void	first_cmd(t_var *var)
 		close_pipe(var->pfd);
 		in_open_or_exit(var);
 		out_open_or_exit(var);
-		file_redirect(var);
 		exec_builtins(var);
 		exec_system_commands(var);
 	}
@@ -152,14 +153,13 @@ void	middle_cmd(t_var *var)
 
 void	last_cmd(t_var *var)
 {
-	var->pid = fork();
-	if (var->pid == 0)
+	var->pid2 = fork();
+	if (var->pid2 == 0)
 	{
 		dup2(var->pfd[READ_END], STDIN_FILENO);
 		close(var->pfd[READ_END]);
 		in_open_or_exit(var);
 		out_open_or_exit(var);
-		file_redirect(var);
 		exec_builtins(var);
 		exec_system_commands(var);
 	}
@@ -171,18 +171,20 @@ void	wait_children(t_var *var)
 	int		status;
 	pid_t	pid;
 
+/* 	waitpid(var->pid, &status, 0);
+	waitpid(var->pid2, &var->status, 0); */
+
 	pid = wait(&status);
 	if (pid == var->pid)
 	{
 		var->status = status;
-		pid = wait(&status);
+		pid = waitpid(var->pid2, &var->status, 0);
 	}
-	else if (pid != -1)
-		pid = waitpid(var->pid, &var->status, 0);
-	else
-		perror("wait");
+	/* else if (pid == var->pid2)
+		pid = waitpid(var->pid, &status, 0); */
 	if (WIFEXITED(var->status))
 		var->status = WEXITSTATUS(var->status);
+	return ;
 }
 
 void	one_simple_cmd(t_var *var)

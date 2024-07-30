@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/29 17:49:50 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 10:16:17 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_var
 	char	**stack_env;
 	char	**splitted_path;
 	pid_t	pid;
+	pid_t	pid2;
 	size_t	len;
 	int		pfd[2];
 	int		old_pfd[2];
