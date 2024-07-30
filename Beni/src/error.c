@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/27 17:47:02 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 15:46:51 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,32 @@ void	unexpected_token(char *str)
 	}
 }
 
+bool	double_pipe(t_token *token)
+{
+	return (token->type == PIPE && token->right && token->right->type == PIPE);
+}
+
+bool	missing_filename(t_token *token)
+{
+	return (token->type == (IN_R | HEREDOC | OUT_APPEND | OUT_R) && 
+	token->right && token->right->type != CMD);
+}
+
+bool	pipe_in_front(t_token *token)
+{
+	return (token && token->type == PIPE && token->right && token->right->type);
+}
+
 bool	valid_syntax(t_token *token)
 {
+	if (pipe_in_front(token))
+	{
+		unexpected_token(token->str);
+		return (false);
+	}
 	while (token)
 	{
-		if (token->type != CMD && token->right && token->right->type != CMD)
+		if (double_pipe(token) || missing_filename(token))
 		{
 			unexpected_token(token->right->str);
 				return (false);
@@ -61,4 +82,5 @@ void	restore_environment(t_var *var)
 {
 	perror("Could not change environment");
 	malloc_envps(var, var->stack_env);
+	ft_putendl_fd("Environment has been reset", STDERR_FILENO);
 }

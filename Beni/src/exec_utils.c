@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/29 17:18:03 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 18:00:12 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,19 @@ t_node	*get_next_node(t_node *node, int get_type, int before_type)
 	return (NULL);
 }
 
-void	free_all(t_var *var)
+void	free_lists_and_path(t_var *var)
 {
 	free_linked_lists(var);
-	free_string_array(var->env);
-	var->env = NULL;
 	free_string_array(var->splitted_path);
 	var->splitted_path = NULL;
+	close_in_and_out(var);
+}
+
+void	free_all(t_var *var)
+{
+	free_string_array(var->env);
+	var->env = NULL;
+	free_lists_and_path(var);
 	free(var->line);
 	var->line = NULL;
 }

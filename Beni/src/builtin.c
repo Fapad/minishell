@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 16:42:28 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/29 17:56:42 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 16:33:03 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void   command_exit(t_var *var)
 	free_all(var);
 	rl_clear_history();
 	ft_printf("exit\n");
-	exit(0);
+	exit(EXIT_SUCCESS);
 }
 
  void	command_cd(t_var *var)
@@ -26,7 +26,7 @@ void   command_exit(t_var *var)
 
 	path = var->current->content[1];
 	if (!path)
-		path = getenv("HOME");
+		path = ft_getenv(var->env, "HOME");
 	chdir(path);
 }
 

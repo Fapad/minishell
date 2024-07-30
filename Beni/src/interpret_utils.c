@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:06 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/28 21:45:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 18:27:42 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,19 @@ char	*ft_getenv(char **env, char *s)
 	return (NULL);
 }
 
+size_t	status_len(int stat)
+{
+	size_t	len;
+
+	len = 1;
+	while (stat % 10 != stat)
+	{
+		stat = stat / 10;
+		len++;
+	}
+	return (len);
+}
+
 size_t	single_quote_len(char *s, char *end, size_t *i)
 {
 	size_t	len;
@@ -49,25 +62,30 @@ size_t	single_quote_len(char *s, char *end, size_t *i)
 	return (1);
 }
 
-size_t	env_var_len(char *s, char *end, size_t *i, char **env)
+size_t	env_var_len(t_var *var, char *s, char *end, size_t *i)
 {
 	size_t	len;
 	char	tmp;
 
 	end = ++s;
-	if (*end == '$')
+	if (*end == '$' || !*end)
 		return (1);
+	if (*end == '?')
+	{
+		*i += 1;
+		return (status_len(var->status));
+	}
 	while (*end && (ft_isalnum(*end) || *end == '_'))
 		end++;
 	tmp = *end;
 	*end = '\0';
-	len = ft_strlen(ft_getenv(env, s));
+	len = ft_strlen(ft_getenv(var->env, s));
 	*end = tmp;
 	*i += end - s;
 	return (len);
 }
 
-size_t	double_qoute_len(char *s, char *end, size_t *i, char **env)
+size_t	double_qoute_len(t_var *var, char *s, char *end, size_t *i)
 {
 	size_t	envv_len;
 	size_t	len;
@@ -79,7 +97,7 @@ size_t	double_qoute_len(char *s, char *end, size_t *i, char **env)
 	{
 		envv_len = 1;
 		if (s[j] == '$' && s[j + 1] && s[j + 1] != '\"')
-			envv_len = env_var_len(s + j, end, &j, env);
+			envv_len = env_var_len(var, s + j, end, &j);
 		if (s[j] == '\"')
 		{
 			*i += j;
@@ -91,7 +109,7 @@ size_t	double_qoute_len(char *s, char *end, size_t *i, char **env)
 	return (1);
 }
 
-size_t	interpreted_str_len(char **env, char *start, char *end)
+size_t	interpreted_str_len(t_var *var, char *start, char *end)
 {
 	size_t	i;
 	size_t	len;
@@ -103,9 +121,9 @@ size_t	interpreted_str_len(char **env, char *start, char *end)
 		if (start[i] == '\'')
 			len += single_quote_len(start + i, end, &i);
 		else if (start[i] == '\"')
-			len += double_qoute_len(start + i, end, &i, env);
+			len += double_qoute_len(var, start + i, end, &i);
 		else if (start[i] == '$' && start[i + 1])
-			len += env_var_len(start + i, end, &i, env);
+			len += env_var_len(var, start + i, end, &i);
 		else
 			len++;
 		i++;

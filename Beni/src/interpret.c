@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/28 18:42:46 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 18:50:52 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,39 @@ void	cat_single_qoutes(char *str, char **start, char *end, size_t len)
 	*start = end;
 }
 
+void	cat_status(char *str, int status, size_t len)
+{
+	char	s[11];
+	int		i;
+	int		digits;
+
+	i = 10;
+	s[i] = 0;
+	digits = status_len(status);
+	if (status == 0)
+		s[--i] = '0';
+	while (status > 0)
+	{
+		s[--i] = status % 10 + '0';
+		status /= 10;
+	}
+	ft_strlcat(str, s + (10 - digits), len + 1);
+}
+
 void	cat_env_var(t_var *var, char *str, char **start, char *end)
 {
 	size_t	i;
 	char	tmp;
 
 	i = 0;
-	if (start[0][1] == '$')
+	if (start[0][1] == '?')
+	{
+		cat_status(str, var->status, var->len);
+		*start += 1;
+	}
+	else if (start[0][1] == '$' || !start[0][1])
 		ft_strlcat(str, "$", var->len + 1);
-	else if (env_var_len(*start, end, &i, var->env))
+	else if (env_var_len(var, *start, end, &i))
 	{
 		(*start)++;
 		tmp = start[0][i];

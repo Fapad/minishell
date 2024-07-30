@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 11:03:57 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 18:19:05 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int cd_export_exit_or_unset(t_var *var)
 		return (false);
 	if (!var->env)
 		restore_environment(var);
+	close_in_and_out(var);
 	return (true);
 }
 
@@ -42,7 +43,6 @@ void	exec_other_commands(t_var *var)
 		command_pwd();
 	else
 		exec_system_commands(var);
-	close_in_and_out(var);
 	free_all(var);
 	exit(EXIT_SUCCESS);
 }
@@ -51,7 +51,7 @@ void	exec_builtins(t_var *var)
 {
 	var->current = get_next_node(var->current, CMD, PIPE | END);
 	if (!var->current)
-		return (free_all(var), exit(EXIT_SUCCESS));
+		return (free_all(var), exit(EXIT_FAILURE));
 	if (ft_strncmp(var->current->content[0], "export", 7) == 0)
 		var->env = command_export(var, var->current->content[1]);
 	else if (ft_strncmp(var->current->content[0], "unset", 6) == 0)
@@ -73,37 +73,30 @@ void	exec_builtins(t_var *var)
 
 char	**splitted_path(t_var *var)
 {
-	int	i;
+	int		i;
 	char	*path;
 
 	i = 0;
-	path = NULL;
-	while (var->env[i])
-	{
-		if (strncmp(var->env[i], "PATH=", 5) == 0)
-			path = var->env[i];
-		i++;
-	}
-	var->splitted_path = ft_split(path, ':');
-	if (var->splitted_path == NULL)
+	path = ft_getenv(var->env, "PATH");
+	if (!path)
 		return (NULL);
-	return (var->splitted_path);
+	return (ft_split(path, ':'));
 }
 
 char	*get_cmd(t_var *var)
 {	
-	char	*executable_command;
+	char	*cmd;
 	int		i;
 
 	i = 0;
-	while (var->splitted_path)
+	while (var->splitted_path[i])
 	{
-		executable_command = ft_strjoin_three(var->splitted_path[i], var->current->content[0]);
-		if (!executable_command)
+		cmd = ft_strjoin_three(var->splitted_path[i], var->current->content[0]);
+		if (!cmd)
 			return (NULL);
-		if (access(executable_command, X_OK) == 0)
-			return (executable_command);
-		free(executable_command);
+		if (access(cmd, X_OK) == 0)
+			return (cmd);
+		free(cmd);
 		i++;
 	}
 	return (NULL);
@@ -111,13 +104,18 @@ char	*get_cmd(t_var *var)
 
 void	exec_system_commands(t_var *var)
 {
-	
 	char	*executable_command;
 	
 	executable_command = get_cmd(var);
 	if (!executable_command)
-		return (perror(var->current->content[0]), free_all(var), exit(EXIT_FAILURE));
+		return (perror(var->current->content[0]), free_all(var), exit(1));
+	free_string_array(var->splitted_path);
+	var->splitted_path = NULL;
 	execve(executable_command, var->current->content, var->env);
+	perror("execve");
+	free(executable_command);
+	free_all(var);
+	exit(EXIT_FAILURE);
 }
 
 void	first_cmd(t_var *var)
@@ -135,18 +133,36 @@ void	first_cmd(t_var *var)
 		exec_system_commands(var);
 	}
 	close(var->pfd[WRITE_END]);
+	var->in_fd = var->pfd[READ_END];
 	var->current = get_next_node(var->current, PIPE, END)->next;
 }
 
 void	middle_cmd(t_var *var)
 {
+	if (pipe(var->pfd) == -1)
+		return (perror("pipe"), free_all(var), close(var->in_fd), exit(EXIT_FAILURE));
+	var->pid = fork();
+	if (var->pid == 0)
+	{
+		dup2(var->in_fd, STDIN_FILENO);
+		close(var->in_fd);
+		dup2(var->pfd[WRITE_END], STDOUT_FILENO);
+		close_pipe(var->pfd);
+		in_open_or_exit(var);
+		out_open_or_exit(var);
+		exec_builtins(var);
+		exec_system_commands(var);
+	}
+	close(var->in_fd);
+	close(var->pfd[WRITE_END]);
+	var->in_fd = var->pfd[READ_END];
 	var->current = get_next_node(var->current, PIPE, END)->next;
 }
 
 void	last_cmd(t_var *var)
 {
-	var->pid2 = fork();
-	if (var->pid2 == 0)
+	var->pid = fork();
+	if (var->pid == 0)
 	{
 		dup2(var->pfd[READ_END], STDIN_FILENO);
 		close(var->pfd[READ_END]);
@@ -161,18 +177,25 @@ void	last_cmd(t_var *var)
 void	wait_children(t_var *var)
 {
 	int		status;
+	int		i;
 	pid_t	pid;
 
-	pid = wait(&status);
-	if (pid == var->pid)
+	pid = 0;
+	i = 0;
+	status = var->status;
+	while (pid != var->pid)
 	{
-		var->status = status;
-		pid = waitpid(var->pid2, &var->status, 0);
+		pid = wait(&status);
+		i++;
 	}
-	else if (pid == var->pid2)
-		pid = waitpid(var->pid, &status, 0);
+	var->status = status;
+	while (i++ < var->cmds)
+		wait(&status);
 	if (WIFEXITED(var->status))
 		var->status = WEXITSTATUS(var->status);
+	else if (WIFSIGNALED(var->status))
+		var->status = WTERMSIG(var->status);
+	free_lists_and_path(var);
 	return ;
 }
 
@@ -196,10 +219,7 @@ void	one_simple_cmd(t_var *var)
 		exec_other_commands(var);
 		exit(EXIT_SUCCESS);
 	}
-	if (wait(&var->status) == -1)
-		perror("wait");
-	if (WIFEXITED(var->status))
-		var->status = WEXITSTATUS(var->status);
+	wait_children(var);
 }
 
 void	execute(t_var *var)
@@ -208,8 +228,13 @@ void	execute(t_var *var)
 	var->current = var->list;
 	var->cmds = count_node_types(var->list, PIPE | END);
 	var->splitted_path = splitted_path(var);
+	if (!var->splitted_path)
+	{
+		var->status = EXIT_FAILURE;
+		return (free_lists_and_path(var));
+	}
 	if (var->cmds == 1)
-		return (one_simple_cmd(var));
+		return (one_simple_cmd(var), free_lists_and_path(var));
 	var->i = 0;
 	while (var->i < var->cmds)
 	{
@@ -217,6 +242,8 @@ void	execute(t_var *var)
 			first_cmd(var);
 		else if (var->i == var->cmds - 1)
 			last_cmd(var);
+		else
+			middle_cmd(var);
 		var->i++;
 	}
 	wait_children(var);

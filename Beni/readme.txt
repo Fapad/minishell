@@ -48,3 +48,15 @@ Valamint a norminette is hibatlan jeneleg
 
 # VALGRIND
 valgrind --leak-check=full --suppressions=readline.supp --trace-children=yes --track-fds=yes ./minishell
+
+******************************************************************
+bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto$ rm -rf /home/bszilas/m3/gh_msh/Beni/egy/
+bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto$ cd ..
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto/..$ echo $?
+0
+bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto/..$ pwd
+/home/bszilas/m3/gh_msh/Beni/egy/ketto/..
+bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto/..$ echo $PWD
+/home/bszilas/m3/gh_msh/Beni/egy/ketto/..
+******************************************************************

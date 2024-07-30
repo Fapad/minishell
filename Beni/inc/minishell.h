@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 10:16:17 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/30 18:01:29 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ typedef struct s_var
 	char	**stack_env;
 	char	**splitted_path;
 	pid_t	pid;
-	pid_t	pid2;
 	size_t	len;
 	int		pfd[2];
 	int		old_pfd[2];
@@ -104,10 +103,12 @@ void	cat_env_var(t_var *var, char *str, char **start, char *end);
 void	cat_double_qoutes(t_var *var, char *str, char **start, char *end);
 char	*cat_intrd_str(t_var *var, char *start, char *end);
 size_t	single_quote_len(char *s, char *end, size_t *i);
-size_t	env_var_len(char *s, char *end, size_t *i, char **env);
-size_t	double_qoute_len(char *s, char *end, size_t *i, char **env);
-size_t	interpreted_str_len(char **env, char *start, char *end);
+size_t	env_var_len(t_var *var, char *s, char *end, size_t *i);
+size_t	double_qoute_len(t_var *var, char *s, char *end, size_t *i);
+size_t	interpreted_str_len(t_var *var, char *start, char *end);
 char	*ft_getenv(char **env, char *s);
+size_t	status_len(int stat);
+void	cat_status(char *str, int status, size_t len);
 
 // SIGNAL
 
@@ -134,6 +135,7 @@ void	free_linked_lists(t_var *var);
 void	unexpected_token(char *str);
 void	free_all(t_var *var);
 void	restore_environment(t_var *var);
+void	free_lists_and_path(t_var *var);
 
 // BUILTINS
 
