@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 21:10:04 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/31 20:48:53 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	middle_cmd(t_var *var)
 	if (var->pid == 0)
 	{
 		dup2(var->in_fd, STDIN_FILENO);
-		close(var->in_fd);
+		close_in_and_out(var);
 		dup2(var->pfd[WRITE_END], STDOUT_FILENO);
 		close_pipe(var->pfd);
 		in_open_or_exit(var);
@@ -151,7 +151,7 @@ void	middle_cmd(t_var *var)
 		exec_builtins(var);
 		exec_system_commands(var);
 	}
-	close(var->in_fd);
+	close_in_and_out(var);
 	close(var->pfd[WRITE_END]);
 	var->in_fd = var->pfd[READ_END];
 	var->current = get_next_node(var->current, PIPE, END)->next;
@@ -169,6 +169,7 @@ void	last_cmd(t_var *var)
 		exec_builtins(var);
 		exec_system_commands(var);
 	}
+	close_in_and_out(var);
 	close(var->pfd[READ_END]);
 	var->in_fd = STDIN_FILENO;
 }
@@ -200,12 +201,12 @@ void	wait_children(t_var *var)
 
 void	one_simple_cmd(t_var *var)
 {
-	var->status = in_open_return_status(var);
-	if (var->status)
-		return ;
-	var->status = out_open_return_status(var);
-	if (var->status)
-		return ;
+	// var->status = in_open_return_status(var);
+	// if (var->status)
+	// 	return ;
+	// var->status = out_open_return_status(var);
+	// if (var->status)
+	// 	return ;
 	var->current = get_next_node(var->list, CMD, END | PIPE);
 	if (!var->current)
 		return ;

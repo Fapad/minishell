@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/28 22:33:01 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/31 12:24:15 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ char	**command_unset(char **old_envp, char *str)
 	dest = malloc(to_compare + 2);
 	if (!dest)
 		return (free(old_envp), NULL);
-	strcpy(dest, str);
-	strcpy((dest + to_compare), "=");
+	ft_strlcpy(dest, str, to_compare + 2);
+	ft_strlcpy((dest + to_compare), "=", to_compare + 2);
 	new_env = malloc(len * sizeof (char *));
 	if (!new_env)
 		return (free(old_envp), free(dest), NULL);

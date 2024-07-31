@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 18:00:12 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/31 20:51:07 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void	free_lists_and_path(t_var *var)
 	free_linked_lists(var);
 	free_string_array(var->splitted_path);
 	var->splitted_path = NULL;
-	close_in_and_out(var);
 }
 
 void	free_all(t_var *var)
@@ -52,6 +51,8 @@ void	free_all(t_var *var)
 	free_lists_and_path(var);
 	free(var->line);
 	var->line = NULL;
+	free(var->cwd);
+	var->cwd = NULL;
 }
 
 void	close_in_and_out(t_var *var)

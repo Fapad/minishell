@@ -1,0 +1,31 @@
+--alsó edge caseben kinyomtatni a pwdt
+--beépített parancsok hibaüzenete és hibakezelése
+	pl. nem létezö directory, unsetelt HOME stb.
+--absolute és relative path executable keresés (ha / jelet tartalmaz)
+--bemenet kimenet fájl megnyitása egyszerre balról jobbra menjen
+--exit status(teszter alapján nem jó)
+--$+nem alpha esetén a nyomtatás rossz...
+
+DONE
+--PWD és OLDPWD változókat updatelni cd parancs után
+
+
+# EDGE CASE
+mkdir 1
+cd 1
+mkdir 2
+cd 2
+mkdir 3
+rm -rf $OLDPWD
+
+******************************************************************
+bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto$ rm -rf /home/bszilas/m3/gh_msh/Beni/egy/
+bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto$ cd ..
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto/..$ echo $?
+0
+bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto/..$ pwd
+/home/bszilas/m3/gh_msh/Beni/egy/ketto/..
+bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto/..$ echo $PWD
+/home/bszilas/m3/gh_msh/Beni/egy/ketto/..
+******************************************************************

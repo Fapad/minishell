@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 21:43:26 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/31 18:57:35 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <signal.h>
 # include <stdbool.h>
 # include <fcntl.h>
+# include <errno.h>
 # include <sys/wait.h>
 # include "../libft/libft.h"
 
@@ -62,6 +63,7 @@ typedef struct s_var
 	char	**env;
 	char	**stack_env;
 	char	**splitted_path;
+	char	*cwd;
 	pid_t	pid;
 	size_t	len;
 	int		pfd[2];
@@ -133,6 +135,7 @@ void	unexpected_token(char *str);
 void	free_all(t_var *var);
 void	restore_environment(t_var *var);
 void	free_lists_and_path(t_var *var);
+void	status_1(t_var *var);
 
 // BUILTINS
 
@@ -147,6 +150,12 @@ void	command_cd(t_var *var);
 void	command_pwd(t_var *var);
 void	command_env(t_var *var);
 int		unset2(char **old_envp, char *dest, size_t to_compare, char **new_env);
+int		existing_env_var(char **env, char *str);
+char	**change_var(char **env, char *str);
+void	update_env_after_cd(t_var *var, char *env_var_name, char *path);
+int		cd_home(t_var *var, char **path);
+int		valid_dotdot_path(char *path);
+void	cd_dotdot_for_istvan(t_var *var, char *path);
 
 // EXECUTE
 

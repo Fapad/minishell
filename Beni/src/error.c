@@ -6,11 +6,16 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 15:46:51 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/07/31 17:26:44 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
+
+void	status_1(t_var *var)
+{
+	var->status = EXIT_FAILURE;
+}
 
 void	free_linked_lists(t_var *var)
 {
@@ -71,7 +76,7 @@ bool	valid_syntax(t_token *token)
 		if (double_pipe(token) || missing_filename(token))
 		{
 			unexpected_token(token->right->str);
-				return (false);
+			return (false);
 		}
 		token = token->right;
 	}
