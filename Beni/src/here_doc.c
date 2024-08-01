@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:35:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/26 14:46:33 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 11:47:27 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,38 +32,41 @@ int	create_tmp_file(char *path)
 	return (open(path, O_CREAT | O_WRONLY, 0644));
 }
 
-void	write_doc(t_node *node)
+void	write_doc(t_node *node, int fd)
 {
-	size_t	limiter_len;
+	size_t	limiter_size;
 	char	*line;
-	int		fd;
 
-	fd = create_tmp_file(node->content[1]);
-	if (fd == -1)
-		return (perror("heredoc"));
-	limiter_len = ft_strlen(node->content[2]) + 1;
+	limiter_size = ft_strlen(node->content[2]) + 1;
 	ft_printf(HD_PROMPT);
 	line = get_next_line(STDIN_FILENO);
-	while (line && ft_strncmp(line, node->content[2], limiter_len) != '\n')
+	line[ft_strlen(line) - 1] = 0;
+	while (line && ft_strncmp(line, node->content[2], limiter_size))
 	{
+		line[ft_strlen(line) - 1] = '\n';
 		write(fd, line, ft_strlen(line));
 		free(line);
 		ft_printf(HD_PROMPT);
 		line = get_next_line(STDIN_FILENO);
+		line[ft_strlen(line) - 1] = 0;
 	}
 	free(line);
-	close(fd);
 }
 
-void	write_here_docs(t_var *var)
+int	write_here_docs(t_var *var)
 {
 	t_node *node;
+	int		fd;
 
-	node = var->list;
+	node = get_next_node(var->list, HEREDOC, END);
 	while (node)
 	{
-		if (node->type == HEREDOC)
-			write_doc(node);
-		node = node->next;
+		fd = create_tmp_file(node->content[FILENAME]);
+		if (fd == -1)
+			return (perror("heredoc"), status_1(var), false);
+		write_doc(node, fd);
+		close(fd);
+		node = get_next_node(node->next, HEREDOC, END);
 	}
+	return (true);
 }

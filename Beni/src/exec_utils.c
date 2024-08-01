@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/31 20:51:07 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 10:25:48 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,34 +37,59 @@ t_node	*get_next_node(t_node *node, int get_type, int before_type)
 	return (NULL);
 }
 
-void	free_lists_and_path(t_var *var)
+char	*ft_strjoin_three(char *s1, char *s2)
 {
-	free_linked_lists(var);
-	free_string_array(var->splitted_path);
-	var->splitted_path = NULL;
+	int		len1;
+	int		len2;
+	char	*res;
+	int		i;
+
+	i = 0;
+	len1 = 0;
+	len2 = 0;
+	if (!s1 && s2)
+		return (NULL);
+	if (s1)
+		len1 = ft_strlen(s1);
+	if (s2)
+		len2 = ft_strlen(s2);
+	res = (char *)malloc((len1 + len2 +2) * sizeof(char));
+	if (!res)
+		return (NULL);
+	while (s1 && *s1)
+		res[i++] = *s1++;
+	res[i++] = '/';
+	while (s2 && *s2)
+		res[i++] = *s2++;
+	res[i] = '\0';
+	return (res);
 }
 
-void	free_all(t_var *var)
+char	**splitted_path(t_var *var)
 {
-	free_string_array(var->env);
-	var->env = NULL;
-	free_lists_and_path(var);
-	free(var->line);
-	var->line = NULL;
-	free(var->cwd);
-	var->cwd = NULL;
+	char	*path;
+
+	path = ft_getenv(var->env, "PATH");
+	if (!path)
+		return (NULL);
+	return (ft_split(path, ':'));
 }
 
-void	close_in_and_out(t_var *var)
-{
-	if (var->in_fd != STDIN_FILENO && var->in_fd != -1)
-		close(var->in_fd);
-	if (var->out_fd != STDOUT_FILENO && var->out_fd != -1)
-		close(var->out_fd);
-}
+char	*get_cmd(t_var *var)
+{	
+	char	*cmd;
+	int		i;
 
-void	close_pipe(int pfd[])
-{
-	close(pfd[WRITE_END]);
-	close(pfd[READ_END]);
+	i = 0;
+	while (var->splitted_path[i])
+	{
+		cmd = ft_strjoin_three(var->splitted_path[i], var->current->content[0]);
+		if (!cmd)
+			return (NULL);
+		if (access(cmd, X_OK) == 0)
+			return (cmd);
+		free(cmd);
+		i++;
+	}
+	return (NULL);
 }

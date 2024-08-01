@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/31 20:42:11 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 13:38:45 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,12 @@ void	cd_dotdot_for_istvan(t_var *var, char *path)
 		var->cwd = rv_path;
 	}
 	else
+	{
 		var->cwd = cwd;
-	free(cwd);
+		free(rv_path);
+	}
 	update_env_after_cd(var, "OLDPWD=", ft_getenv(var->env, "PWD"));
 	update_env_after_cd(var, "PWD=", var->cwd);
-	var->status = EXIT_SUCCESS;
 }
 
 void	command_cd(t_var *var)

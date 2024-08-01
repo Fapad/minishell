@@ -1,6 +1,7 @@
 --alsó edge caseben kinyomtatni a pwdt
 --beépített parancsok hibaüzenete és hibakezelése
 	pl. nem létezö directory, unsetelt HOME stb.
+--echo eltört? vagy a parser?
 --absolute és relative path executable keresés (ha / jelet tartalmaz)
 --bemenet kimenet fájl megnyitása egyszerre balról jobbra menjen
 --exit status(teszter alapján nem jó)
@@ -10,7 +11,7 @@ DONE
 --PWD és OLDPWD változókat updatelni cd parancs után
 
 
-# EDGE CASE
+# EDGE CASE ##################################################################
 mkdir 1
 cd 1
 mkdir 2
@@ -28,4 +29,23 @@ bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto/..$ pwd
 /home/bszilas/m3/gh_msh/Beni/egy/ketto/..
 bszilas@c4r1p10:~/m3/gh_msh/Beni/egy/ketto/..$ echo $PWD
 /home/bszilas/m3/gh_msh/Beni/egy/ketto/..
+******************************************************************
+
+# ECHO #########################################################################
+
+******************************************************************
+minishell > echo ''
+minishell > echo ' '
+minishell > echo ' . '
+minishell > echo klkl
+klkl
+_________________________
+bszilas@c4r5p7 ~ % bash
+bszilas@c4r5p7:~$ echo ''
+
+bszilas@c4r5p7:~$ echo ' '
+ 
+bszilas@c4r5p7:~$ echo ' . '
+ . 
+bszilas@c4r5p7:~$ 
 ******************************************************************

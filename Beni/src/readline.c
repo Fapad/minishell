@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/31 17:30:36 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 12:17:54 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,6 @@ void	init_var(t_var *var, int argc, char **argv, char **envp)
 	var->cwd = getcwd(NULL, PATH_MAX);
 	malloc_envps(var, envp);
 	var->splitted_path = NULL;
-	var->pid = 0;
-	var->pfd[READ_END] = 0;
-	var->pfd[WRITE_END] = 0;
-	var->in_fd = STDIN_FILENO;
-	var->out_fd = STDOUT_FILENO;
-	var->cmds = 0;
 	var->status = 0;
 }
 
@@ -46,19 +40,16 @@ int	main(int argc, char **argv, char **envp)
 		if (!var.line)
 			return (rl_clear_history(), free_all(&var), 0);
 		if (*var.line)
-		{
 			add_history(var.line);
-			var.tokens = tokenize(&var);
-			if (parse_tokens(&var))
-				execute(&var);
-			else
-				var.status = EXIT_FAILURE;
-		}
-		free(var.line);
-		var.line = NULL;
+		var.tokens = tokenize(&var);
+		if (parse_tokens(&var))
+			execute(&var);
+		else
+			status_1(&var);
+		exec_cleanup(&var);
 	}
 	ft_printf("exit\n");
 	rl_clear_history();
 	free_all(&var);
-	return (0);
+	return (var.status);
 }

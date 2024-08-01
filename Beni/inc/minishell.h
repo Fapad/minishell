@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/31 18:57:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 12:59:49 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,18 +163,23 @@ void	execute(t_var *var);
 int		cd_export_exit_or_unset(t_var *var);
 void	one_simple_cmd(t_var *var);
 void	exec_other_commands(t_var *var);
-void	write_here_docs(t_var *var);
+int		write_here_docs(t_var *var);
+void	write_doc(t_node *node, int fd);
 int		count_node_types(t_node *node, int type);
 t_node	*get_next_node(t_node *node, int get_type, int before_type);
-void	in_open_or_exit(t_var *var);
-void	out_open_or_exit(t_var *var);
-int		out_open_return_status(t_var *var);
-int		in_open_return_status(t_var *var);
+void	open_files_or_exit(t_var *var);
+int		open_files_in_parent(t_var *var);
 void	file_redirect(t_var *var);
 void	close_in_and_out(t_var *var);
 void	exec_system_commands(t_var *var);
 char	**splitted_path(t_var *var);
 char	*ft_strjoin_three(char *s1, char *s2);
 void	close_pipe(int pfd[]);
+void	exec_cleanup(t_var *var);
+char	*get_cmd(t_var *var);
+void	first_cmd(t_var *var);
+void	middle_cmd(t_var *var);
+void	last_cmd(t_var *var);
+void	wait_children(t_var *var);
 
 #endif
