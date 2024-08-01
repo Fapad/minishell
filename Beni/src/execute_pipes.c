@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 17:29:10 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 20:08:37 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	exec_builtins(t_var *var)
 	else if (ft_strncmp(var->current->content[0], "unset", 6) == 0)
 		var->env = command_unset(var->env, var->current->content[1]);
 	else if (ft_strncmp(var->current->content[0], "cd", 3) == 0)
-		command_cd(var);
+		command_cd(var, var->current->content[1]);
 	else if (ft_strncmp(var->current->content[0], "exit", 5) == 0)
 		command_exit(var);
 	else if (ft_strncmp(var->current->content[0], "echo", 5) == 0)
@@ -109,9 +109,9 @@ void	wait_children(t_var *var)
 	var->status = status;
 	while (i++ < var->cmds)
 		wait(&status);
-	if (WIFEXITED(var->status))
-		var->status = WEXITSTATUS(var->status);
-	else if (WIFSIGNALED(var->status))
-		var->status = WTERMSIG(var->status);
+	// if (WIFEXITED(var->status))
+	// 	var->status = WEXITSTATUS(var->status);
+	// else if (WIFSIGNALED(var->status))
+	// 	var->status = WTERMSIG(var->status);
 	return ;
 }

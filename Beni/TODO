@@ -2,6 +2,14 @@ TODO #######################################################################
 
 --absolute és relative path executable keresés (ha / jelet tartalmaz)
 pl minishell a minishellböl indítható kell hogy legyen
+https://www.gnu.org/software/bash/manual/bash.html#Command-Search-and-Execution
+
+--nem létezö command esetén exit code 127 = \
+command not found kell nem pedig 1 = no such file or directory
+
+--signal esetén pl a sigint kódját vissza kell adni
+
+https://www.gnu.org/software/bash/manual/bash.html#Signals
 
 DONE #######################################################################
 --command_exit should not be printed by child
