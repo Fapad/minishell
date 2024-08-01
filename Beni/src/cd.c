@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 13:38:45 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 19:38:01 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,16 @@ void	update_env_after_cd(t_var *var, char *env_var_name, char *path)
 		restore_environment(var);
 }
 
-int	cd_home(t_var *var, char **path)
+void	cd_home(t_var *var, char *path)
 {
-	*path = ft_getenv(var->env, "HOME");
-	if (!*path)
+	path = ft_getenv(var->env, "HOME");
+	if (!path)
 	{
 		ft_putendl_fd("cd: HOME not set", STDERR_FILENO);
-		return (false);
+		status_1(var);
 	}
-	return (true);
+	else
+		command_cd(var, path);
 }
 
 void	cd_dotdot_for_istvan(t_var *var, char *path)
@@ -85,17 +86,20 @@ void	cd_dotdot_for_istvan(t_var *var, char *path)
 	update_env_after_cd(var, "PWD=", var->cwd);
 }
 
-void	command_cd(t_var *var)
+void	command_cd(t_var *var, char *path)
 {
-	char	*path;
-
-	path = var->current->content[1];
-	if (!path && !cd_home(var, &path))
-		return (status_1(var));
+	if (!path)
+		return (cd_home(var, path));
 	if (valid_dotdot_path(path))
-		return (cd_dotdot_for_istvan(var, path));
+	{
+		cd_dotdot_for_istvan(var, path);
+		return ;
+	}
 	if (chdir(path) == -1)
-		return (perror("cd"), status_1(var));
+	{
+		perror("cd");
+		return (status_1(var));
+	}
 	update_env_after_cd(var, "OLDPWD=", ft_getenv(var->env, "PWD"));
 	free(var->cwd);
 	var->cwd = getcwd(NULL, PATH_MAX);

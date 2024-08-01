@@ -6,33 +6,31 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:18:55 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 13:46:28 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 16:05:23 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-void	free_lists_and_path(t_var *var)
+void	remove_heredocs(t_var *var)
 {
-	free_linked_lists(var);
-	free_string_array(var->splitted_path);
-	var->splitted_path = NULL;
+	t_node	*doc;
+
+	doc = get_next_node(var->list, HEREDOC, END);
+	while (doc)
+	{
+		if (doc->content[FILENAME])
+			unlink(doc->content[FILENAME]);
+		doc = get_next_node(doc->next, HEREDOC, END);
+	}
 }
 
 void	exec_cleanup(t_var *var)
 {
+	remove_heredocs(var);
 	free_lists_and_path(var);
 	free(var->line);
 	var->line = NULL;
-}
-
-void	free_all(t_var *var)
-{
-	free_lists_and_path(var);
-	free_string_array(var->env);
-	var->env = NULL;
-	free(var->cwd);
-	var->cwd = NULL;
 }
 
 void	close_in_and_out(t_var *var)

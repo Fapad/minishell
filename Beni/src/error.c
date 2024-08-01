@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/31 17:26:44 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 16:33:09 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,6 @@
 void	status_1(t_var *var)
 {
 	var->status = EXIT_FAILURE;
-}
-
-void	free_linked_lists(t_var *var)
-{
-	t_node	*node;
-
-	free_tokens(var->tokens);
-	var->tokens = NULL;
-	while (var->list)
-	{
-		node = var->list;
-		var->list = node->next;
-		if (node->type == HEREDOC)
-			free(node->content[FILENAME]);
-		free(node->content);
-		free(node);
-	}
-	var->list = NULL;
 }
 
 void	unexpected_token(char *str)

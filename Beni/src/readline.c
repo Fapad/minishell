@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/01 12:17:54 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 19:46:02 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	init_var(t_var *var, int argc, char **argv, char **envp)
 	malloc_envps(var, envp);
 	var->splitted_path = NULL;
 	var->status = 0;
+	var->loop = true;
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -34,11 +35,11 @@ int	main(int argc, char **argv, char **envp)
 
 	setup_signal_handlers();
 	init_var(&var, argc, argv, envp);
-	while (42)
+	while (var.loop)
 	{
 		var.line = readline(PROMPT);
 		if (!var.line)
-			return (rl_clear_history(), free_all(&var), 0);
+			break ;
 		if (*var.line)
 			add_history(var.line);
 		var.tokens = tokenize(&var);

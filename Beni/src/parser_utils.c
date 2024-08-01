@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 19:40:36 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/30 14:56:10 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 18:06:18 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ void	print_exec_list(t_node *list)
 		ft_printf("list %d. type: %d\n", j, list->type);
 		for (size_t i = 0; list->content[i]; i++)
 			ft_printf("\tcontent %d. : %s\n", i, list->content[i]);
+		ft_printf("%p\n", list);
+		ft_printf("%d\n", (size_t)list % INT_MAX);
 		list = list->next;
 		j++;
 	}

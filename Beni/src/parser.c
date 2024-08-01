@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 12:58:33 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 18:38:09 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ t_node	*new_redirect_node(t_token **current, t_node *this)
 		return (free(this), NULL);
 	this->content[i++] = (*current)->str;
 	if ((*current)->type == HEREDOC)
-		i++;
+		this->content[i++] = NULL;
 	*current = (*current)->right;
 	if ((*current)->type != CMD)
 	{

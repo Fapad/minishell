@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 12:59:49 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 19:43:57 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ typedef struct s_var
 	int		out_fd;
 	int		cmds;
 	int		status;
-	int		i;
+	int		loop;
 }			t_var;
 
 // LEXER
@@ -146,14 +146,14 @@ int		command_export_util(t_var *var, char *str);
 void	command_echo(t_node *list);
 size_t	envp_string_count(char **envp);
 void 	command_exit(t_var *var);
-void	command_cd(t_var *var);
+void	command_cd(t_var *var, char *path);
 void	command_pwd(t_var *var);
 void	command_env(t_var *var);
 int		unset2(char **old_envp, char *dest, size_t to_compare, char **new_env);
 int		existing_env_var(char **env, char *str);
 char	**change_var(char **env, char *str);
 void	update_env_after_cd(t_var *var, char *env_var_name, char *path);
-int		cd_home(t_var *var, char **path);
+void	cd_home(t_var *var, char *path);
 int		valid_dotdot_path(char *path);
 void	cd_dotdot_for_istvan(t_var *var, char *path);
 
@@ -163,13 +163,8 @@ void	execute(t_var *var);
 int		cd_export_exit_or_unset(t_var *var);
 void	one_simple_cmd(t_var *var);
 void	exec_other_commands(t_var *var);
-int		write_here_docs(t_var *var);
-void	write_doc(t_node *node, int fd);
 int		count_node_types(t_node *node, int type);
 t_node	*get_next_node(t_node *node, int get_type, int before_type);
-void	open_files_or_exit(t_var *var);
-int		open_files_in_parent(t_var *var);
-void	file_redirect(t_var *var);
 void	close_in_and_out(t_var *var);
 void	exec_system_commands(t_var *var);
 char	**splitted_path(t_var *var);
@@ -181,5 +176,15 @@ void	first_cmd(t_var *var);
 void	middle_cmd(t_var *var);
 void	last_cmd(t_var *var);
 void	wait_children(t_var *var);
+
+// REDIRECT
+
+int		create_tmp_file(t_node *node);
+int		open_files_in_parent(t_var *var);
+void	redirect_or_exit(t_var *var);
+void	redirect_infile(t_var *var, char *file);
+void	redirect_outfile(t_var *var, char *file, int type);
+int		write_here_docs(t_var *var);
+void	write_doc(char *limiter, int fd);
 
 #endif

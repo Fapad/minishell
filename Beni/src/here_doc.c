@@ -6,65 +6,75 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:35:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 11:47:27 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 18:44:52 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-int	create_tmp_file(char *path)
+int	create_tmp_file(t_node *node)
 {
-	int	i;
-	int	len;
+	int		i;
+	int		len;
+	char	*file;
 
-	path = malloc(BUFFER_SIZE * sizeof (char));
-	if (!path)
+	node->content[FILENAME] = malloc(BUFFER_SIZE * sizeof (char));
+	if (!node->content[FILENAME])
 		return (-1);
-	ft_strlcpy(path, TMP_PATH, BUFFER_SIZE);
-	i = ft_strlen(path);
+	file = node->content[FILENAME];
+	ft_strlcpy(file, TMP_PATH, BUFFER_SIZE);
+	i = ft_strlen(file);
 	len = i + 10;
 	while (i < len)
 	{
-		path[i] = ft_rand_alnum((size_t)path, i);
+		file[i] = ft_rand_alnum((size_t)node, i);
 		i++;
 	}
-	path[i] = 0;
-	return (open(path, O_CREAT | O_WRONLY, 0644));
+	file[i] = 0;
+	return (open(file, O_CREAT | O_WRONLY, 0644));
 }
 
-void	write_doc(t_node *node, int fd)
+char	*append_nl_to_limiter(char *limiter)
+{
+	limiter = ft_strjoin_nofree(limiter, "\n");
+	return (limiter);
+}
+
+void	write_doc(char *limiter, int fd)
 {
 	size_t	limiter_size;
 	char	*line;
 
-	limiter_size = ft_strlen(node->content[2]) + 1;
+	limiter_size = ft_strlen(limiter) + 1;
 	ft_printf(HD_PROMPT);
 	line = get_next_line(STDIN_FILENO);
-	line[ft_strlen(line) - 1] = 0;
-	while (line && ft_strncmp(line, node->content[2], limiter_size))
+	while (line && ft_strncmp(line, limiter, limiter_size))
 	{
-		line[ft_strlen(line) - 1] = '\n';
 		write(fd, line, ft_strlen(line));
 		free(line);
 		ft_printf(HD_PROMPT);
 		line = get_next_line(STDIN_FILENO);
-		line[ft_strlen(line) - 1] = 0;
 	}
 	free(line);
 }
 
 int	write_here_docs(t_var *var)
 {
-	t_node *node;
+	char	*limiter;
+	t_node	*node;
 	int		fd;
 
 	node = get_next_node(var->list, HEREDOC, END);
 	while (node)
 	{
-		fd = create_tmp_file(node->content[FILENAME]);
+		limiter = append_nl_to_limiter(node->content[2]);
+		if (!limiter)
+			return (perror("heredoc"), status_1(var), false);
+		fd = create_tmp_file(node);
 		if (fd == -1)
 			return (perror("heredoc"), status_1(var), false);
-		write_doc(node, fd);
+		write_doc(limiter, fd);
+		free(limiter);
 		close(fd);
 		node = get_next_node(node->next, HEREDOC, END);
 	}

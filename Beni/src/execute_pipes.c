@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 13:01:59 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 17:29:10 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	first_cmd(t_var *var)
 	{
 		dup2(var->pfd[WRITE_END], STDOUT_FILENO);
 		close_pipe(var->pfd);
-		open_files_or_exit(var);
+		redirect_or_exit(var);
 		exec_builtins(var);
 		exec_system_commands(var);
 	}
@@ -66,7 +66,7 @@ void	middle_cmd(t_var *var)
 		close_in_and_out(var);
 		dup2(var->pfd[WRITE_END], STDOUT_FILENO);
 		close_pipe(var->pfd);
-		open_files_or_exit(var);
+		redirect_or_exit(var);
 		exec_builtins(var);
 		exec_system_commands(var);
 	}
@@ -83,7 +83,7 @@ void	last_cmd(t_var *var)
 	{
 		dup2(var->pfd[READ_END], STDIN_FILENO);
 		close(var->pfd[READ_END]);
-		open_files_or_exit(var);
+		redirect_or_exit(var);
 		exec_builtins(var);
 		exec_system_commands(var);
 	}
