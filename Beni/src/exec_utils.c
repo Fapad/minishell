@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 10:25:48 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/02 20:23:06 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,8 @@ char	*get_cmd(t_var *var)
 		free(cmd);
 		i++;
 	}
+	ft_putstr_fd(var->current->content[0], STDERR_FILENO);
+	ft_putendl_fd(": command not found", STDERR_FILENO);
+	var->status = 127;
 	return (NULL);
 }

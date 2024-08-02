@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 19:23:29 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/02 16:25:21 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	cat_status(char *str, int status, size_t len)
 
 	i = 10;
 	s[i] = 0;
-	digits = status_len(status);
+	digits = number_len(status);
 	if (status == 0)
 		s[--i] = '0';
 	while (status > 0)

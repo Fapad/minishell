@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:35:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 18:44:52 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/02 15:17:49 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,16 @@ void	write_doc(char *limiter, int fd)
 
 	limiter_size = ft_strlen(limiter) + 1;
 	ft_printf(HD_PROMPT);
+	write(STDOUT_FILENO, limiter, limiter_size - 2);
+	ft_printf("\" > ");
 	line = get_next_line(STDIN_FILENO);
 	while (line && ft_strncmp(line, limiter, limiter_size))
 	{
 		write(fd, line, ft_strlen(line));
 		free(line);
 		ft_printf(HD_PROMPT);
+		write(STDOUT_FILENO, limiter, limiter_size - 2);
+		ft_printf("\" > ");
 		line = get_next_line(STDIN_FILENO);
 	}
 	free(line);

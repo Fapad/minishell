@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 20:08:37 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/02 14:58:47 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,8 @@ void	wait_children(t_var *var)
 	var->status = status;
 	while (i++ < var->cmds)
 		wait(&status);
-	// if (WIFEXITED(var->status))
-	// 	var->status = WEXITSTATUS(var->status);
-	// else if (WIFSIGNALED(var->status))
-	// 	var->status = WTERMSIG(var->status);
-	return ;
+	if (WIFEXITED(var->status))
+		var->status = WEXITSTATUS(var->status);
+	else if (WIFSIGNALED(var->status))
+		var->status = 128 + WTERMSIG(var->status);
 }

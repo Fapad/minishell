@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 19:43:57 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/02 18:01:36 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,10 @@
 # define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
 [1;32m\002ell\001\033[0m\002 > "
 # define HD_PROMPT "\001\033[1;31m\002her\001\033[1;37m\002edo\001\033\
-[1;32m\002c > \001\033[0m\002"
+[1;32m\002c \"\001\033[0m\002"
 # define TMP_PATH "/tmp/.tmp"
 # define FILENAME 1
+# define INT_MAX_LEN 10
 
 typedef struct s_token
 {
@@ -106,7 +107,7 @@ size_t	env_var_len(t_var *var, char *s, char *end, size_t *i);
 size_t	double_qoute_len(t_var *var, char *s, char *end, size_t *i);
 size_t	interpreted_str_len(t_var *var, char *start, char *end);
 char	*ft_getenv(char **env, char *s);
-size_t	status_len(int stat);
+size_t	number_len(long stat);
 void	cat_status(char *str, int status, size_t len);
 
 // SIGNAL

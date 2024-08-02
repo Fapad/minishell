@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:06 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 19:29:59 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/02 18:17:36 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,24 @@
 char	*ft_getenv(char **env, char *s)
 {
 	size_t	i;
-	size_t	len;
+	size_t	varname_l;
 	char	*var;
 
 	i = 0;
 	if (!s)
 		return (NULL);
-	len = ft_strlen(s);
+	varname_l = ft_strlen(s);
 	while (env[i])
 	{
 		var = ft_strchr(env[i], '=') + 1;
-		if (env[i] + len + 1 == var && !ft_strncmp(s, env[i], len))
+		if (env[i] + varname_l + 1 == var && !ft_strncmp(s, env[i], varname_l))
 			return (var);
 		i++;
 	}
 	return (NULL);
 }
 
-size_t	status_len(int stat)
+size_t	number_len(long stat)
 {
 	size_t	len;
 
@@ -71,7 +71,7 @@ size_t	env_var_len(t_var *var, char *s, char *end, size_t *i)
 	if (*end == '?')
 	{
 		*i += 1;
-		return (status_len(var->status));
+		return (number_len(var->status));
 	}
 	while (*end && (ft_isalnum(*end) || *end == '_'))
 		end++;

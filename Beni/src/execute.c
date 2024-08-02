@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 19:39:58 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/02 20:24:01 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,18 @@ void	exec_system_commands(t_var *var)
 {
 	char	*executable_command;
 	
-	executable_command = get_cmd(var);
+	if (ft_strchr(var->current->content[0], '/'))
+	{
+		executable_command = ft_strdup(var->current->content[0]);
+		if (!executable_command)
+			status_1(var);
+	}
+	else
+		executable_command = get_cmd(var);
 	if (!executable_command)
-		return (perror(var->current->content[0]), free_all(var), exit(1));
-	free_string_array(var->splitted_path);
-	var->splitted_path = NULL;
+		return (free_all(var), exit(var->status));
 	execve(executable_command, var->current->content, var->env);
-	perror("execve");
+	perror(var->current->content[0]);
 	free(executable_command);
 	free_all(var);
 	exit(EXIT_FAILURE);
