@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 13:59:44 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 16:15:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ void	command_not_found(t_var *var);
 void	malloc_envps(t_var *var, char **envp);
 char	**command_unset(char **old_envp, char *str);
 char	**command_export(t_var *var, char *str);
-int		command_export_util(t_var *var, char *str);
+int		valid_identifier(t_var *var, char *str);
 void	command_echo(t_node *list);
 size_t	envp_string_count(char **envp);
 void 	command_exit(t_var *var);
@@ -163,6 +163,10 @@ void	update_env_after_cd(t_var *var, char *env_var_name, char *path);
 void	cd_home(t_var *var, char *path);
 int		valid_dotdot_path(char *path);
 void	cd_dotdot_for_istvan(t_var *var, char *path);
+char	*find_next_smallest(char **arr, char *current, char *max);
+void	print_environment(t_var *var);
+char	**set_shlvl(t_var *var, char *str);
+int		get_shlvl(char *str);
 
 // EXECUTE
 

@@ -16,10 +16,10 @@ https://www.gnu.org/software/bash/manual/bash.html#Signals
 
 --ambiguous redirect pl. lenti eset
 
---export kinyomtatja ABC sorrendben az env-et
 
 DONE #######################################################################
 
+--export kinyomtatja ABC sorrendben az env-et
 --command not found / no permission / not executable esetén bash exit code
 https://www.gnu.org/software/bash/manual/bash.html#Command-Search-and-Execution
 --SHLVL változót a bashhel azonosan kezeli
