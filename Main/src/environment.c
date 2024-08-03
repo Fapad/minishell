@@ -6,141 +6,127 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/26 11:06:42 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 16:20:15 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-void	command_env(char **envp)
+void	command_env(t_var *var)
 {
 	size_t	i;
 
 	i = 0;
-	while (envp[i])
-		ft_printf("%s\n", envp[i++]);
+	while (var->env[i])
+		ft_printf("%s\n", var->env[i++]);
 }
 
-size_t	envp_string_count(char **envp)
+char	**command_unset(char **old_envp, char *str)
 {
-	size_t string_count;
-
-	string_count = 0;
-	while (envp && envp[string_count])
-		string_count++;
-	return (string_count);
-}
-
-char	**malloc_envps(char **envp)
-{
-	char	**heap_envp;
-	size_t	len;
-	size_t	i;
-
-	len = envp_string_count(envp);
-	heap_envp = malloc((len + 1) * sizeof (char *));
-	if (!heap_envp)
-		exit(EXIT_FAILURE);
-	i = 0;
-	while (i < len)
-	{
-		heap_envp[i] = ft_strdup(envp[i]);
-		if (!heap_envp[i])
-			return (free_string_array(heap_envp), exit(EXIT_FAILURE), NULL);
-		i++;
-	}
-	heap_envp[i] = NULL;
-	return (heap_envp);
-}
-
-char	**command_unset(char **env, char *line)
-{
-	size_t	i;
 	size_t	to_compare;
-	size_t	start;
 	size_t	len;
+	char	*dest;
 	char	**new_env;
 
-	i = 0;
-	to_compare = 0;
-	while (line[i] != 32 && line[i])
-		i++;
-	while (line[i] == 32 && line)
-		i++;
-	start = i;
-	while (line[i] > 32)
-	{
-		i++;
-		to_compare++;
-	}
-	len = envp_string_count(env);
+	if (!str)
+		return (old_envp);
+	len = envp_string_count(old_envp);
 	if (!len)
-		return (free(env), NULL);
+		return (old_envp);
+	to_compare = 0;
+	while (str[to_compare])
+		to_compare++;
+	dest = malloc(to_compare + 2);
+	if (!dest)
+		return (free(old_envp), NULL);
+	ft_strlcpy(dest, str, to_compare + 2);
+	ft_strlcpy((dest + to_compare), "=", to_compare + 2);
 	new_env = malloc(len * sizeof (char *));
 	if (!new_env)
-		return (free(env), NULL);
+		return (free(old_envp), free(dest), NULL);
+	if (unset2(old_envp, dest, to_compare, new_env))
+		return (free(old_envp), free(dest), new_env);
+	return (free(new_env), free(dest), old_envp);
+}
+
+int  unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
+{
+	int	i;
+
 	i = 0;
-	while (env[i])
+	while (old_envp[i])
 	{
-		new_env[i] = env[i];
-		if (strncmp(env[i], line + start, to_compare) == 0)
+		new_env[i] = old_envp[i];
+		if (ft_strncmp(old_envp[i], dest, to_compare + 1) == 0)
 		{
-			printf("%s\n", env[i]);
-			free(env[i++]);
-			while (env[i])
+			free(old_envp[i++]);
+			while (old_envp[i])
 			{
-				new_env[i - 1] = env[i];
+				new_env[i - 1] = old_envp[i];
 				i++;
 			}
 			new_env[i - 1] = NULL;
-			return (free(env), new_env);
+			return (true);
 		}
 		i++;
 	}
-	return (free(new_env), env);
+	return (false);
 }
 
-char	**malloc_envps(char **envp)
+char	**change_var(char **env, char *str)
 {
-	char	**heap_envp;
+	char	*var;
+	char	tmp;
 	size_t	len;
 	size_t	i;
 
-	len = envp_string_count(envp);
-	heap_envp = malloc((len + 1) * sizeof (char *));
-	if (!heap_envp)
-		return (NULL);
+	len = ft_strchr(str, '=') + 1 - str;
+	tmp = str[len];
+	str[len] = 0;
 	i = 0;
-	while (i < len)
+	while (env[i])
 	{
-		heap_envp[i] = ft_strdup(envp[i]);
-		if (!heap_envp[i])
-			return (free_string_array(heap_envp), NULL);
+		if (!ft_strncmp(env[i], str, len))
+		{
+			str[len] = tmp;
+			len = ft_strlen(str);
+			var = malloc((len + 1) * sizeof (char));
+			if (!var)
+				return (free_string_array(env), NULL);
+			ft_strlcpy(var, str, len + 1);
+			free(env[i]);
+			env[i] = var;
+			return (env);
+		}
 		i++;
 	}
-	heap_envp[i] = NULL;
-	return (heap_envp);
+	str[len] = tmp;
+	return (NULL);
 }
 
-char	**command_export(char **old_envp, char *str)
+char	**command_export(t_var *var, char *str)
 {
 	char	**new_envp;
 	size_t	len;
 	size_t	i;
 
-	len = envp_string_count(old_envp);
+	if (!str)
+		return (print_environment(var), var->env);
+	if (!valid_identifier(var, str))
+		return (var->env);
+	if (existing_env_var(var->env, str))
+		return (change_var(var->env, str));
+	len = envp_string_count(var->env);
 	new_envp = malloc((len + 1 + 1) * sizeof (char *));
 	if (!new_envp)
-		return (free_string_array(old_envp), NULL);
+		return (free_string_array(var->env), NULL);
 	i = 0;
 	while (i < len)
 	{
-		new_envp[i] = old_envp[i];
+		new_envp[i] = var->env[i];
 		i++;
 	}
-	free(old_envp);
-	char *nl = ft_strchr(str, '\n'); //DELETE FOR MINISHELL!!!!!!!!!
-	*nl = 127; //DELETE FOR MINISHELL!!!!!!!
+	free(var->env);
 	new_envp[i] = ft_strdup(str);
 	if (!str)
 		return (free(new_envp), NULL);

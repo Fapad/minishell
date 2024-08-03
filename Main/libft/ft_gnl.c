@@ -9,8 +9,8 @@
 /*   Updated: 2024/07/19 19:05:12 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "libft.h"
+#include <fcntl.h>
 
 char	*trim_line(char *line, char *stash)
 {
@@ -82,10 +82,7 @@ char	*get_next_line(int fd)
 	line = file_to_line(line, stash, fd);
 	return (line);
 }
-
-#include <fcntl.h>
-
-int main()
+/* int main()
 {
 	int fd = open("in", O_RDONLY);
 	if (fd == -1)
@@ -97,4 +94,4 @@ int main()
 		free(buf3);
 	}
 	return 0;
-}
+} */

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_rng.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 13:27:36 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/15 11:56:27 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 15:40:01 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ft_rng(size_t seed, int nth)
 	n = seed % INT_MAX;
 	i = 0;
 	while (i++ < nth)
-		n = n * (INT_MAX - 2) % INT_MAX;
+		n = (n * (INT_MAX - 18) + 3) % INT_MAX;
 	return (n);
 }
 

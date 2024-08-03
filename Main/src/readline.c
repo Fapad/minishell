@@ -6,37 +6,77 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/26 11:05:36 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 15:07:24 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-int	main(int agrc, char **argv, char **envp)
+void	init_var(t_var *var, int argc, char **argv, char **envp)
+{
+	(void)argc;
+	(void)argv;
+	var->stack_env = envp;
+	var->tokens = NULL;
+	var->current = NULL;
+	var->list = NULL;
+	var->line = NULL;
+	var->env = NULL;
+	var->splitted_path = NULL;
+	var->exec_cmd = NULL;
+	var->cwd = getcwd(NULL, PATH_MAX);
+	malloc_envps(var, envp);
+	var->status = 0;
+	var->loop = true;
+}
+
+void	malloc_envps(t_var *var, char **envp)
+{
+	char	*str;
+	size_t	len;
+	size_t	i;
+
+	len = envp_string_count(envp);
+	var->env = malloc((len + 1) * sizeof (char *));
+	if (!var->env)
+		return (perror("exiting"), free_all(var), exit(EXIT_FAILURE));
+	i = 0;
+	while (i < len)
+	{
+		var->env[i] = ft_strdup(envp[i]);
+		if (!var->env[i])
+			return (perror("exiting"), free_all(var), exit(EXIT_FAILURE));
+		i++;
+	}
+	var->env[i] = NULL;
+	str = ft_getenv(var->env, "SHLVL");
+	var->env = set_shlvl(var, str);
+	if (!var->env)
+		return (perror("exiting"), free_all(var), exit(EXIT_FAILURE));
+}
+
+int	main(int argc, char **argv, char **envp)
 {
 	t_var	var;
 
 	setup_signal_handlers();
-	var.env = malloc_envps(envp);
-	while (1)
+	init_var(&var, argc, argv, envp);
+	while (var.loop)
 	{
 		var.line = readline(PROMPT);
 		if (!var.line)
-			return (rl_clear_history(), free_string_array(var.env), 0);
+			break ;
 		if (*var.line)
-		{
-			var.tokens = tokenize(var.line);
-			if (parse_tokens(&var))
-			{
-				print_exec_list(var.list);
-				execute(&var);
-			}
 			add_history(var.line);
-			free_linked_lists(&var);
-		}
-		free(var.line);
+		var.tokens = tokenize(&var);
+		if (parse_tokens(&var))
+			execute(&var);
+		else
+			status_1(&var);
+		exec_cleanup(&var);
 	}
+	ft_printf("exit\n");
 	rl_clear_history();
-	free_string_array(var.env);
-	return (0);
+	free_all(&var);
+	return (var.status);
 }

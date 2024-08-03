@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:25 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/24 17:45:40 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 16:05:47 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,6 @@ void	print_tokens(t_token *head)
 		printf("Type: %d, Str: %s\n", current->type, current->str);
 		current = current->right;
 	}
-}
-
-void	free_tokens(t_token *root)
-{
-    t_token *temp;
-
-    while (root != NULL)
-	{
-        if (root->right != NULL)
-		{
-            temp = root->right;
-            root->right = NULL;
-        } 
-		else
-            temp = NULL;
-        if (root->str != NULL)
-            free(root->str);
-        free(root);
-        root = temp;
-    }
 }
 
 void	skip_whitespace(char **input)
