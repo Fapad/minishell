@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/02 14:58:47 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 10:21:40 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,27 +90,4 @@ void	last_cmd(t_var *var)
 	close_in_and_out(var);
 	close(var->pfd[READ_END]);
 	var->in_fd = STDIN_FILENO;
-}
-
-void	wait_children(t_var *var)
-{
-	int		status;
-	int		i;
-	pid_t	pid;
-
-	pid = 0;
-	i = 0;
-	status = var->status;
-	while (pid != var->pid)
-	{
-		pid = wait(&status);
-		i++;
-	}
-	var->status = status;
-	while (i++ < var->cmds)
-		wait(&status);
-	if (WIFEXITED(var->status))
-		var->status = WEXITSTATUS(var->status);
-	else if (WIFSIGNALED(var->status))
-		var->status = 128 + WTERMSIG(var->status);
 }

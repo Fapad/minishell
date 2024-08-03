@@ -1,11 +1,6 @@
 
 TODO #######################################################################
 
-
-
---command not found / no permission / not executable esetén bash exit code
-https://www.gnu.org/software/bash/manual/bash.html#Command-Search-and-Execution
-
 --ha nem egy child kap signalt, honnan tudja a kódot?
 bszilas@c3r10p6:~/m3/gh_msh/Beni$ ^C
 bszilas@c3r10p6:~/m3/gh_msh/Beni$ echo $?
@@ -21,13 +16,17 @@ https://www.gnu.org/software/bash/manual/bash.html#Signals
 
 --ambiguous redirect pl. lenti eset
 
-
+--export kinyomtatja ABC sorrendben az env-et
 
 DONE #######################################################################
 
+--command not found / no permission / not executable esetén bash exit code
+https://www.gnu.org/software/bash/manual/bash.html#Command-Search-and-Execution
 --SHLVL változót a bashhel azonosan kezeli
 --absolute path executable keresés (ha / jelet tartalmaz)
-pl minishell a minishellböl indítható kell hogy legyen
+	pl. minishell a minishellböl indítható kell hogy legyen
+--unsetelt PATH esetén command keresés
+--hibaüzenet scriptek esetén
 --command_exit should not be printed by child
 --PWD és OLDPWD változókat updatelni cd parancs után
 --alsó edge caseben kinyomtatni a pwdt

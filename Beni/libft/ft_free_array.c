@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free_array.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: szilas <szilas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 12:07:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/06/20 13:16:28 by szilas           ###   ########.fr       */
+/*   Updated: 2024/08/03 14:27:00 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,8 @@ void	free_string_array(char **array)
 	if (!array)
 		return ;
 	i = 0;
-	if (*array)
-	{
-		while (array[i])
-			free(array[i++]);
-		free(array[i]);
-	}
+	while (array[i])
+		free(array[i++]);
 	free(array);
 }
 

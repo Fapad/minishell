@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 19:38:01 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 11:25:50 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,8 @@ void	command_cd(t_var *var, char *path)
 	}
 	if (chdir(path) == -1)
 	{
-		perror("cd");
+		ft_putstr_fd("cd: ", STDERR_FILENO);
+		perror(path);
 		return (status_1(var));
 	}
 	update_env_after_cd(var, "OLDPWD=", ft_getenv(var->env, "PWD"));

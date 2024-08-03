@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/01 19:46:02 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 14:42:46 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,10 @@ void	init_var(t_var *var, int argc, char **argv, char **envp)
 	var->list = NULL;
 	var->line = NULL;
 	var->env = NULL;
+	var->splitted_path = NULL;
+	var->exec_cmd = NULL;
 	var->cwd = getcwd(NULL, PATH_MAX);
 	malloc_envps(var, envp);
-	var->splitted_path = NULL;
 	var->status = 0;
 	var->loop = true;
 }

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/02 20:24:01 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 14:42:00 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,20 @@
 
 void	exec_system_commands(t_var *var)
 {
-	char	*executable_command;
-	
+	var->exec_cmd = NULL;
+	var->splitted_path = splitted_path(var);
 	if (ft_strchr(var->current->content[0], '/'))
-	{
-		executable_command = ft_strdup(var->current->content[0]);
-		if (!executable_command)
-			status_1(var);
-	}
+		var->exec_cmd = check_given_file(var);
 	else
-		executable_command = get_cmd(var);
-	if (!executable_command)
+		var->exec_cmd = get_cmd(var);
+	if (!var->exec_cmd)
 		return (free_all(var), exit(var->status));
-	execve(executable_command, var->current->content, var->env);
-	perror(var->current->content[0]);
-	free(executable_command);
+	execve(var->exec_cmd, var->current->content, var->env);
+	perror(var->exec_cmd);
+	free(var->exec_cmd);
+	set_status(var);
 	free_all(var);
-	exit(EXIT_FAILURE);
+	exit(var->status);
 }
 
 void	exec_other_commands(t_var *var)

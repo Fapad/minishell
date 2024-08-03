@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/02 18:01:36 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 13:59:44 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,10 @@ typedef struct s_var
 	char	**stack_env;
 	char	**splitted_path;
 	char	*cwd;
+	char	*exec_cmd;
 	pid_t	pid;
 	size_t	len;
 	int		pfd[2];
-	int		old_pfd[2];
 	int		in_fd;
 	int		out_fd;
 	int		cmds;
@@ -126,17 +126,23 @@ t_node	*new_list_node(t_token **current);
 void	add_to_list(t_var *var, t_node *this);
 void	print_exec_list(t_node *list);
 bool	parse_tokens(t_var *var);
+void	unexpected_token(char *str);
+bool	double_pipe(t_token *token);
+bool	missing_filename(t_token *token);
+bool	pipe_in_front(t_token *token);
+bool	valid_syntax(t_token *token);
 
 // ERROR_HANDLING
 
 void	init_var(t_var *var, int argc, char **argv, char **envp);
-bool	valid_syntax(t_token *token);
 void	free_linked_lists(t_var *var);
-void	unexpected_token(char *str);
 void	free_all(t_var *var);
 void	restore_environment(t_var *var);
 void	free_lists_and_path(t_var *var);
 void	status_1(t_var *var);
+void	status_2(t_var *var);
+void	error_exec_txt_file(t_var *var);
+void	command_not_found(t_var *var);
 
 // BUILTINS
 
@@ -177,6 +183,9 @@ void	first_cmd(t_var *var);
 void	middle_cmd(t_var *var);
 void	last_cmd(t_var *var);
 void	wait_children(t_var *var);
+char	*check_given_file(t_var *var);
+void	set_status(t_var *var);
+int		search_path(t_var *var, int access_type);
 
 // REDIRECT
 

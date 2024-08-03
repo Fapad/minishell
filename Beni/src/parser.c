@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 18:38:09 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 14:41:50 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,6 @@ bool	parse_tokens(t_var *var)
 	if (!var->tokens)
 		return (false);
 	if (!valid_syntax(var->tokens))
-		return (free_tokens(var->tokens), false);
-	var->splitted_path = splitted_path(var);
-	if (!var->splitted_path)
 		return (free_tokens(var->tokens), false);
 	current = var->tokens;
 	while (current)
