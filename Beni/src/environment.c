@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 16:13:40 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 16:20:15 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ char	**command_export(t_var *var, char *str)
 	size_t	i;
 
 	if (!str)
-		print_environment(var);
+		return (print_environment(var), var->env);
 	if (!valid_identifier(var, str))
 		return (var->env);
 	if (existing_env_var(var->env, str))
