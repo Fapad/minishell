@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/02 16:25:21 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/04 14:16:21 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,20 @@ void	cat_status(char *str, int status, size_t len)
 	char	s[11];
 	int		i;
 	int		digits;
+	int		base;
 
-	i = 10;
+	base = 10;
+	i = base;
 	s[i] = 0;
-	digits = number_len(status);
+	digits = digits_count(status, base);
 	if (status == 0)
 		s[--i] = '0';
 	while (status > 0)
 	{
-		s[--i] = status % 10 + '0';
-		status /= 10;
+		s[--i] = status % base + '0';
+		status /= base;
 	}
-	ft_strlcat(str, s + (10 - digits), len + 1);
+	ft_strlcat(str, s + (base - digits), len + 1);
 }
 
 void	cat_env_var(t_var *var, char *str, char **start, char *end)

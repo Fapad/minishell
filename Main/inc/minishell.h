@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/04 12:04:09 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/04 14:19:54 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@
 [1;32m\002c \"\001\033[0m\002"
 # define TMP_PATH "/tmp/.tmp"
 # define FILENAME 1
-# define INT_MAX_LEN 10
 
 typedef struct s_token
 {
@@ -107,7 +106,6 @@ size_t	env_var_len(t_var *var, char *s, char *end, size_t *i);
 size_t	double_qoute_len(t_var *var, char *s, char *end, size_t *i);
 size_t	interpreted_str_len(t_var *var, char *start, char *end);
 char	*ft_getenv(char **env, char *s);
-size_t	number_len(long stat);
 void	cat_status(char *str, int status, size_t len);
 
 // SIGNAL

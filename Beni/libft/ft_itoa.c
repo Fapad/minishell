@@ -3,24 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: szilas <szilas@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 17:47:41 by bszilas           #+#    #+#             */
-/*   Updated: 2024/06/20 12:50:12 by szilas           ###   ########.fr       */
+/*   Updated: 2024/08/04 14:03:07 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	fill_temp_arr(char *s, long long n)
+size_t	digits_count(long long n, int base)
+{
+	size_t	len;
+
+	len = 1;
+	while (n % base != n)
+	{
+		n = n / base;
+		len++;
+	}
+	return (len);
+}
+
+static int	fill_temp_arr(char *s, long long n, int max_siz)
 {
 	int	i;
 	int	negative;
 
-	negative = n >> ((sizeof (long long) * BYTE) - 1) & 1;
+	negative = n >> ((sizeof (long long) * BYTE) - 1) & 0x1;
 	if (negative)
 		n *= -1;
-	i = 11;
+	i = max_siz - 1;
 	s[i] = 0;
 	if (n == 0)
 		s[--i] = '0';
@@ -39,10 +52,10 @@ char	*ft_itoa(long long n)
 	char	*ret;
 	int		i;
 	int		max_siz;
-	char	temp_arr[12];
+	char	temp_arr[BUFFER_SIZE];
 
-	max_siz = 12;
-	i = fill_temp_arr(temp_arr, n);
+	max_siz = digits_count(INT_MAX, 10) + 2;
+	i = fill_temp_arr(temp_arr, n, max_siz);
 	ret = malloc((max_siz - i) * sizeof (char));
 	if (!ret)
 		return (NULL);

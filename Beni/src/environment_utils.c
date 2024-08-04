@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:06:25 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 16:17:14 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/04 14:07:04 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	get_shlvl(char *str)
 	i = 0;
 	if (str[i] == '+' || str[i] == '-')
 		i++;
-	if (ft_strlen(&str[i]) > number_len(LONG_MAX))
+	if (ft_strlen(&str[i]) > digits_count(LONG_MAX, 10))
 		return (0);
 	while (str[i])
 	{

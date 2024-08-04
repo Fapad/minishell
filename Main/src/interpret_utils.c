@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:06 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/02 18:17:36 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/04 14:06:15 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,6 @@ char	*ft_getenv(char **env, char *s)
 		i++;
 	}
 	return (NULL);
-}
-
-size_t	number_len(long stat)
-{
-	size_t	len;
-
-	len = 1;
-	while (stat % 10 != stat)
-	{
-		stat = stat / 10;
-		len++;
-	}
-	return (len);
 }
 
 size_t	single_quote_len(char *s, char *end, size_t *i)
@@ -71,7 +58,7 @@ size_t	env_var_len(t_var *var, char *s, char *end, size_t *i)
 	if (*end == '?')
 	{
 		*i += 1;
-		return (number_len(var->status));
+		return (digits_count(var->status, 10));
 	}
 	while (*end && (ft_isalnum(*end) || *end == '_'))
 		end++;
