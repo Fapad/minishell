@@ -1,17 +1,6 @@
 
 TODO #######################################################################
 
---ha nem egy child kap signalt, honnan tudja a kódot?
-bszilas@c3r10p6:~/m3/gh_msh/Beni$ ^C
-bszilas@c3r10p6:~/m3/gh_msh/Beni$ echo $?
-130
-bszilas@c3r10p6:~/m3/gh_msh/Beni$ ./minishell 
-minishell > ^C
-minishell > echo $?
-0
-minishell > 
-https://www.gnu.org/software/bash/manual/bash.html#Signals
-
 --tokenizer: $VAR is expanded into command and arguments
 
 --ambiguous redirect pl. lenti eset
@@ -19,6 +8,9 @@ https://www.gnu.org/software/bash/manual/bash.html#Signals
 
 DONE #######################################################################
 
+--ha nem egy child kap signalt, honnan tudja a kódot?
+	#globálisba el van mentve a signum és a tokenizer elött a statusba rakjuk
+--sigquit ignore hozzáadva
 --export kinyomtatja ABC sorrendben az env-et
 --command not found / no permission / not executable esetén bash exit code
 https://www.gnu.org/software/bash/manual/bash.html#Command-Search-and-Execution
@@ -38,6 +30,7 @@ https://www.gnu.org/software/bash/manual/bash.html#Command-Search-and-Execution
 --$+nem alpha esetén a nyomtatás rossz...
 
 # AMBIGUOUS REDIRECT #######################################################
+
 bash
 bszilas@c3r10p6:~/m3/gh_msh/Beni$ echo hi > "a b c"
 bszilas@c3r10p6:~/m3/gh_msh/Beni$ cat "a b c"

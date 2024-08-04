@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 16:15:43 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/04 12:04:09 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,9 @@ void	cat_status(char *str, int status, size_t len);
 
 // SIGNAL
 
+extern sig_atomic_t signal_received;
 void	setup_signal_handlers();
+void	handle_sigint(int sig);
 
 // PARSER
 
