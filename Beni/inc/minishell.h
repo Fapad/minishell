@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/06 10:45:03 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 22:12:52 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,9 @@ void	print_tokens(t_token *head);
 int		identify_dollar_sign(char **start, char **end);
 void	ft_strncpy(char	*dest,const char *str, size_t n);
 char 	*ft_strndup(const char *s, size_t n);
+void	add_token_to_list(t_var *var, t_token *new_token);
+void	init_token(t_token *new, char *str, int type);
+void	mark_whitespaces(char *str);
 
 // INTERPRET
 
@@ -111,6 +114,11 @@ size_t	double_qoute_len(t_var *var, char *s, char *end, size_t *i);
 size_t	interpreted_str_len(t_var *var, char *start, char *end);
 char	*ft_getenv(char **env, char *s);
 void	cat_status(char *str, int status, size_t len);
+bool	possible_var(t_var *var, char c, char d);
+bool	ambiguous_redirect(t_var *var, char *str);
+void	free_bare_tokens(t_token *last);
+int		split_compound_tokens(t_var *var, char *str);
+bool	handle_compound_tokens(t_var *var, char *str);
 
 // SIGNAL
 
@@ -147,6 +155,7 @@ void	status_1(t_var *var);
 void	status_2(t_var *var);
 void	error_exec_txt_file(t_var *var);
 void	command_not_found(t_var *var);
+void	ambiguous_redirect_error(t_var *var, char *str);
 
 // BUILTINS
 

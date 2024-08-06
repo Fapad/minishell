@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 17:39:22 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 17:49:37 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 21:13:20 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,12 @@ void	redirect_or_exit(t_var *var)
 	IN_R | OUT_R | OUT_APPEND | HEREDOC, PIPE | END);
 	while (node)
 	{
+		if (node->type & AMBI_R)
+		{
+			ambiguous_redirect_error(var, node->content[FILENAME]);
+			free_all(var);
+			exit(var->status);
+		}
 		if (node->type & (HEREDOC | IN_R))
 			redirect_infile(var, node->content[FILENAME]);
 		else if (node->type & (OUT_R | OUT_APPEND))
@@ -76,6 +82,11 @@ int	open_files_in_parent(t_var *var)
 	fd = INT_MAX;
 	while (node)
 	{
+		if (node->type & AMBI_R)
+		{
+			ambiguous_redirect_error(var, node->content[FILENAME]);
+			return (false);
+		}
 		if (node->type == IN_R)
 			fd = open(node->content[FILENAME], O_RDONLY);
 		else if (node->type & (OUT_R | OUT_APPEND))

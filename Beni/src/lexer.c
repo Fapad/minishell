@@ -6,24 +6,17 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/06 10:22:54 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 22:05:14 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-void	add_token_to_list(t_var *var, t_token *new_token)
+void	init_token(t_token *new, char *str, int type)
 {
-	if (!var->tokens && !var->last_token)
-	{
-		var->tokens = new_token;
-		var->last_token = new_token;
-	}
-	else
-	{
-		var->last_token->right = new_token;
-		var->last_token = new_token;
-	}
+	new->type = type;
+	new->str = str;
+	new->right = NULL;
 }
 
 t_token	*create_token(int type, char *str)
@@ -33,9 +26,7 @@ t_token	*create_token(int type, char *str)
 	token = (t_token *)malloc(sizeof(t_token));
 	if (!token)
 		return (free(str), NULL);
-	token->type = type;
-	token->right = NULL;
-	token->str = str;
+	init_token(token, str, type);
 	return (token);
 }
 
@@ -51,53 +42,14 @@ char	*tokenize_str(t_var *var, char *start, char *end, int *type)
 	{
 		var->len = interpreted_str_len(var, start, end);
 		str = cat_intrd_str(var, start, end);
+		if (ambiguous_redirect(var, str))
+		{
+			free(str);
+			str = ft_strndup(start, end - start);
+		}
 		*type = CMD;
 	}
 	return (str);
-}
-
-void	free_bare_tokens(t_token *last)
-{
-	t_token	*ptr;
-	t_token	*current;
-
-	ptr = last->right;
-	while (ptr)
-	{
-		current = ptr;
-		ptr = ptr->right;
-		free(current);
-	}
-	last->right = NULL;
-}
-
-int	add_compound_tokens(t_var *var, char *str)
-{
-	char	*split;
-	size_t	token_count;
-	size_t	i;
-	t_token	*new;
-	t_token	*last;
-
-	split = ft_split(str, TO_SPLIT);
-	if (!split)
-		return (false);
-	last = var->last_token;
-	token_count = 0;
-	while (split[token_count])
-		token_count++;
-	while (i < token_count)
-	{
-		new = malloc(sizeof (t_token));
-		if (!new)
-			return (free_string_array(split), free_bare_tokens(last), false);
-		new->type = CMD;
-		new->str = split[i];
-		new->right = NULL;
-		add_token_to_list(var, new);
-		i++;
-	}
-	return (true);
 }
 
 int	add_token(t_var *var, char **start)
@@ -111,20 +63,16 @@ int	add_token(t_var *var, char **start)
 	type = identify_token_type(start, &end);
 	str = tokenize_str(var, *start, end, &type);
 	if (!str)
-		return (free_tokens(var->tokens), false);
+		return (false);
+	*start = end;
 	if (ft_strchr(str, TO_SPLIT))
 	{
-		if (!add_compound_tokens(var, str))
-			return (free_tokens(var->tokens), false);
+		return (handle_compound_tokens(var, str));
 	}
-	else
-	{
-		new_token = create_token(type, str);
-		if (!new_token)
-			return (free_tokens(var->tokens), false);
-		add_token_to_list(var, new_token);
-	}
-	*start = end;
+	new_token = create_token(type, str);
+	if (!new_token)
+		return (false);
+	add_token_to_list(var, new_token);
 	return (true);
 }
 
@@ -139,9 +87,9 @@ t_token	*tokenize(t_var *var)
 		if (!*start)
 			break ;
 		if (!add_token(var, &start))
-			return (NULL);
+			return (free_tokens(var->tokens), NULL);
 	}
 	if (!add_token(var, &start))
-		return (NULL);
+		return (free_tokens(var->tokens), NULL);
 	return (var->tokens);
 }

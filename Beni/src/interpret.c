@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/06 09:25:16 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 21:00:00 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,6 @@ void	cat_status(char *str, int status, size_t len)
 	ft_strlcat(str, s + (base - digits), len + 1);
 }
 
-void	mark_splits(char *str)
-{
-	if (count_words(str, ' ') > 1)
-	{
-		while (*str)
-		{
-			if (*str == ' ')
-				*str == TO_SPLIT;
-			str++;
-		}
-	}
-}
-
 void	cat_env_var(t_var *var, char *str, char **start, char *end)
 {
 	size_t	i;
@@ -61,8 +48,11 @@ void	cat_env_var(t_var *var, char *str, char **start, char *end)
 	char	tmp;
 
 	i = 0;
-	if (start[0][1] == '?' && *(++(*start)) == '?')
+	if (start[0][1] == '?')
+	{
+		(*start) += 1;
 		cat_status(str, var->status, var->len);
+	}
 	else if (env_var_len(var, *start, end, &i))
 	{
 		(*start)++;
@@ -70,7 +60,7 @@ void	cat_env_var(t_var *var, char *str, char **start, char *end)
 		start[0][i] = 0;
 		tkn_i = ft_strlen(str);
 		ft_strlcat(str, ft_getenv(var->env, *start), var->len + 1);
-		mark_splits(str + tkn_i);
+		mark_whitespaces(str + tkn_i);
 		start[0][i] = tmp;
 		*start += i - 1;
 	}
@@ -84,7 +74,7 @@ void	cat_double_qoutes(t_var *var, char *str, char **start, char *end)
 	(*start)++;
 	while (*start < end)
 	{
-		if (**start == '$' && (ft_isalpha(start[0][1]) || start[0][1] == '?'))
+		if (possible_var(var, start[0][0], start[0][1]))
 			cat_env_var(var, str, start, end);
 		else
 			cat_char_to_str(str, **start, var->len);
@@ -107,7 +97,7 @@ char	*cat_intrd_str(t_var *var, char *start, char *end)
 			cat_single_qoutes(str, &start, ptr, var->len);
 		else if (*start == '\"' && identify_double_quotes(&start, &ptr))
 			cat_double_qoutes(var, str, &start, ptr);
-		else if (*start == '$' && (ft_isalpha(start[1]) || start[1] == '?'))
+		else if (possible_var(var, start[0], start[1]))
 			cat_env_var(var, str, &start, end);
 		else
 			cat_char_to_str(str, *start, var->len);
