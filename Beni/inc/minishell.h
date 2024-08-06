@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/04 14:20:06 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 10:45:03 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@
 # define CMD 0x8
 # define PIPE 0x10
 # define INTERPRET 0x20
+# define AMBI_R 0x40
 # define OUT_R O_TRUNC
 # define OUT_APPEND O_APPEND
+# define TO_SPLIT CHAR_MAX
 # define READ_END 0
 # define WRITE_END 1
 # define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
@@ -57,12 +59,14 @@ typedef struct s_node
 typedef struct s_var
 {
 	t_token	*tokens;
+	t_token	*last_token;
 	t_node	*list;
 	t_node	*current;
 	char	*line;
 	char	**env;
 	char	**stack_env;
 	char	**splitted_path;
+	char	**compound_arg;
 	char	*cwd;
 	char	*exec_cmd;
 	pid_t	pid;
@@ -79,7 +83,7 @@ typedef struct s_var
 
 t_token	*create_token(int type, char *str);
 t_token	*tokenize(t_var *var);
-int		add_token(t_var *var, t_token **current, char **start);
+int		add_token(t_var *var, char **start);
 void 	free_tokens(t_token *root);
 void	skip_whitespace(char **input);
 int		identify_token_type(char **start, char **end);

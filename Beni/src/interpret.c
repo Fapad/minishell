@@ -6,20 +6,11 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/04 14:16:21 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 09:25:16 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-void	cat_char_to_str(char *str, char c, size_t len)
-{
-	char	to_cat[2];
-
-	to_cat[0] = c;
-	to_cat[1] = 0;
-	ft_strlcat(str, to_cat, len + 1);
-}
 
 void	cat_single_qoutes(char *str, char **start, char *end, size_t len)
 {
@@ -31,14 +22,14 @@ void	cat_single_qoutes(char *str, char **start, char *end, size_t len)
 
 void	cat_status(char *str, int status, size_t len)
 {
-	char	s[11];
+	char	s[BUFFER_SIZE];
 	int		i;
 	int		digits;
 	int		base;
 
+	ft_bzero(s, BUFFER_SIZE);
 	base = 10;
 	i = base;
-	s[i] = 0;
 	digits = digits_count(status, base);
 	if (status == 0)
 		s[--i] = '0';
@@ -50,23 +41,36 @@ void	cat_status(char *str, int status, size_t len)
 	ft_strlcat(str, s + (base - digits), len + 1);
 }
 
+void	mark_splits(char *str)
+{
+	if (count_words(str, ' ') > 1)
+	{
+		while (*str)
+		{
+			if (*str == ' ')
+				*str == TO_SPLIT;
+			str++;
+		}
+	}
+}
+
 void	cat_env_var(t_var *var, char *str, char **start, char *end)
 {
 	size_t	i;
+	size_t	tkn_i;
 	char	tmp;
 
 	i = 0;
-	if (start[0][1] == '?')
-	{
+	if (start[0][1] == '?' && *(++(*start)) == '?')
 		cat_status(str, var->status, var->len);
-		*start += 1;
-	}
 	else if (env_var_len(var, *start, end, &i))
 	{
 		(*start)++;
 		tmp = start[0][i];
 		start[0][i] = 0;
+		tkn_i = ft_strlen(str);
 		ft_strlcat(str, ft_getenv(var->env, *start), var->len + 1);
+		mark_splits(str + tkn_i);
 		start[0][i] = tmp;
 		*start += i - 1;
 	}
