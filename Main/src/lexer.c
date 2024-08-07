@@ -6,11 +6,18 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/01 18:45:08 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 11:56:49 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
+
+void	init_token(t_token *new, char *str, int type)
+{
+	new->type = type;
+	new->str = str;
+	new->right = NULL;
+}
 
 t_token	*create_token(int type, char *str)
 {
@@ -19,9 +26,7 @@ t_token	*create_token(int type, char *str)
 	token = (t_token *)malloc(sizeof(t_token));
 	if (!token)
 		return (free(str), NULL);
-	token->type = type;
-	token->right = NULL;
-	token->str = str;
+	init_token(token, str, type);
 	return (token);
 }
 
@@ -37,12 +42,17 @@ char	*tokenize_str(t_var *var, char *start, char *end, int *type)
 	{
 		var->len = interpreted_str_len(var, start, end);
 		str = cat_intrd_str(var, start, end);
+		if (ambiguous_redirect(var, str))
+		{
+			free(str);
+			str = ft_strndup(start, end - start);
+		}
 		*type = CMD;
 	}
 	return (str);
 }
 
-int	add_token(t_var *var, t_token **last, char **start)
+int	add_token(t_var *var, char **start)
 {
 	t_token	*new_token;
 	char	*end;
@@ -53,40 +63,34 @@ int	add_token(t_var *var, t_token **last, char **start)
 	type = identify_token_type(start, &end);
 	str = tokenize_str(var, *start, end, &type);
 	if (!str)
-		return (free_tokens(var->tokens), false);
+		return (false);
+	*start = end;
+	if (ft_strchr(str, TO_SPLIT))
+	{
+		return (handle_compound_tokens(var, str));
+	}
 	new_token = create_token(type, str);
 	if (!new_token)
-		return (free_tokens(var->tokens), false);
-	if (!var->tokens)
-	{
-		var->tokens = new_token;
-		*last = new_token;
-	}
-	else
-	{
-		(*last)->right = new_token;
-		*last = new_token;
-	}
-	*start = end;
+		return (false);
+	add_token_to_list(var, new_token);
 	return (true);
 }
 
 t_token	*tokenize(t_var *var)
 {
 	char	*start;
-	t_token	*last;
 
-	last = NULL;
 	start = var->line;
-	while (*start != '\0')
+	var->last_token = NULL;
+	while (*start)
 	{
 		skip_whitespace(&start);
-		if (*start == '\0')
+		if (!*start)
 			break ;
-		if (!add_token(var, &last, &start))
-			return (NULL);
+		if (!add_token(var, &start))
+			return (free_tokens(var), NULL);
 	}
-	if (!add_token(var, &last, &start))
-		return (NULL);
+	if (!add_token(var, &start))
+		return (free_tokens(var), NULL);
 	return (var->tokens);
 }

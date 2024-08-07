@@ -6,11 +6,20 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:10:04 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 16:17:39 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/05 19:14:44 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
+
+void	cat_char_to_str(char *str, char c, size_t len)
+{
+	char	to_cat[2];
+
+	to_cat[0] = c;
+	to_cat[1] = 0;
+	ft_strlcat(str, to_cat, len + 1);
+}
 
 char	*find_next_smallest(char **arr, char *current, char *max)
 {

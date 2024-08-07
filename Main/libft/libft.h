@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:57:10 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/04 14:05:33 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/05 19:00:03 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,6 @@ char	ft_rand_alnum(size_t seed, int nth);
 char	*get_next_line(int fd);
 int		ft_iswhitespace(int c);
 size_t	digits_count(long long n, int base);
+int		count_words(char const *s, char c);
 
 #endif

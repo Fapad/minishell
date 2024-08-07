@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 16:05:03 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/06 10:10:58 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 11:42:25 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	free_linked_lists(t_var *var)
 {
 	t_node	*node;
 
-	free_tokens(var->tokens);
+	free_tokens(var);
 	var->tokens = NULL;
 	while (var->list)
 	{
@@ -46,23 +46,16 @@ void	free_linked_lists(t_var *var)
 	var->list = NULL;
 }
 
-void	free_tokens(t_token *root)
+void	free_tokens(t_var *var)
 {
 	t_token *temp;
 
-	while (root != NULL)
+	temp = var->tokens;
+	while (temp)
 	{
-		if (root->right != NULL)
-		{
-			temp = root->right;
-			root->right = NULL;
-		} 
-		else
-			temp = NULL;
-		if (root->str != NULL)
-			free(root->str);
-		root->str = NULL;
-		free(root);
-		root = temp;
+		var->tokens = temp->right;
+		free(temp->str);
+		free(temp);
+		temp = var->tokens;
 	}
 }

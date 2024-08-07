@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/06 22:12:52 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 11:38:23 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ typedef struct s_var
 t_token	*create_token(int type, char *str);
 t_token	*tokenize(t_var *var);
 int		add_token(t_var *var, char **start);
-void 	free_tokens(t_token *root);
+void 	free_tokens(t_var *var);
 void	skip_whitespace(char **input);
 int		identify_token_type(char **start, char **end);
 int		identify_input_redirection(char **start, char **end);

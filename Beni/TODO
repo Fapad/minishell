@@ -1,13 +1,12 @@
 
 TODO #######################################################################
 
---tokenizer: $VAR is expanded into command and arguments
-
---ambiguous redirect pl. lenti eset
 
 
 DONE #######################################################################
 
+--tokenizer: $VAR is expanded into command and arguments
+--ambiguous redirect pl. lenti eset
 --ha nem egy child kap signalt, honnan tudja a kódot?
 	#globálisba el van mentve a signum és a tokenizer elött a statusba rakjuk
 --sigquit ignore hozzáadva

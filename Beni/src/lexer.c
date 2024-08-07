@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/06 22:05:14 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 11:56:49 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,15 +81,16 @@ t_token	*tokenize(t_var *var)
 	char	*start;
 
 	start = var->line;
+	var->last_token = NULL;
 	while (*start)
 	{
 		skip_whitespace(&start);
 		if (!*start)
 			break ;
 		if (!add_token(var, &start))
-			return (free_tokens(var->tokens), NULL);
+			return (free_tokens(var), NULL);
 	}
 	if (!add_token(var, &start))
-		return (free_tokens(var->tokens), NULL);
+		return (free_tokens(var), NULL);
 	return (var->tokens);
 }

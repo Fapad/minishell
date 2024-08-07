@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:25 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/01 16:05:47 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 20:47:14 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,18 @@ char *ft_strndup(const char *s, size_t n)
 		return (NULL);
 	ft_strncpy(dest, s, n);
 	return (dest);
+}
+
+void	add_token_to_list(t_var *var, t_token *new_token)
+{
+	if (!var->tokens && !var->last_token)
+	{
+		var->tokens = new_token;
+		var->last_token = new_token;
+	}
+	else
+	{
+		var->last_token->right = new_token;
+		var->last_token = new_token;
+	}
 }
