@@ -16,6 +16,8 @@ bool	possible_var(t_var *var, char c, char d)
 {
 	if (var->last_token && var->last_token->type & HEREDOC)
 		return (false);
+	if (!d || d == '\"')
+		return (false);
 	return (c == '$' && (ft_isalpha(d) || ft_strchr("_?", d)));
 }
 

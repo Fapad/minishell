@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 12:20:37 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 15:30:29 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,23 +52,24 @@ void	exec_other_commands(t_var *var)
 
 int cd_export_exit_or_unset(t_var *var)
 {
-	t_node	*cmd;
 	int		i;
 
-	cmd = get_next_node(var->list, CMD, END);
-	if (!cmd)
-		return (true);
-	if (ft_strncmp(cmd->content[0], "export", 7) == 0)
+	if (ft_strncmp(var->current->content[0], "export", 7) == 0)
 	{
 		i = 1;
-		while (cmd->content[i])
-			var->env = command_export(var, cmd->content[i++]);
+		if (!var->current->content[i])
+			print_environment(var);
+		while (var->current->content[i] && var->env)
+			var->env = command_export(var, var->current->content[i++]);
 	}
-	else if (ft_strncmp(cmd->content[0], "unset", 6) == 0)
-		var->env = command_unset(var->env, cmd->content[1]);
-	else if (ft_strncmp(cmd->content[0], "cd", 3) == 0)
-		command_cd(var, cmd->content[1]);
-	else if (ft_strncmp(cmd->content[0], "exit", 5) == 0)
+	else if (ft_strncmp(var->current->content[0], "unset", 6) == 0)
+		var->env = command_unset(var->env, var->current->content[1]);
+	else if (ft_strncmp(var->current->content[0], "cd", 3) == 0)
+	{
+		if (!too_many_arguments(var, var->current))
+			command_cd(var, var->current->content[1]);
+	}
+	else if (ft_strncmp(var->current->content[0], "exit", 5) == 0)
 		command_exit(var);
 	else
 		return (false);
@@ -81,6 +82,9 @@ void	one_simple_cmd(t_var *var)
 {
 	if (!open_files_in_parent(var))
 		return (status_1(var));
+	var->current = get_next_node(var->list, CMD, END);
+	if (!var->current)
+		return ;
 	if (cd_export_exit_or_unset(var))
 		return ;
 	var->current = var->list;

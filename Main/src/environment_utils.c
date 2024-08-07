@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:06:25 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/04 14:07:04 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 13:53:44 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,17 +71,17 @@ int	valid_identifier(t_var *var, char *str)
 	size_t	i;
 
 	i = 0;
-	if (!ft_strchr(str, '='))
-		return (false);
-	while (str[i] && str[i] != '=')
+	if (str[i] == '=')
+		return (invalid_identifier(var, str), false);
+	while (str[i])
 	{
-		if ((i == 0 && !ft_isalpha(str[0])) || \
-		(!ft_isalnum(str[i]) && str[i] != '_'))
+		if (str[i] == '=')
+			break ;
+		if (i == 0 && !ft_isalpha(str[i]) && str[i] != '_')
+			return (invalid_identifier(var, str), false);
+		if (i > 0 && !ft_isalnum(str[i]) && str[i] != '_')
 		{
-			ft_putstr_fd("export: `", STDERR_FILENO);
-			ft_putstr_fd(str, STDERR_FILENO);
-			ft_putstr_fd("\': not a valid identifier\n", STDERR_FILENO);
-			var->status = EXIT_FAILURE;
+			invalid_identifier(var, str);
 			return (false);
 		}
 		i++;

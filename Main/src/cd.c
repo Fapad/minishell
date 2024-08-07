@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 11:25:50 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 15:32:50 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,27 @@ void	cd_home(t_var *var, char *path)
 	if (!path)
 	{
 		ft_putendl_fd("cd: HOME not set", STDERR_FILENO);
-		status_1(var);
+		return (status_1(var));
 	}
-	else
-		command_cd(var, path);
+	command_cd(var, path);
+}
+
+bool	too_many_arguments(t_var *var, t_node *cmd)
+{
+	int	i;
+
+	i = 0;
+	if (cmd && cmd->content)
+	{
+		while (cmd->content[i])
+			i++;
+	}
+	if (i > 2)
+	{
+		error_msg(var, ": too many arguments", 1);
+		return (true);
+	}
+	return (false);
 }
 
 void	cd_dotdot_for_istvan(t_var *var, char *path)

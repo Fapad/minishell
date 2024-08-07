@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 11:38:23 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 15:25:25 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,8 @@ void	status_2(t_var *var);
 void	error_exec_txt_file(t_var *var);
 void	command_not_found(t_var *var);
 void	ambiguous_redirect_error(t_var *var, char *str);
+void	invalid_identifier(t_var *var, char *str);
+void	error_msg(t_var *var, char *str, int status);
 
 // BUILTINS
 
@@ -167,6 +169,7 @@ void	command_echo(t_node *list);
 size_t	envp_string_count(char **envp);
 void 	command_exit(t_var *var);
 void	command_cd(t_var *var, char *path);
+bool	too_many_arguments(t_var *var, t_node *cmd);
 void	command_pwd(t_var *var);
 void	command_env(t_var *var);
 int		unset2(char **old_envp, char *dest, size_t to_compare, char **new_env);
