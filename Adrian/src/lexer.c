@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/28 18:37:34 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 18:45:08 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*tokenize_str(t_var *var, char *start, char *end, int *type)
 		str = ft_strndup(start, var->len);
 	else
 	{
-		var->len = interpreted_str_len(var->env, start, end);
+		var->len = interpreted_str_len(var, start, end);
 		str = cat_intrd_str(var, start, end);
 		*type = CMD;
 	}
@@ -58,10 +58,15 @@ int	add_token(t_var *var, t_token **last, char **start)
 	if (!new_token)
 		return (free_tokens(var->tokens), false);
 	if (!var->tokens)
+	{
 		var->tokens = new_token;
+		*last = new_token;
+	}
 	else
+	{
 		(*last)->right = new_token;
-	*last = new_token;
+		*last = new_token;
+	}
 	*start = end;
 	return (true);
 }

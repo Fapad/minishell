@@ -1,16 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/27 17:47:02 by bszilas          ###   ########.fr       */
+/*   Created: 2024/08/01 16:05:03 by bszilas           #+#    #+#             */
+/*   Updated: 2024/08/01 17:01:42 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
+
+void	free_lists_and_path(t_var *var)
+{
+	free_linked_lists(var);
+	free_string_array(var->splitted_path);
+	var->splitted_path = NULL;
+}
+
+void	free_all(t_var *var)
+{
+	free_lists_and_path(var);
+	free_string_array(var->env);
+	var->env = NULL;
+	free(var->cwd);
+	var->cwd = NULL;
+}
 
 void	free_linked_lists(t_var *var)
 {
@@ -30,35 +46,22 @@ void	free_linked_lists(t_var *var)
 	var->list = NULL;
 }
 
-void	unexpected_token(char *str)
+void	free_tokens(t_token *root)
 {
-	if (!*str)
-		ft_putstr_fd("syntax error near unexpected token `newline'\n", 
-		STDERR_FILENO);
-	else
-	{
-		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
-		ft_putstr_fd(str, STDERR_FILENO);
-		ft_putstr_fd("\'\n", STDERR_FILENO);	
-	}
-}
+	t_token *temp;
 
-bool	valid_syntax(t_token *token)
-{
-	while (token)
+	while (root != NULL)
 	{
-		if (token->type != CMD && token->right && token->right->type != CMD)
+		if (root->right != NULL)
 		{
-			unexpected_token(token->right->str);
-				return (false);
-		}
-		token = token->right;
+			temp = root->right;
+			root->right = NULL;
+		} 
+		else
+			temp = NULL;
+		if (root->str != NULL)
+			free(root->str);
+		free(root);
+		root = temp;
 	}
-	return (true);
-}
-
-void	restore_environment(t_var *var)
-{
-	perror("Could not change environment");
-	malloc_envps(var, var->stack_env);
 }

@@ -1,20 +1,12 @@
 5. Update
 
-Az exprot command magaba kikell adja az env-t
-
-Elkezdtem a nem beepitett parancsok executalasat
-
+Benne van a felkesz pipe kezeles
 
 
 4. Update
 
-Jelenlegi állapotban egy beépített parancsot elvégez egy parancssorban.
+sima cat problemas, 2x dobja ki a promptot
 
-TODO: 
---$ jel kibontás véglegesíteni (var->env-böl) és $?-t megírni
---beépített parancsok hibaüzenete és hibakezelése
-	pl. nem létezö directory, unsetelt HOME stb.
---nem beépített parancsok elvégzése
 
 
 3. Update
@@ -49,4 +41,4 @@ Valamint a norminette is hibatlan jeneleg
 
 
 # VALGRIND
-valgrind --leak-check=full --suppressions=readline.supp --trace-children=yes --track-fds=yes ./minishell
+valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp

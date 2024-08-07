@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/28 22:33:01 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/03 16:20:15 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,36 +19,6 @@ void	command_env(t_var *var)
 	i = 0;
 	while (var->env[i])
 		ft_printf("%s\n", var->env[i++]);
-}
-
-size_t	envp_string_count(char **envp)
-{
-	size_t string_count;
-
-	string_count = 0;
-	while (envp && envp[string_count])
-		string_count++;
-	return (string_count);
-}
-
-void	malloc_envps(t_var *var, char **envp)
-{
-	size_t	len;
-	size_t	i;
-
-	len = envp_string_count(envp);
-	var->env = malloc((len + 1) * sizeof (char *));
-	if (!var->env)
-		return (free_all(var), exit(EXIT_FAILURE));
-	i = 0;
-	while (i < len)
-	{
-		var->env[i] = ft_strdup(envp[i]);
-		if (!var->env[i])
-			return (free_all(var), exit(EXIT_FAILURE));
-		i++;
-	}
-	var->env[i] = NULL;
 }
 
 char	**command_unset(char **old_envp, char *str)
@@ -69,8 +39,8 @@ char	**command_unset(char **old_envp, char *str)
 	dest = malloc(to_compare + 2);
 	if (!dest)
 		return (free(old_envp), NULL);
-	strcpy(dest, str);
-	strcpy((dest + to_compare), "=");
+	ft_strlcpy(dest, str, to_compare + 2);
+	ft_strlcpy((dest + to_compare), "=", to_compare + 2);
 	new_env = malloc(len * sizeof (char *));
 	if (!new_env)
 		return (free(old_envp), free(dest), NULL);
@@ -101,42 +71,6 @@ int  unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
 		i++;
 	}
 	return (false);
-}
-
-int	command_export_util(t_var *var, char *str)
-{
-	size_t	i;
-
-	i = 0;
-	if (!str || !ft_strchr(str, '='))
-		return (false);
-	while (str[i] && str[i] != '=')
-	{
-		if ((i == 0 && !ft_isalpha(str[0])) || (!ft_isalnum(str[i]) && str[i] != '_'))
-		{
-			ft_putstr_fd("export: `", STDERR_FILENO);
-			ft_putstr_fd(str, STDERR_FILENO);
-			ft_putstr_fd("\': not a valid identifier\n", STDERR_FILENO);
-			var->status = EXIT_FAILURE;
-			return (false);
-		}
-		i++;
-	}
-	return (true);
-}
-
-int	existing_env_var(char **env, char *str)
-{
-	char	*tmp;
-	char	*var;
-	
-	tmp = ft_strchr(str, '=');
-	if (!tmp)
-		return (false);
-	*tmp = 0;
-	var = ft_getenv(env, str);
-	*tmp = '=';
-	return (var != NULL);
 }
 
 char	**change_var(char **env, char *str)
@@ -176,7 +110,9 @@ char	**command_export(t_var *var, char *str)
 	size_t	len;
 	size_t	i;
 
-	if (!command_export_util(var, str))
+	if (!str)
+		return (print_environment(var), var->env);
+	if (!valid_identifier(var, str))
 		return (var->env);
 	if (existing_env_var(var->env, str))
 		return (change_var(var->env, str));

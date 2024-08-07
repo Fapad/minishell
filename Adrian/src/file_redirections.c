@@ -1,108 +1,89 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file_openections.c                                :+:      :+:    :+:   */
+/*   file_redirections.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 17:39:22 by bszilas           #+#    #+#             */
-/*   Updated: 2024/07/27 12:49:09 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/01 17:49:37 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-void	in_open_or_exit(t_var *var)
+void	redirect_infile(t_var *var, char *file)
 {
-	t_node	*node;
-	
-	node = get_next_node(var->current, IN_R, PIPE | END);
-	if (!node)
-		return ;
-	while (node)
+	var->in_fd = open(file, O_RDONLY);
+	if (var->in_fd == -1)
 	{
-		if (!node->content[FILENAME])
-			return (free_all(var), perror("infile"), exit(EXIT_FAILURE));
-		var->in_fd = open(node->content[FILENAME], O_RDONLY);
-		if (var->in_fd == -1)
-		{
-			perror(node->content[FILENAME]);
-			return (free_all(var), exit(EXIT_FAILURE));
-		}
-		node = get_next_node(node->next, IN_R, PIPE | END);
-		if (node)
-			close(var->in_fd);
+		perror(file);
+		free_all(var);
+		exit(EXIT_FAILURE);
 	}
-}
-
-void	out_open_or_exit(t_var *var)
-{
-	t_node	*node;
-	
-	node = get_next_node(var->current, OUT_R | OUT_APPEND, PIPE | END);
-	if (!node)
-		return ;
-	while (node)
-	{
-		var->out_fd = open(node->content[FILENAME], O_WRONLY | O_CREAT | node->type, 0644);
-		if (var->out_fd == -1)
-		{
-			perror(node->content[FILENAME]);
-			return (free_all(var), exit(EXIT_FAILURE));
-		}
-		node = get_next_node(node->next, OUT_R | OUT_APPEND, PIPE | END);
-		if (node)
-			close(var->out_fd);
-	}
-}
-
-int	out_open_return_status(t_var *var)
-{
-	t_node	*node;
-	
-	node = get_next_node(var->list, OUT_R | OUT_APPEND, PIPE | END);
-	if (!node)
-		return (EXIT_SUCCESS);
-	while (node)
-	{
-		var->out_fd = open(node->content[FILENAME], O_WRONLY | O_CREAT | node->type, 0644);
-		if (var->out_fd == -1)
-			return (perror(node->content[FILENAME]), EXIT_FAILURE);
-		node = get_next_node(node->next, OUT_R | OUT_APPEND, PIPE | END);
-		if (node)
-			close(var->out_fd);
-	}
-	return (EXIT_SUCCESS);
-}
-
-int	in_open_return_status(t_var *var)
-{
-	t_node	*node;
-	
-	node = get_next_node(var->list, IN_R, PIPE | END);
-	if (!node)
-		return (EXIT_SUCCESS);
-	while (node)
-	{
-		if (!node->content[FILENAME])
-			return (perror("infile"), EXIT_FAILURE);
-		var->in_fd = open(node->content[FILENAME], O_RDONLY);
-		if (var->in_fd == -1)
-			return (perror(node->content[FILENAME]), EXIT_FAILURE);
-		node = get_next_node(node->next, IN_R, PIPE | END);
-		if (node)
-			close(var->in_fd);
-	}
-	return (EXIT_SUCCESS);
-}
-
-void	file_redirect(t_var *var)
-{
-	if (var->in_fd == -1 || var->out_fd == -1)
-		return (free_all(var), exit(EXIT_FAILURE));
 	if (dup2(var->in_fd, STDIN_FILENO) == -1)
-		return (perror("infile: dup2"), free_all(var), exit(EXIT_FAILURE));
+	{
+		perror("infile: dup2");
+		free_all(var);
+		exit(EXIT_FAILURE);
+	}
+	close(var->in_fd);
+}
+
+void	redirect_outfile(t_var *var, char *file, int type)
+{
+	var->out_fd = open(file, O_WRONLY | O_CREAT | type, 0644);
+	if (var->out_fd == -1)
+	{
+		perror(file);
+		free_all(var);
+		exit(EXIT_FAILURE);
+	}
 	if (dup2(var->out_fd, STDOUT_FILENO) == -1)
-		return (perror("outfile: dup2"), free_all(var), exit(EXIT_FAILURE));
-	(close_in_and_out(var));
+	{
+		perror("outfile: dup2");
+		free_all(var);
+		exit(EXIT_FAILURE);
+	}
+	close(var->out_fd);
+}
+
+void	redirect_or_exit(t_var *var)
+{
+	t_node	*node;
+
+	node = get_next_node(var->current, \
+	IN_R | OUT_R | OUT_APPEND | HEREDOC, PIPE | END);
+	while (node)
+	{
+		if (node->type & (HEREDOC | IN_R))
+			redirect_infile(var, node->content[FILENAME]);
+		else if (node->type & (OUT_R | OUT_APPEND))
+			redirect_outfile(var, node->content[FILENAME], node->type);
+		node = get_next_node(node->next, \
+		IN_R | OUT_R | OUT_APPEND | HEREDOC, PIPE | END);
+	}
+}
+
+int	open_files_in_parent(t_var *var)
+{
+	t_node	*node;
+	int		fd;
+	
+	node = get_next_node(var->list, IN_R | OUT_R | OUT_APPEND, END);
+	if (!node)
+		return (true);
+	fd = INT_MAX;
+	while (node)
+	{
+		if (node->type == IN_R)
+			fd = open(node->content[FILENAME], O_RDONLY);
+		else if (node->type & (OUT_R | OUT_APPEND))
+			fd = open(node->content[1], O_WRONLY | O_CREAT | node->type, 0644);
+		if (fd == -1)
+			return (perror(node->content[FILENAME]), false);
+		close(fd);
+		node = get_next_node(node->next, IN_R | OUT_R | OUT_APPEND, END);
+	}
+	return (true);
 }
