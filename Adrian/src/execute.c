@@ -14,6 +14,9 @@
 
 void	exec_system_commands(t_var *var)
 {
+	// TOKENIZALOBAN VAN A GOND : HA
+	//Ha nem letezik a variabilis akkor is add neki erteket;
+	
 	var->exec_cmd = NULL;
 	var->splitted_path = splitted_path(var);
 	if (ft_strchr(var->current->content[0], '/'))
@@ -23,9 +26,11 @@ void	exec_system_commands(t_var *var)
 	if (!var->exec_cmd)
 		return (free_all(var), exit(var->status));
 	execve(var->exec_cmd, var->current->content, var->env);
-	perror(var->exec_cmd);
+	//perror(var->exec_cmd);
+	ft_printf("gatya\n%s\n", var->exec_cmd);
 	free(var->exec_cmd);
-	set_status(var);
+	var->status = 0;
+	//set_status(var);
 	free_all(var);
 	exit(var->status);
 }

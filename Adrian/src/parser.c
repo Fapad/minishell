@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 12:08:53 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 17:14:44 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 t_node	*new_command_node(t_token **current, t_node *this)
 {
-	int	arg_count;
-	int	i;
+	t_token	*tmp;
+	int		arg_count;
+	int		i;
 
 	arg_count = token_arg_count(*current);
 	this->content = malloc((arg_count + 1) * sizeof (char *));
@@ -24,14 +25,17 @@ t_node	*new_command_node(t_token **current, t_node *this)
 		free(this);
 		return (NULL);
 	}
-	i = -1;
-	while (++i < arg_count - 1)
+	i = 0;
+	tmp = (*current);
+	this->content[i++] = tmp->str;
+	while (i < arg_count)
 	{
-		this->content[i] = (*current)->str;
-		*current = (*current)->right;
+		this->content[i++] = find_next_cmd_token(tmp)->str;
+		if (tmp->type != CMD)
+			(*current) = tmp;
+		tmp = tmp->right;
 	}
-	this->content[i] = (*current)->str;
-	this->content[i + 1] = NULL;
+	this->content[i] = NULL;
 	this->type = CMD;
 	return (this);
 }
@@ -114,6 +118,6 @@ bool	parse_tokens(t_var *var)
 		add_to_list(var, new);
 		current = current->right;
 	}
-	// print_exec_list(var->list);	//DEBUG
+	//print_exec_list(var->list);	//DEBUG
 	return (true);
 }

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/ajovanov/Desktop/Adrian/src",
-      "program": "/home/ajovanov/Desktop/Adrian/src/build/Debug/outDebug",
+      "cwd": "/home/ajovanov/Desktop/minishelllllllll/Beni/src",
+      "program": "/home/ajovanov/Desktop/minishelllllllll/Beni/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

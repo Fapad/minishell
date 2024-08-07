@@ -16,9 +16,13 @@ void   command_exit(t_var *var)
 {
 	int	exit_status;
 	
+	exit_status = 0;
 	var->loop = false;
-	exit_status = ft_atoi(var->list->content[1]);
-	if (exit_status == 0 && var->list->content[2] == NULL)
+	if (var->list->content[1] != NULL)
+		exit_status = ft_atoi(var->list->content[1]);
+	if (exit_status == 0 && var->list->content[1] == NULL)
+		var->status = exit_status;
+	else if (exit_status == 0 && var->list->content[2] == NULL)
 		error_msg(var, ": numeric argument required", 2);
 	else if (exit_status == 0 && (var->list->content[2][0] >= 'a' && var->list->content[2][0] <= 'z'))
 		error_msg(var, ": numeric argument required", 2);	
@@ -31,6 +35,7 @@ void   command_exit(t_var *var)
 	else if (exit_status != 0 && var->list->content[2] != NULL)
 		var->status = 2;
 }
+
 
 void	command_pwd(t_var *var)
 {

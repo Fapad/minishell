@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 15:25:25 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 16:43:21 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_token
 {
 	int				type;
 	struct s_token	*right;
+	struct s_token	*left;
 	char			*str;
 }				t_token;
 
@@ -143,6 +144,7 @@ bool	double_pipe(t_token *token);
 bool	missing_filename(t_token *token);
 bool	pipe_in_front(t_token *token);
 bool	valid_syntax(t_token *token);
+t_token	*find_next_cmd_token(t_token *next);
 
 // ERROR_HANDLING
 

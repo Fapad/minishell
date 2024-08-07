@@ -1,3 +1,22 @@
+
+6. Update 
+
+
+Ha nem letezik a variailis akkor is kiir neki erteket
+void	exec_system_commands(t_var *var)
+
+Ez a legujabb verzio !
+
+5. Update
+
+ha csak exportot irunk be akkor is ki kell irja az env-t
+
+
+4. Update
+
+Jelenlegi állapotban egy beépített parancsot elvégez egy parancssorban.
+
+
 3. Update
 
 # define PROMPT "\001\033[1;32m\002minishell> \001\033[0m\002"
@@ -30,4 +49,4 @@ Valamint a norminette is hibatlan jeneleg
 
 
 # VALGRIND
-valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp
+valgrind --leak-check=full --suppressions=readline.supp --trace-children=yes --track-fds=yes ./minishell
