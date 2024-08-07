@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 16:43:21 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 20:40:49 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # define OUT_R O_TRUNC
 # define OUT_APPEND O_APPEND
 # define TO_SPLIT CHAR_MAX
+# define REDIRECTION 0x606
 # define READ_END 0
 # define WRITE_END 1
 # define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
@@ -131,11 +132,11 @@ void	handle_sigint(int sig);
 
 t_node	*last_node(t_token *current, t_node *this);
 int		token_arg_count(t_token *current);
-t_node	*new_command_node(t_token **current, t_node *this);
+t_node	*new_command_node(t_token *current, t_node *this);
 t_node	*new_pipe_node(t_token *current, t_node *this);
 void	set_redirect_type(t_node *this);
-t_node	*new_redirect_node(t_token **current, t_node *this);
-t_node	*new_list_node(t_token **current);
+t_node	*new_redirect_node(t_token *current, t_node *this);
+t_node	*new_list_node(t_token *current);
 void	add_to_list(t_var *var, t_node *this);
 void	print_exec_list(t_node *list);
 bool	parse_tokens(t_var *var);
@@ -144,7 +145,12 @@ bool	double_pipe(t_token *token);
 bool	missing_filename(t_token *token);
 bool	pipe_in_front(t_token *token);
 bool	valid_syntax(t_token *token);
-t_token	*find_next_cmd_token(t_token *next);
+t_token	*find_next_arg_token(t_token *next);
+t_token	*find_token(t_token *token, int type, int before_type);
+bool	make_pipeline(t_var *var, t_token *start);
+t_token	*last_token(t_token *start);
+bool	close_pipeline(t_var *var, t_token *start);
+
 
 // ERROR_HANDLING
 

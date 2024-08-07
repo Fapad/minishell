@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 17:39:22 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/06 21:13:20 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 19:58:39 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,7 @@ void	redirect_or_exit(t_var *var)
 {
 	t_node	*node;
 
-	node = get_next_node(var->current, \
-	IN_R | OUT_R | OUT_APPEND | HEREDOC, PIPE | END);
+	node = get_next_node(var->current, REDIRECTION, PIPE | END);
 	while (node)
 	{
 		if (node->type & AMBI_R)
@@ -66,8 +65,7 @@ void	redirect_or_exit(t_var *var)
 			redirect_infile(var, node->content[FILENAME]);
 		else if (node->type & (OUT_R | OUT_APPEND))
 			redirect_outfile(var, node->content[FILENAME], node->type);
-		node = get_next_node(node->next, \
-		IN_R | OUT_R | OUT_APPEND | HEREDOC, PIPE | END);
+		node = get_next_node(node->next, REDIRECTION, PIPE | END);
 	}
 }
 
