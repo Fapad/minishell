@@ -73,6 +73,7 @@ typedef struct s_var
 	int		cmds;
 	int		status;
 	int		loop;
+	int		was_pipe_on_end;
 }			t_var;
 
 // LEXER

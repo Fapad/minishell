@@ -1,6 +1,6 @@
 5. Update
 
-Benne van a felkesz pipe kezeles
+Benne van a nem leakelo pipera vegzodo funkcio
 
 
 4. Update

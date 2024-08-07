@@ -30,6 +30,7 @@ void	init_var(t_var *var, int argc, char **argv, char **envp)
 	malloc_envps(var, envp);
 	var->status = 0;
 	var->loop = true;
+	var->was_pipe_on_end = 0;
 }
 
 void	malloc_envps(t_var *var, char **envp)
@@ -104,18 +105,31 @@ bool ends_with_pipe(char *line)
 	while (len > 0 && isspace(line[len]))
 		len--;
 	if (line[len] == '|')
-	{
-		printf("true\n");
 		return (true);
-	}
 	return (false);
 	
 }
-
+void	pipe_end_loop(t_var *var)
+{
+	char	*tmpline;
+	
+	var->was_pipe_on_end = 1;
+	while (ends_with_pipe(var->line))
+	{
+		tmpline = readline(PROMPT);
+		if (!tmpline)
+			break;
+		if (*tmpline)
+			var->line = ft_strjoin_threee(var->line, tmpline);
+		if (!var->line)
+			break ;
+		free(tmpline);
+		tmpline = NULL;
+	}
+}
 int	main(int argc, char **argv, char **envp)
 {
 	t_var	var;
-	char	*test;
 
 	setup_signal_handlers();
 	init_var(&var, argc, argv, envp);
@@ -123,18 +137,8 @@ int	main(int argc, char **argv, char **envp)
 	{
 		var.line = readline(PROMPT);
 		if (!var.line)
-			break ;
-		
-		while (ends_with_pipe(var.line))
-		{
-			test = readline(PROMPT); //get_next_line(0);
-			if (!test)
-				break ;
-			if (*test)
-					var.line = ft_strjoin_threee(var.line, test);
-			free(test);
-			test = NULL;
-		}
+			break ;		
+		pipe_end_loop(&var);
 		if (*var.line)
 			add_history(var.line);
 		check_signal_received(&var);

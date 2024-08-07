@@ -26,6 +26,8 @@ void	free_all(t_var *var)
 	var->env = NULL;
 	free(var->cwd);
 	var->cwd = NULL;
+	if (var->was_pipe_on_end != 0)
+		free(var->line);
 }
 
 void	free_linked_lists(t_var *var)
