@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:25 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/06 20:47:14 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 16:31:52 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,12 @@ void	add_token_to_list(t_var *var, t_token *new_token)
 	if (!var->tokens && !var->last_token)
 	{
 		var->tokens = new_token;
+		var->tokens->left = NULL;
 		var->last_token = new_token;
 	}
 	else
 	{
+		new_token->left = var->last_token;
 		var->last_token->right = new_token;
 		var->last_token = new_token;
 	}

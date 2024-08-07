@@ -6,23 +6,33 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 19:40:36 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 18:06:18 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 17:11:58 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
+t_token	*find_next_cmd_token(t_token *next)
+{
+	next = next->right;
+	while (next && !(next->type & (PIPE | END)))
+	{
+		if (next->type == CMD && next->left->type == CMD)
+			return (next);
+		next = next->right;
+	}
+	return (NULL);
+}
+
 int	token_arg_count(t_token *current)
 {
 	int	count;
 
-	count = 1;
-	while (current->right)
+	count = 0;
+	while (current)
 	{
-		current = current->right;
-		if (current->type != CMD)
-			break ;
 		count++;
+		current = find_next_cmd_token(current);
 	}
 	return (count);
 }
