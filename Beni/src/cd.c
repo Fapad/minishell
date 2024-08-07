@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 15:28:57 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 15:32:50 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ bool	too_many_arguments(t_var *var, t_node *cmd)
 		while (cmd->content[i])
 			i++;
 	}
-	if (i >= 2)
+	if (i > 2)
 	{
 		error_msg(var, ": too many arguments", 1);
 		return (true);
