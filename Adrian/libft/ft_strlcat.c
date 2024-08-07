@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 17:00:19 by bszilas           #+#    #+#             */
-/*   Updated: 2024/05/29 12:43:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 16:21:58 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 
 	if (!dst)
 		return (0);
-	if (!src && dst)
+	if (!src)
 		return (ft_strlen((const char *)dst));
 	dst_len = ft_strlen((const char *)dst);
 	src_len = ft_strlen((const char *)src);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 11:34:03 by bszilas           #+#    #+#             */
-/*   Updated: 2024/06/12 13:21:26 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/05 19:02:33 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ static int	word_len(char const *s, char c)
 	return (n);
 }
 
-static int	count_words(char const *s, char c)
+int	count_words(char const *s, char c)
 {
 	int		n;
 
 	n = 0;
-	while (*s)
+	while (s && *s)
 	{
 		s += delimiter_len(s, c);
 		if (*s)

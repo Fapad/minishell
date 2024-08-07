@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 13:53:54 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 21:15:59 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,12 @@ void	command_not_found(t_var *var)
 {
 	ft_putstr_fd(var->current->content[0], STDERR_FILENO);
 	ft_putendl_fd(": command not found", STDERR_FILENO);
+	set_status(var);
+}
+
+void	ambiguous_redirect_error(t_var *var, char *str)
+{
+	ft_putstr_fd(str, STDERR_FILENO);
+	ft_putendl_fd(": ambiguous redirect", STDERR_FILENO);
 	set_status(var);
 }

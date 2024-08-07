@@ -1,14 +1,3 @@
-5. Update
-
-Benne van a nem leakelo pipera vegzodo funkcio
-
-
-4. Update
-
-sima cat problemas, 2x dobja ki a promptot
-
-
-
 3. Update
 
 # define PROMPT "\001\033[1;32m\002minishell> \001\033[0m\002"

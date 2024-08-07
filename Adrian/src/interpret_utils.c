@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:06 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/04 14:06:15 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 21:02:35 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ size_t	env_var_len(t_var *var, char *s, char *end, size_t *i)
 {
 	size_t	len;
 	char	tmp;
+	char	*str;
 
 	end = ++s;
 	if (*end == '?')
@@ -64,7 +65,8 @@ size_t	env_var_len(t_var *var, char *s, char *end, size_t *i)
 		end++;
 	tmp = *end;
 	*end = '\0';
-	len = ft_strlen(ft_getenv(var->env, s));
+	str = ft_getenv(var->env, s);
+	len = ft_strlen(str);
 	*end = tmp;
 	*i += end - s;
 	return (len);
@@ -81,7 +83,7 @@ size_t	double_qoute_len(t_var *var, char *s, char *end, size_t *i)
 	while (s + j < end)
 	{
 		envv_len = 1;
-		if (s[j] == '$' && (ft_isalpha(s[j + 1]) || s[j + 1] == '?'))
+		if (possible_var(var, s[j], s[j + 1]))
 			envv_len = env_var_len(var, s + j, end, &j);
 		if (s[j] == '\"')
 		{
@@ -107,7 +109,7 @@ size_t	interpreted_str_len(t_var *var, char *start, char *end)
 			len += single_quote_len(start + i, end, &i);
 		else if (start[i] == '\"')
 			len += double_qoute_len(var, start + i, end, &i);
-		else if (start[i] == '$' && (ft_isalpha(start[i + 1]) || start[i + 1] == '?'))
+		else if (possible_var(var, start[i], start[i + 1]))
 			len += env_var_len(var, start + i, end, &i);
 		else
 			len++;

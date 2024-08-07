@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/04 12:05:54 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/06 08:57:40 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	init_var(t_var *var, int argc, char **argv, char **envp)
 	(void)argv;
 	var->stack_env = envp;
 	var->tokens = NULL;
+	var->last_token = NULL;
 	var->current = NULL;
 	var->list = NULL;
 	var->line = NULL;
@@ -30,7 +31,6 @@ void	init_var(t_var *var, int argc, char **argv, char **envp)
 	malloc_envps(var, envp);
 	var->status = 0;
 	var->loop = true;
-	var->was_pipe_on_end = 0;
 }
 
 void	malloc_envps(t_var *var, char **envp)
@@ -65,68 +65,6 @@ void	check_signal_received(t_var *var)
 	signal_received = 0;
 }
 
-char	*ft_strjoin_threee(char *s1, char *s2)
-{
-	int		len1;
-	int		len2;
-	char	*res;
-	int		i;
-
-	i = 0;
-	len1 = 0;
-	len2 = 0;
-	if (!s1 && s2)
-		return (NULL);
-	if (s1)
-		len1 = ft_strlen(s1);
-	if (s2)
-		len2 = ft_strlen(s2);
-	res = (char *)malloc((len1 + len2 +2) * sizeof(char));
-	if (!res)
-		return (NULL);
-	while (s1 && *s1)
-		res[i++] = *s1++;
-	res[i++] = ' ';
-	while (s2 && *s2)
-		res[i++] = *s2++;
-	res[i] = '\0';
-	return (res);
-}
-bool ends_with_pipe(char *line)
-{
-	size_t	len;
-
-	if (line == NULL)
-		return (false);
-	len = ft_strlen(line);
-	if (len == 0)
-		return (false);
-	len = len - 1;
-	while (len > 0 && isspace(line[len]))
-		len--;
-	if (line[len] == '|')
-		return (true);
-	return (false);
-	
-}
-void	pipe_end_loop(t_var *var)
-{
-	char	*tmpline;
-	
-	var->was_pipe_on_end = 1;
-	while (ends_with_pipe(var->line))
-	{
-		tmpline = readline(PROMPT);
-		if (!tmpline)
-			break;
-		if (*tmpline)
-			var->line = ft_strjoin_threee(var->line, tmpline);
-		if (!var->line)
-			break ;
-		free(tmpline);
-		tmpline = NULL;
-	}
-}
 int	main(int argc, char **argv, char **envp)
 {
 	t_var	var;
@@ -137,8 +75,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		var.line = readline(PROMPT);
 		if (!var.line)
-			break ;		
-		pipe_end_loop(&var);
+			break ;
 		if (*var.line)
 			add_history(var.line);
 		check_signal_received(&var);

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 14:41:50 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 12:08:53 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,15 @@ t_node	*new_redirect_node(t_token **current, t_node *this)
 	int	i;
 
 	i = 0;
-	if ((*current)->type == HEREDOC)
+	this->type = (*current)->type;
+	if (this->type == HEREDOC)
 		this->content = malloc(4 * sizeof (char *));
 	else
 		this->content = malloc(3 * sizeof (char *));
 	if (!this->content)
 		return (free(this), NULL);
 	this->content[i++] = (*current)->str;
-	if ((*current)->type == HEREDOC)
+	if (this->type == HEREDOC)
 		this->content[i++] = NULL;
 	*current = (*current)->right;
 	if ((*current)->type != CMD)
@@ -72,7 +73,7 @@ t_node	*new_redirect_node(t_token **current, t_node *this)
 	}
 	this->content[i++] = (*current)->str;
 	this->content[i] = NULL;
-	return (set_redirect_type(this), this);
+	return (this);
 }
 
 t_node	*new_list_node(t_token **current)
@@ -103,7 +104,7 @@ bool	parse_tokens(t_var *var)
 	if (!var->tokens)
 		return (false);
 	if (!valid_syntax(var->tokens))
-		return (free_tokens(var->tokens), false);
+		return (free_tokens(var), false);
 	current = var->tokens;
 	while (current)
 	{
@@ -113,5 +114,6 @@ bool	parse_tokens(t_var *var)
 		add_to_list(var, new);
 		current = current->right;
 	}
+	// print_exec_list(var->list);	//DEBUG
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 14:42:00 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/07 12:20:37 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,17 @@ void	exec_other_commands(t_var *var)
 int cd_export_exit_or_unset(t_var *var)
 {
 	t_node	*cmd;
+	int		i;
 
 	cmd = get_next_node(var->list, CMD, END);
 	if (!cmd)
 		return (true);
 	if (ft_strncmp(cmd->content[0], "export", 7) == 0)
-		var->env = command_export(var, cmd->content[1]);
+	{
+		i = 1;
+		while (cmd->content[i])
+			var->env = command_export(var, cmd->content[i++]);
+	}
 	else if (ft_strncmp(cmd->content[0], "unset", 6) == 0)
 		var->env = command_unset(var->env, cmd->content[1]);
 	else if (ft_strncmp(cmd->content[0], "cd", 3) == 0)

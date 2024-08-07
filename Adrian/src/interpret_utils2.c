@@ -1,29 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   interpret_utils2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/03 13:32:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/05 20:46:34 by bszilas          ###   ########.fr       */
+/*   Created: 2024/08/06 20:43:43 by bszilas           #+#    #+#             */
+/*   Updated: 2024/08/06 21:18:36 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../inc/minishell.h"
 
-char	*ft_strchr(const char *s, int c)
+bool	possible_var(t_var *var, char c, char d)
 {
-	size_t	i;
-	size_t	len;
+	if (var->last_token && var->last_token->type & HEREDOC)
+		return (false);
+	return (c == '$' && (ft_isalpha(d) || ft_strchr("_?", d)));
+}
 
-	i = 0;
-	len = ft_strlen(s);
-	while (i <= len)
+void	mark_whitespaces(char *str)
+{
+	while (*str)
 	{
-		if (s[i] == c)
-			return ((char *)s + i);
-		i++;
+		if (*str == ' ')
+			*str = TO_SPLIT;
+		str++;
 	}
-	return (NULL);
 }
