@@ -33,7 +33,7 @@ bool	double_pipe(t_token *token)
 
 bool	missing_filename(t_token *token)
 {
-	return (token->type == (IN_R | HEREDOC | OUT_APPEND | OUT_R) && 
+	return (token->type & (IN_R | HEREDOC | OUT_APPEND | OUT_R) && 
 	token->right && token->right->type != CMD);
 }
 

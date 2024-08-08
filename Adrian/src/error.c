@@ -14,7 +14,8 @@
 
 void	status_1(t_var *var)
 {
-	var->status = EXIT_FAILURE;
+	if (var->status != 2)
+		var->status = EXIT_FAILURE;
 }
 
 void	status_2(t_var *var)

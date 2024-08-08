@@ -108,7 +108,10 @@ bool	parse_tokens(t_var *var)
 	if (!var->tokens)
 		return (false);
 	if (!valid_syntax(var->tokens))
+	{
+		var->status = 2;
 		return (free_tokens(var), false);
+	}
 	current = var->tokens;
 	while (current)
 	{
