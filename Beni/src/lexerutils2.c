@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:44 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/08 14:04:43 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 15:58:00 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ int	identify_nonexistent_var(t_var *var, char **start, char **end)
 		*ptr = 0;
 		if (ft_getenv(var->env, *end) || (ptr - 1 == *end && **end == '?'))
 		{
+			*ptr = c;
 			*end = *start;
 			return (false);
 		}

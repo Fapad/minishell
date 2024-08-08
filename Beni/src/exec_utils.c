@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 14:12:25 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 15:19:44 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,31 @@ char	*get_cmd(t_var *var)
 	return (NULL);
 }
 
+int	check_files(t_var *var, char *str)
+{
+	char	buffer[1];
+
+	if (access(str, F_OK) == -1)
+	{
+		error_msg(var,": No such file or directory", 127);
+		return (1);
+	}
+	
+	if (access(str, X_OK) == -1)
+	{
+		error_msg(var,": Permission denied", 126);
+		return (1);
+	}
+	int fd = open(str, O_RDONLY);
+	if (read(fd,buffer, 1) == -1)
+	{
+		close(fd);
+		error_msg(var,": Is a directory", 126);
+		return (1);
+	}
+	return (0);
+}
+
 char	*check_given_file(t_var *var)
 {
 	char	*str;
@@ -147,6 +172,8 @@ char	*check_given_file(t_var *var)
 	str = ft_strdup(var->current->content[0]);
 	if (!str)
 		return (status_1(var), NULL);
+	if ((check_files(var, str)) == 1)
+		return (free(str), NULL);
 	if (access(str, X_OK) == 0)
 	{
 		if (txt_file(str))
