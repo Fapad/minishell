@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 12:49:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 11:32:58 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 13:27:13 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool	double_pipe(t_token *token)
 
 bool	missing_filename(t_token *token)
 {
-	return (token->type == (IN_R | HEREDOC | OUT_APPEND | OUT_R) && 
+	return (token->type & REDIRECTION && 
 	token->right && token->right->type != CMD);
 }
 
