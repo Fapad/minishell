@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 14:06:33 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 17:45:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@
 [1;32m\002c \"\001\033[0m\002"
 # define TMP_PATH "/tmp/.tmp"
 # define FILENAME 1
+# ifndef TESTER
+#  define TESTER 0
+# endif
 
 typedef struct s_token
 {

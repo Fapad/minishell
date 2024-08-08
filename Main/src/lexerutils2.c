@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:44 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/27 17:57:06 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 16:54:18 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	identify_general_token(char **start, char **end)
 	if (!**start)
 		return (END);
 	type = CMD;
-	while (**end && !ft_strchr("< >|", **end))
+	while (**end && !ft_strchr("< >|\t", **end))
 	{
 		if (**end == '\'' && identify_single_quotes(end, end))
 			type = INTERPRET;

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 15:32:50 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 18:47:59 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,15 @@ void	command_cd(t_var *var, char *path)
 {
 	if (!path)
 		return (cd_home(var, path));
-	if (valid_dotdot_path(path))
+	if (!ft_strncmp(path, "-", 2))
 	{
-		cd_dotdot_for_istvan(var, path);
-		return ;
+		path = ft_getenv(var->env, "OLDPWD");
+		if (!path)
+			return (error_msg(var, ": OLDPWD not set", 1));
+		ft_printf("%s\n", path);
 	}
+	if (valid_dotdot_path(path))
+		return (cd_dotdot_for_istvan(var, path));
 	if (chdir(path) == -1)
 	{
 		ft_putstr_fd("cd: ", STDERR_FILENO);

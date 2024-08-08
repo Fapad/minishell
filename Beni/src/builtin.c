@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 16:42:28 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 16:03:52 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 19:34:06 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,16 @@
 
 void   command_exit(t_var *var)
 {
-	int	exit_status;
-	
-	exit_status = 0;
 	var->loop = false;
-	if (var->list->content[1] != NULL)
-		exit_status = ft_atoi(var->list->content[1]);
-	if (exit_status == 0 && var->list->content[1] == NULL)
-		var->status = exit_status;
-	else if (exit_status == 0 && var->list->content[2] == NULL)
-		error_msg(var, ": numeric argument required", 2);
-	else if (exit_status == 0 && (var->list->content[2][0] >= 'a' && var->list->content[2][0] <= 'z'))
-		error_msg(var, ": numeric argument required", 2);
-		else if (exit_status == 0 && (var->list->content[2][0] >= '1' && var->list->content[2][0] <= '9'))
-		error_msg(var, ": numeric argument required", 2);	
-	else if (exit_status >= 0 && exit_status <= 255 && var->list->content[2] == NULL)
-		var->status = exit_status;
-	else if ((exit_status > 255 || exit_status < 0) && var->list->content[2] == NULL)
-		var->status = exit_status % 256;
-	else if (exit_status != 0 && (var->list->content[2][0] >= 'a' && var->list->content[2][0] <= 'z'))
-		error_msg(var, ": too many arguments", 1);	
-	else if (exit_status != 0 && (var->list->content[2][0] >= '0' && var->list->content[2][0] <= '9'))
-		error_msg(var, ": too many arguments", 1);	
-	else if (exit_status != 0 && var->list->content[2] != NULL)
-		var->status = 2;
+	if (!var->list->content[1])
+		return ;
+	var->status = ft_atoi(var->list->content[1]);
+	if (var->status == 0 && ft_strncmp("0", var->list->content[1], 2))
+		return (error_msg(var, ": numeric argument required", 2));
+	if (var->list->content[2])
+		return (error_msg(var, ": too many arguments", 1));
+	else if ((var->status > 255 || var->status < 0))
+		var->status = var->status % 256;
 }
 
 void	command_pwd(t_var *var)

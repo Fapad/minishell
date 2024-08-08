@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:10:04 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/05 19:14:44 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 19:10:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	print_environment(t_var *var)
 	while (i < len)
 	{
 		next = find_next_smallest(var->env, next, max);
-		ft_printf("export ");
+		ft_printf("declare -x ");
 		ft_printf("%s\n", next);
 		i++;
 	}

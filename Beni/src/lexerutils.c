@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:25 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:31:52 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 16:51:09 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	print_tokens(t_token *head)
 
 void	skip_whitespace(char **input)
 {
-	while (**input == ' ')
+	while (ft_iswhitespace(**input))
 		(*input)++;
 }
 

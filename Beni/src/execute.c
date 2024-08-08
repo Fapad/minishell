@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 16:04:40 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 19:20:46 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,11 @@ int cd_export_exit_or_unset(t_var *var)
 			var->env = command_export(var, var->current->content[i++]);
 	}
 	else if (ft_strncmp(var->current->content[0], "unset", 6) == 0)
-		var->env = command_unset(var->env, var->current->content[1]);
+	{
+		i = 1;
+		while (var->current->content[i] && var->env)
+			var->env = command_unset(var->env, var->current->content[i++]);
+	}
 	else if (ft_strncmp(var->current->content[0], "cd", 3) == 0)
 	{
 		if (!too_many_arguments(var, var->current))

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:44 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/08 15:58:00 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 17:43:36 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	identify_pipe(char **start, char **end)
 
 char	*token_end(char *start)
 {
-	while (*start && *start != ' ')
+	while (*start && !ft_strchr("< >|\t", *start))
 		start++;
 	return (start);
 }
@@ -75,7 +75,7 @@ int	identify_nonexistent_var(t_var *var, char **start, char **end)
 
 	tkn_end = token_end(*start);
 	ptr = *start;
-	while (possible_var(var, ptr[0], ptr[1]))
+	while (possible_var(var, ptr[0], ptr[1]) && ptr[1] != '?')
 	{
 		*end = ptr + 1;
 		ptr += 2;
@@ -83,7 +83,7 @@ int	identify_nonexistent_var(t_var *var, char **start, char **end)
 			ptr++;
 		c = *ptr;
 		*ptr = 0;
-		if (ft_getenv(var->env, *end) || (ptr - 1 == *end && **end == '?'))
+		if (ft_getenv(var->env, *end))
 		{
 			*ptr = c;
 			*end = *start;
@@ -104,7 +104,7 @@ int	identify_general_token(t_var *var, char **start, char **end)
 	if (identify_nonexistent_var(var, start, end))
 		return (NO_VAR);
 	type = CMD;
-	while (**end && !ft_strchr("< >|", **end))
+	while (**end && !ft_strchr("< >|\t", **end))
 	{
 		if (**end == '\'' && identify_single_quotes(end, end))
 			type = INTERPRET;
@@ -161,7 +161,7 @@ int	identify_dollar_sign(char **start, char **end)
 	{
 		if (**start == '"')
 			(*start)++;
-		while (**end != ' ' && **end != '\0' && **end != '"')
+		while (**end && !ft_strchr("\t\" ", **end))
 			(*end)++;
 		return (true);
 	}
