@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 15:08:55 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 15:10:31 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	status_1(t_var *var)
 {
-	if (var->status != 2)
-		var->status = EXIT_FAILURE;
+ 	if (var->status != 2)
+ 		var->status = EXIT_FAILURE;
 }
 
 void	status_2(t_var *var)

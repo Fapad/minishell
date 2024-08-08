@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:44 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/07/27 17:57:06 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 15:58:00 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ int	identify_output_redirection(char **start, char **end)
 		if (*(*start + 1) == '>')
 		{
 			*end += 2;
-			return (OUT_APPEND);
+			return (O_APPEND);
 		}
 		*end += 1;
-		return (OUT_R);
+		return (O_TRUNC);
 	}
 	return (0);
 }
@@ -52,12 +52,57 @@ int	identify_pipe(char **start, char **end)
 	return (0);
 }
 
-int	identify_general_token(char **start, char **end)
+char	*token_end(char *start)
+{
+	while (*start && *start != ' ')
+		start++;
+	return (start);
+}
+
+void	reset_end(char *start, char **end, char *ptr, char *tkn_end)
+{
+	if (ptr != tkn_end)
+		*end = start;
+	else
+		*end = tkn_end;
+}
+
+int	identify_nonexistent_var(t_var *var, char **start, char **end)
+{
+	char	*tkn_end;
+	char	*ptr;
+	char	c;
+
+	tkn_end = token_end(*start);
+	ptr = *start;
+	while (possible_var(var, ptr[0], ptr[1]))
+	{
+		*end = ptr + 1;
+		ptr += 2;
+		while (*ptr && (ft_isalnum(*ptr) || *ptr == '_'))
+			ptr++;
+		c = *ptr;
+		*ptr = 0;
+		if (ft_getenv(var->env, *end) || (ptr - 1 == *end && **end == '?'))
+		{
+			*ptr = c;
+			*end = *start;
+			return (false);
+		}
+		*ptr = c;
+	}
+	reset_end(*start, end, ptr, tkn_end);
+	return (ptr == tkn_end);
+}
+
+int	identify_general_token(t_var *var, char **start, char **end)
 {
 	int	type;
 	
 	if (!**start)
 		return (END);
+	if (identify_nonexistent_var(var, start, end))
+		return (NO_VAR);
 	type = CMD;
 	while (**end && !ft_strchr("< >|", **end))
 	{
@@ -116,14 +161,14 @@ int	identify_dollar_sign(char **start, char **end)
 	{
 		if (**start == '"')
 			(*start)++;
-		while (**end != 32 && **end != '\0' && **end != '"')
+		while (**end != ' ' && **end != '\0' && **end != '"')
 			(*end)++;
 		return (true);
 	}
 	return (false);
 }
 
-int	identify_token_type(char **start, char **end)
+int	identify_token_type(t_var *var, char **start, char **end)
 {
 	int	type;
 
@@ -136,5 +181,5 @@ int	identify_token_type(char **start, char **end)
 	type = identify_output_redirection(start, end);
 	if (type != 0)
 		return (type);
-	return (identify_general_token(start, end));
+	return (identify_general_token(var, start, end));
 }

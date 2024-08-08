@@ -6,17 +6,17 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 15:30:29 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 16:04:40 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
 void	exec_system_commands(t_var *var)
-{	
+{
 	var->exec_cmd = NULL;
 	var->splitted_path = splitted_path(var);
-	if (ft_strchr(var->current->content[0], '/'))
+	if (ft_strchr(var->current->content[0], '/') || !var->current->content[0][0])
 		var->exec_cmd = check_given_file(var);
 	else
 		var->exec_cmd = get_cmd(var);

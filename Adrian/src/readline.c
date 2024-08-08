@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/06 08:57:40 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 15:27:18 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int	main(int argc, char **argv, char **envp)
 			status_1(&var);
 		exec_cleanup(&var);
 	}
-	//ft_printf("exit\n");
+	// ft_printf("exit\n");
 	rl_clear_history();
 	free_all(&var);
 	return (var.status);

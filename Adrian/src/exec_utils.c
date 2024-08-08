@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 14:12:25 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 15:19:44 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ char	*get_cmd(t_var *var)
 	command_not_found(var);
 	return (NULL);
 }
+
 int	check_files(t_var *var, char *str)
 {
 	char	buffer[1];
@@ -163,7 +164,6 @@ int	check_files(t_var *var, char *str)
 	}
 	return (0);
 }
-
 
 char	*check_given_file(t_var *var)
 {

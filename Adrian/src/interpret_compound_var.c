@@ -6,20 +6,20 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 09:14:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/06 22:05:50 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 14:03:37 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-bool	ambiguous_redirect(t_var *var, char *str)
+bool	ambiguous_redirect(t_var *var, int type, char *str)
 {
 	t_token	*last;
 
 	last = var->last_token;
-	if (last && last->type & (IN_R | OUT_R | HEREDOC | OUT_APPEND))
+	if (last && last->type & (REDIRECTION))
 	{
-		if (str && count_words(str, TO_SPLIT) > 1)
+		if ((str && count_words(str, TO_SPLIT) > 1) || type == NO_VAR)
 		{
 			last->type = last->type | AMBI_R;
 			return (true);
