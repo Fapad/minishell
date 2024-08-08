@@ -25,12 +25,16 @@ void   command_exit(t_var *var)
 	else if (exit_status == 0 && var->list->content[2] == NULL)
 		error_msg(var, ": numeric argument required", 2);
 	else if (exit_status == 0 && (var->list->content[2][0] >= 'a' && var->list->content[2][0] <= 'z'))
+		error_msg(var, ": numeric argument required", 2);
+		else if (exit_status == 0 && (var->list->content[2][0] >= '1' && var->list->content[2][0] <= '9'))
 		error_msg(var, ": numeric argument required", 2);	
 	else if (exit_status >= 0 && exit_status <= 255 && var->list->content[2] == NULL)
 		var->status = exit_status;
 	else if ((exit_status > 255 || exit_status < 0) && var->list->content[2] == NULL)
 		var->status = exit_status % 256;
 	else if (exit_status != 0 && (var->list->content[2][0] >= 'a' && var->list->content[2][0] <= 'z'))
+		error_msg(var, ": too many arguments", 1);	
+	else if (exit_status != 0 && (var->list->content[2][0] >= '0' && var->list->content[2][0] <= '9'))
 		error_msg(var, ": too many arguments", 1);	
 	else if (exit_status != 0 && var->list->content[2] != NULL)
 		var->status = 2;
