@@ -139,6 +139,31 @@ char	*get_cmd(t_var *var)
 	command_not_found(var);
 	return (NULL);
 }
+int	check_files(t_var *var, char *str)
+{
+	char	buffer[1];
+
+	if (access(str, F_OK) == -1)
+	{
+		error_msg(var,": No such file or directory", 127);
+		return (1);
+	}
+	
+	if (access(str, X_OK) == -1)
+	{
+		error_msg(var,": Permission denied", 126);
+		return (1);
+	}
+	int fd = open(str, O_RDONLY);
+	if (read(fd,buffer, 1) == -1)
+	{
+		close(fd);
+		error_msg(var,": Is a directory", 126);
+		return (1);
+	}
+	return (0);
+}
+
 
 char	*check_given_file(t_var *var)
 {
@@ -147,6 +172,8 @@ char	*check_given_file(t_var *var)
 	str = ft_strdup(var->current->content[0]);
 	if (!str)
 		return (status_1(var), NULL);
+	if ((check_files(var, str)) == 1)
+		return (free(str), NULL);
 	if (access(str, X_OK) == 0)
 	{
 		if (txt_file(str))

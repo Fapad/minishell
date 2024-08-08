@@ -5,8 +5,6 @@
 Ha nem letezik a variailis akkor is kiir neki erteket
 void	exec_system_commands(t_var *var)
 
-Ez a legujabb verzio !
-
 5. Update
 
 ha csak exportot irunk be akkor is ki kell irja az env-t
