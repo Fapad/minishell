@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 15:25:25 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 20:34:22 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,31 +20,36 @@
 # include <fcntl.h>
 # include <errno.h>
 # include <sys/wait.h>
+# include <sys/ioctl.h>
 # include "../libft/libft.h"
 
-# define END 0x1
-# define IN_R 0x2
-# define HEREDOC 0x4
-# define CMD 0x8
-# define PIPE 0x10
-# define INTERPRET 0x20
-# define AMBI_R 0x40
-# define OUT_R O_TRUNC
-# define OUT_APPEND O_APPEND
+# define END 01
+# define IN_R 02
+# define HEREDOC 04
+# define CMD 010
+# define PIPE 020
+# define INTERPRET 040
+# define AMBI_R 0100
+# define NO_VAR 0200
 # define TO_SPLIT CHAR_MAX
+# define REDIRECTION 03006
 # define READ_END 0
 # define WRITE_END 1
 # define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
 [1;32m\002ell\001\033[0m\002 > "
 # define HD_PROMPT "\001\033[1;31m\002her\001\033[1;37m\002edo\001\033\
-[1;32m\002c \"\001\033[0m\002"
+[1;32m\002c \001\033[0m\002\""
 # define TMP_PATH "/tmp/.tmp"
 # define FILENAME 1
+# ifndef TESTER
+#  define TESTER 0
+# endif
 
 typedef struct s_token
 {
 	int				type;
 	struct s_token	*right;
+	struct s_token	*left;
 	char			*str;
 }				t_token;
 
@@ -58,48 +63,52 @@ typedef struct s_node
 
 typedef struct s_var
 {
-	t_token	*tokens;
-	t_token	*last_token;
-	t_node	*list;
-	t_node	*current;
-	char	*line;
-	char	**env;
-	char	**stack_env;
-	char	**splitted_path;
-	char	**compound_arg;
-	char	*cwd;
-	char	*exec_cmd;
-	pid_t	pid;
-	size_t	len;
-	int		pfd[2];
-	int		in_fd;
-	int		out_fd;
-	int		cmds;
-	int		status;
-	int		loop;
-}			t_var;
+	struct sigaction	sa;
+	t_token				*tokens;
+	t_token				*last_token;
+	t_node				*list;
+	t_node				*current;
+	char				*line;
+	char				**env;
+	char				**stack_env;
+	char				**splitted_path;
+	char				**compound_arg;
+	char				*cwd;
+	char				*exec_cmd;
+	pid_t				pid;
+	size_t				len;
+	int					pfd[2];
+	int					in_fd;
+	int					out_fd;
+	int					cmds;
+	int					status;
+	int					last_status;
+	int					loop;
+}						t_var;
 
 // LEXER
 
 t_token	*create_token(int type, char *str);
 t_token	*tokenize(t_var *var);
 int		add_token(t_var *var, char **start);
-void 	free_tokens(t_var *var);
+void	free_tokens(t_var *var);
 void	skip_whitespace(char **input);
-int		identify_token_type(char **start, char **end);
+int		identify_token_type(t_var *var, char **start, char **end);
 int		identify_input_redirection(char **start, char **end);
 int		identify_output_redirection(char **start, char **end);
 int		identify_pipe(char **start, char **end);
-int		identify_general_token(char **start, char **end);
+int		identify_general_token(t_var *var, char **start, char **end);
 int		identify_single_quotes(char **start, char **end);
 int		identify_double_quotes(char **start, char **end);
-void	print_tokens(t_token *head);
-int		identify_dollar_sign(char **start, char **end);
-void	ft_strncpy(char	*dest,const char *str, size_t n);
-char 	*ft_strndup(const char *s, size_t n);
+int		lone_dollar_sign(char *start, char *end);
+void	ft_strncpy(char	*dest, const char *str, size_t n);
+char	*ft_strndup(const char *s, size_t n);
 void	add_token_to_list(t_var *var, t_token *new_token);
 void	init_token(t_token *new, char *str, int type);
 void	mark_whitespaces(char *str);
+char	*token_end(char *start);
+void	reset_end(char *start, char **end, char *ptr, char *tkn_end);
+int		identify_nonexistent_var(t_var *var, char **start, char **end);
 
 // INTERPRET
 
@@ -115,26 +124,27 @@ size_t	interpreted_str_len(t_var *var, char *start, char *end);
 char	*ft_getenv(char **env, char *s);
 void	cat_status(char *str, int status, size_t len);
 bool	possible_var(t_var *var, char c, char d);
-bool	ambiguous_redirect(t_var *var, char *str);
+bool	ambiguous_redirect(t_var *var, int type, char *str);
 void	free_bare_tokens(t_token *last);
 int		split_compound_tokens(t_var *var, char *str);
 bool	handle_compound_tokens(t_var *var, char *str);
 
 // SIGNAL
 
-extern sig_atomic_t signal_received;
-void	setup_signal_handlers();
+void	setup_signal_handlers(t_var *var);
 void	handle_sigint(int sig);
+void	check_received_signal(t_var *var);
+void	sigint_wait(int signal);
 
 // PARSER
 
 t_node	*last_node(t_token *current, t_node *this);
 int		token_arg_count(t_token *current);
-t_node	*new_command_node(t_token **current, t_node *this);
+t_node	*new_command_node(t_token *current, t_node *this);
 t_node	*new_pipe_node(t_token *current, t_node *this);
 void	set_redirect_type(t_node *this);
-t_node	*new_redirect_node(t_token **current, t_node *this);
-t_node	*new_list_node(t_token **current);
+t_node	*new_redirect_node(t_token *current, t_node *this);
+t_node	*new_list_node(t_token *current);
 void	add_to_list(t_var *var, t_node *this);
 void	print_exec_list(t_node *list);
 bool	parse_tokens(t_var *var);
@@ -143,6 +153,11 @@ bool	double_pipe(t_token *token);
 bool	missing_filename(t_token *token);
 bool	pipe_in_front(t_token *token);
 bool	valid_syntax(t_token *token);
+t_token	*find_next_arg_token(t_token *next);
+t_token	*find_token(t_token *token, int type, int before_type);
+bool	make_pipeline(t_var *var, t_token *start);
+t_token	*last_token(t_token *start);
+bool	close_pipeline(t_var *var, t_token *start);
 
 // ERROR_HANDLING
 
@@ -162,12 +177,12 @@ void	error_msg(t_var *var, char *str, int status);
 // BUILTINS
 
 void	malloc_envps(t_var *var, char **envp);
-char	**command_unset(char **old_envp, char *str);
+char	**command_unset(t_var *var, char *str);
 char	**command_export(t_var *var, char *str);
 int		valid_identifier(t_var *var, char *str);
 void	command_echo(t_node *list);
 size_t	envp_string_count(char **envp);
-void 	command_exit(t_var *var);
+void	command_exit(t_var *var);
 void	command_cd(t_var *var, char *path);
 bool	too_many_arguments(t_var *var, t_node *cmd);
 void	command_pwd(t_var *var);
@@ -183,6 +198,7 @@ char	*find_next_smallest(char **arr, char *current, char *max);
 void	print_environment(t_var *var);
 char	**set_shlvl(t_var *var, char *str);
 int		get_shlvl(char *str);
+char	**env_loop(t_var *var, char **(*f)(t_var *, char *));
 
 // EXECUTE
 

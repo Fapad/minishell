@@ -6,13 +6,13 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/06 08:57:40 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 20:24:06 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-sig_atomic_t signal_received = 0;
+sig_atomic_t	g_signal = 0;
 
 void	init_var(t_var *var, int argc, char **argv, char **envp)
 {
@@ -58,18 +58,18 @@ void	malloc_envps(t_var *var, char **envp)
 		return (perror("exiting"), free_all(var), exit(EXIT_FAILURE));
 }
 
-void	check_signal_received(t_var *var)
+void	check_received_signal(t_var *var)
 {
-	if (signal_received)
-		var->status = signal_received + 128;
-	signal_received = 0;
+	if (g_signal)
+		var->status = g_signal + 128;
+	g_signal = 0;
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_var	var;
 
-	setup_signal_handlers();
+	setup_signal_handlers(&var);
 	init_var(&var, argc, argv, envp);
 	while (var.loop)
 	{
@@ -78,7 +78,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*var.line)
 			add_history(var.line);
-		check_signal_received(&var);
+		check_received_signal(&var);
 		var.tokens = tokenize(&var);
 		if (parse_tokens(&var))
 			execute(&var);

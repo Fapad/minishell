@@ -46,4 +46,3 @@ void	close_pipe(int pfd[])
 	close(pfd[WRITE_END]);
 	close(pfd[READ_END]);
 }
-

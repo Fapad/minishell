@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 11:15:03 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 20:34:22 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <fcntl.h>
 # include <errno.h>
 # include <sys/wait.h>
+# include <sys/ioctl.h>
 # include "../libft/libft.h"
 
 # define END 01
@@ -62,45 +63,46 @@ typedef struct s_node
 
 typedef struct s_var
 {
-	t_token	*tokens;
-	t_token	*last_token;
-	t_node	*list;
-	t_node	*current;
-	char	*line;
-	char	**env;
-	char	**stack_env;
-	char	**splitted_path;
-	char	**compound_arg;
-	char	*cwd;
-	char	*exec_cmd;
-	pid_t	pid;
-	size_t	len;
-	int		pfd[2];
-	int		in_fd;
-	int		out_fd;
-	int		cmds;
-	int		status;
-	int		loop;
-}			t_var;
+	struct sigaction	sa;
+	t_token				*tokens;
+	t_token				*last_token;
+	t_node				*list;
+	t_node				*current;
+	char				*line;
+	char				**env;
+	char				**stack_env;
+	char				**splitted_path;
+	char				**compound_arg;
+	char				*cwd;
+	char				*exec_cmd;
+	pid_t				pid;
+	size_t				len;
+	int					pfd[2];
+	int					in_fd;
+	int					out_fd;
+	int					cmds;
+	int					status;
+	int					last_status;
+	int					loop;
+}						t_var;
 
 // LEXER
 
 t_token	*create_token(int type, char *str);
 t_token	*tokenize(t_var *var);
 int		add_token(t_var *var, char **start);
-void 	free_tokens(t_var *var);
+void	free_tokens(t_var *var);
 void	skip_whitespace(char **input);
-int		identify_token_type(t_var * var, char **start, char **end);
+int		identify_token_type(t_var *var, char **start, char **end);
 int		identify_input_redirection(char **start, char **end);
 int		identify_output_redirection(char **start, char **end);
 int		identify_pipe(char **start, char **end);
 int		identify_general_token(t_var *var, char **start, char **end);
 int		identify_single_quotes(char **start, char **end);
 int		identify_double_quotes(char **start, char **end);
-void	print_tokens(t_token *head);
 int		lone_dollar_sign(char *start, char *end);
-void	ft_strncpy(char	*dest,const char *str, size_t n);
-char 	*ft_strndup(const char *s, size_t n);
+void	ft_strncpy(char	*dest, const char *str, size_t n);
+char	*ft_strndup(const char *s, size_t n);
 void	add_token_to_list(t_var *var, t_token *new_token);
 void	init_token(t_token *new, char *str, int type);
 void	mark_whitespaces(char *str);
@@ -129,9 +131,10 @@ bool	handle_compound_tokens(t_var *var, char *str);
 
 // SIGNAL
 
-extern sig_atomic_t signal_received;
-void	setup_signal_handlers();
+void	setup_signal_handlers(t_var *var);
 void	handle_sigint(int sig);
+void	check_received_signal(t_var *var);
+void	sigint_wait(int signal);
 
 // PARSER
 
@@ -156,7 +159,6 @@ bool	make_pipeline(t_var *var, t_token *start);
 t_token	*last_token(t_token *start);
 bool	close_pipeline(t_var *var, t_token *start);
 
-
 // ERROR_HANDLING
 
 void	init_var(t_var *var, int argc, char **argv, char **envp);
@@ -180,7 +182,7 @@ char	**command_export(t_var *var, char *str);
 int		valid_identifier(t_var *var, char *str);
 void	command_echo(t_node *list);
 size_t	envp_string_count(char **envp);
-void 	command_exit(t_var *var);
+void	command_exit(t_var *var);
 void	command_cd(t_var *var, char *path);
 bool	too_many_arguments(t_var *var, t_node *cmd);
 void	command_pwd(t_var *var);

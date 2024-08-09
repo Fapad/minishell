@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 15:32:50 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 18:37:11 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,28 +45,12 @@ void	update_env_after_cd(t_var *var, char *env_var_name, char *path)
 		restore_environment(var);
 }
 
-void	cd_home(t_var *var, char *path)
-{
-	path = ft_getenv(var->env, "HOME");
-	if (!path)
-	{
-		ft_putendl_fd("cd: HOME not set", STDERR_FILENO);
-		return (status_1(var));
-	}
-	command_cd(var, path);
-}
-
 bool	too_many_arguments(t_var *var, t_node *cmd)
 {
 	int	i;
 
 	i = 0;
-	if (cmd && cmd->content)
-	{
-		while (cmd->content[i])
-			i++;
-	}
-	if (i > 2)
+	if (cmd->content[1] && cmd->content[2])
 	{
 		error_msg(var, ": too many arguments", 1);
 		return (true);
@@ -108,10 +92,7 @@ void	command_cd(t_var *var, char *path)
 	if (!path)
 		return (cd_home(var, path));
 	if (valid_dotdot_path(path))
-	{
-		cd_dotdot_for_istvan(var, path);
-		return ;
-	}
+		return (cd_dotdot_for_istvan(var, path));
 	if (chdir(path) == -1)
 	{
 		ft_putstr_fd("cd: ", STDERR_FILENO);

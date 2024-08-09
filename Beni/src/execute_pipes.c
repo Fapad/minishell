@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 09:31:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 20:38:22 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ void	first_cmd(t_var *var)
 void	middle_cmd(t_var *var)
 {
 	if (pipe(var->pfd) == -1)
-		return (perror("pipe"), free_all(var), close(var->in_fd), exit(EXIT_FAILURE));
+		return (perror("pipe"), free_all(var),
+			close(var->in_fd), exit(EXIT_FAILURE));
 	var->pid = fork();
 	if (var->pid == 0)
 	{
@@ -90,4 +91,32 @@ void	last_cmd(t_var *var)
 	close_in_and_out(var);
 	close(var->pfd[READ_END]);
 	var->in_fd = STDIN_FILENO;
+}
+
+void	wait_children(t_var *var)
+{
+	int		status;
+	int		i;
+	pid_t	pid;
+
+	signal(SIGINT, &sigint_wait);
+	pid = 0;
+	i = 0;
+	status = var->status;
+	while (pid != var->pid)
+	{
+		pid = wait(&status);
+		i++;
+	}
+	var->status = status;
+	while (i++ < var->cmds)
+		wait(&status);
+	if (WIFEXITED(var->status))
+		var->status = WEXITSTATUS(var->status);
+	else if (WIFSIGNALED(var->status))
+	{
+		var->status = 128 + WTERMSIG(var->status);
+		write(STDOUT_FILENO, "\n", 1);
+	}
+	sigaction(SIGINT, &var->sa, NULL);
 }

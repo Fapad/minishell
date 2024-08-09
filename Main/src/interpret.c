@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/06 21:00:00 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 10:17:53 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ char	*cat_intrd_str(t_var *var, char *start, char *end)
 			cat_double_qoutes(var, str, &start, ptr);
 		else if (possible_var(var, start[0], start[1]))
 			cat_env_var(var, str, &start, end);
-		else
+		else if (!lone_dollar_sign(start, end))
 			cat_char_to_str(str, *start, var->len);
 		start++;
 	}

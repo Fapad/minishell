@@ -49,7 +49,7 @@ char	**command_unset(t_var *var, char *str)
 	return (free(new_env), free(dest), var->env);
 }
 
-int  unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
+int	unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
 {
 	int	i;
 
@@ -82,9 +82,8 @@ char	**change_var(char **env, char *str)
 
 	len = ft_strchr(str, '=') + 1 - str;
 	tmp = str[len];
-	str[len] = 0;
-	i = 0;
-	while (env[i])
+	i = -1;
+	while (env[++i])
 	{
 		if (!ft_strncmp(env[i], str, len))
 		{
@@ -98,7 +97,6 @@ char	**change_var(char **env, char *str)
 			env[i] = var;
 			return (env);
 		}
-		i++;
 	}
 	str[len] = tmp;
 	return (NULL);
@@ -120,12 +118,9 @@ char	**command_export(t_var *var, char *str)
 	new_envp = malloc((len + 1 + 1) * sizeof (char *));
 	if (!new_envp)
 		return (free_string_array(var->env), NULL);
-	i = 0;
-	while (i < len)
-	{
+	i = -1;
+	while (++i < len)
 		new_envp[i] = var->env[i];
-		i++;
-	}
 	free(var->env);
 	new_envp[i] = ft_strdup(str);
 	if (!str)

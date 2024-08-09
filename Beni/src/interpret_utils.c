@@ -100,7 +100,7 @@ size_t	interpreted_str_len(t_var *var, char *start, char *end)
 {
 	size_t	i;
 	size_t	len;
-	
+
 	i = 0;
 	len = 0;
 	while (start + i < end)

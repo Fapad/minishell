@@ -6,97 +6,62 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 12:08:53 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/08 15:32:44 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-t_node	*new_command_node(t_token **current, t_node *this)
+bool	make_pipeline(t_var *var, t_token *start)
 {
-	int	arg_count;
-	int	i;
-
-	arg_count = token_arg_count(*current);
-	this->content = malloc((arg_count + 1) * sizeof (char *));
-	if (!this->content)
-	{
-		free(this);
-		return (NULL);
-	}
-	i = -1;
-	while (++i < arg_count - 1)
-	{
-		this->content[i] = (*current)->str;
-		*current = (*current)->right;
-	}
-	this->content[i] = (*current)->str;
-	this->content[i + 1] = NULL;
-	this->type = CMD;
-	return (this);
-}
-
-t_node	*new_pipe_node(t_token *current, t_node *this)
-{
-	this->content = malloc(2 * sizeof (char *));
-	if (!this->content)
-	{
-		free(this);
-		return (NULL);
-	}
-	this->content[0] = current->str;
-	this->content[1] = NULL;
-	this->type = PIPE;
-	return (this);
-}
-
-t_node	*new_redirect_node(t_token **current, t_node *this)
-{
-	int	i;
-
-	i = 0;
-	this->type = (*current)->type;
-	if (this->type == HEREDOC)
-		this->content = malloc(4 * sizeof (char *));
-	else
-		this->content = malloc(3 * sizeof (char *));
-	if (!this->content)
-		return (free(this), NULL);
-	this->content[i++] = (*current)->str;
-	if (this->type == HEREDOC)
-		this->content[i++] = NULL;
-	*current = (*current)->right;
-	if ((*current)->type != CMD)
-	{
-		unexpected_token((*current)->str);
-		return (free(this->content), free(this), NULL);
-	}
-	this->content[i++] = (*current)->str;
-	this->content[i] = NULL;
-	return (this);
-}
-
-t_node	*new_list_node(t_token **current)
-{
+	t_token	*token;
 	t_node	*new;
 
-	new = malloc(sizeof (t_node));
+	token = find_token(start, REDIRECTION, PIPE | END);
+	while (token)
+	{
+		new = new_list_node(token);
+		if (!new)
+			return (false);
+		add_to_list(var, new);
+		token = find_token(token->right, REDIRECTION, PIPE | END);
+	}
+	token = find_next_arg_token(start);
+	if (token)
+	{
+		new = new_list_node(token);
+		if (!new)
+			return (false);
+		add_to_list(var, new);
+	}
+	return (true);
+}
+
+t_token	*last_token(t_token *start)
+{
+	while (start->right)
+		start = start->right;
+	return (start);
+}
+
+bool	close_pipeline(t_var *var, t_token *start)
+{
+	t_token	*token;
+	t_node	*new;
+
+	token = find_token(start, PIPE, END);
+	if (!token)
+		token = last_token(start);
+	new = new_list_node(token);
 	if (!new)
-		return (NULL);
-	if ((*current)->type == END)
-		return (last_node(*current, new));
-	if ((*current)->type == CMD)
-		return (new_command_node(current, new));
-	if ((*current)->type == PIPE)
-		return (new_pipe_node(*current, new));
-	else
-		return (new_redirect_node(current, new));
+		return (false);
+	add_to_list(var, new);
+	return (true);
 }
 
 bool	parse_tokens(t_var *var)
 {
 	t_token	*current;
-	t_node	*new;
 
 	var->in_fd = STDIN_FILENO;
 	var->out_fd = STDOUT_FILENO;
@@ -104,16 +69,21 @@ bool	parse_tokens(t_var *var)
 	if (!var->tokens)
 		return (false);
 	if (!valid_syntax(var->tokens))
+	{
+		status_2(var);
 		return (free_tokens(var), false);
+	}
 	current = var->tokens;
 	while (current)
 	{
-		new = new_list_node(&current);
-		if (!new)
-			return (free_linked_lists(var), false);
-		add_to_list(var, new);
-		current = current->right;
+		if (current->type == PIPE)
+			current = current->right;
+		if (!make_pipeline(var, current) || !close_pipeline(var, current))
+		{
+			free_linked_lists(var);
+			return (false);
+		}
+		current = find_token(current, PIPE, END);
 	}
-	// print_exec_list(var->list);	//DEBUG
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/07 11:56:49 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 09:54:06 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,20 @@ char	*tokenize_str(t_var *var, char *start, char *end, int *type)
 
 	str = NULL;
 	var->len = end - start;
-	if (*type != INTERPRET)
+	if (!(*type & (INTERPRET | NO_VAR)))
 		str = ft_strndup(start, var->len);
 	else
 	{
 		var->len = interpreted_str_len(var, start, end);
 		str = cat_intrd_str(var, start, end);
-		if (ambiguous_redirect(var, str))
+		if (ambiguous_redirect(var, *type, str))
 		{
 			free(str);
 			str = ft_strndup(start, end - start);
+			*type = CMD;
 		}
-		*type = CMD;
+		else if (*type & INTERPRET)
+			*type = CMD;
 	}
 	return (str);
 }
@@ -60,15 +62,13 @@ int	add_token(t_var *var, char **start)
 	char	*str;
 
 	end = *start;
-	type = identify_token_type(start, &end);
+	type = identify_token_type(var, start, &end);
 	str = tokenize_str(var, *start, end, &type);
 	if (!str)
 		return (false);
 	*start = end;
 	if (ft_strchr(str, TO_SPLIT))
-	{
 		return (handle_compound_tokens(var, str));
-	}
 	new_token = create_token(type, str);
 	if (!new_token)
 		return (false);

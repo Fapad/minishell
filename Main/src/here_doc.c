@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:35:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/02 15:17:49 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 19:01:42 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,23 +34,18 @@ int	create_tmp_file(t_node *node)
 	return (open(file, O_CREAT | O_WRONLY, 0644));
 }
 
-char	*append_nl_to_limiter(char *limiter)
-{
-	limiter = ft_strjoin_nofree(limiter, "\n");
-	return (limiter);
-}
-
 void	write_doc(char *limiter, int fd)
 {
-	size_t	limiter_size;
-	char	*line;
+	extern sig_atomic_t	g_signal;
+	size_t				limiter_size;
+	char				*line;
 
 	limiter_size = ft_strlen(limiter) + 1;
 	ft_printf(HD_PROMPT);
 	write(STDOUT_FILENO, limiter, limiter_size - 2);
 	ft_printf("\" > ");
 	line = get_next_line(STDIN_FILENO);
-	while (line && ft_strncmp(line, limiter, limiter_size))
+	while (line && ft_strncmp(line, limiter, limiter_size) && !g_signal)
 	{
 		write(fd, line, ft_strlen(line));
 		free(line);
@@ -69,18 +64,21 @@ int	write_here_docs(t_var *var)
 	int		fd;
 
 	node = get_next_node(var->list, HEREDOC, END);
-	while (node)
+	while (node && !var->status)
 	{
-		limiter = append_nl_to_limiter(node->content[2]);
+		limiter = ft_strjoin_nofree(node->content[2], "\n");
 		if (!limiter)
 			return (perror("heredoc"), status_1(var), false);
 		fd = create_tmp_file(node);
 		if (fd == -1)
-			return (perror("heredoc"), status_1(var), false);
+			return (perror("heredoc"), status_1(var), free(limiter), false);
 		write_doc(limiter, fd);
 		free(limiter);
 		close(fd);
 		node = get_next_node(node->next, HEREDOC, END);
+		check_received_signal(var);
 	}
+	if (var->status)
+		return (false);
 	return (true);
 }

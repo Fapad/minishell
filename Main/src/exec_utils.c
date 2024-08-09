@@ -6,96 +6,11 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 14:12:25 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 18:46:36 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-int	count_node_types(t_node *node, int type)
-{
-	int	n;
-
-	n = 0;
-	while (node)
-	{
-		if (node->type & type)
-			n++;
-		node = node->next;
-	}
-	return (n);
-}
-
-t_node	*get_next_node(t_node *node, int get_type, int before_type)
-{
-	while (node && !(node->type & before_type))
-	{
-		if (node->type & get_type)
-			return (node);
-		node = node->next;
-	}
-	return (NULL);
-}
-
-char	*ft_strjoin_three(char *s1, char *s2)
-{
-	int		len1;
-	int		len2;
-	char	*res;
-	int		i;
-
-	i = 0;
-	len1 = 0;
-	len2 = 0;
-	if (!s1 && s2)
-		return (NULL);
-	if (s1)
-		len1 = ft_strlen(s1);
-	if (s2)
-		len2 = ft_strlen(s2);
-	res = (char *)malloc((len1 + len2 +2) * sizeof(char));
-	if (!res)
-		return (NULL);
-	while (s1 && *s1)
-		res[i++] = *s1++;
-	res[i++] = '/';
-	while (s2 && *s2)
-		res[i++] = *s2++;
-	res[i] = '\0';
-	return (res);
-}
-
-char	**splitted_path(t_var *var)
-{
-	char	*path;
-
-	path = ft_getenv(var->env, "PATH");
-	if (!path)
-		return (NULL);
-	return (ft_split(path, ':'));
-}
-
-int	search_path(t_var *var, int access_type)
-{
-	char	*cmd;
-	int		i;
-
-	i = 0;
-	while (var->splitted_path && var->splitted_path[i])
-	{
-		cmd = ft_strjoin_three(var->splitted_path[i], var->current->content[0]);
-		if (!cmd)
-			return (status_1(var), false);
-		if (access(cmd, access_type) == 0)
-		{
-			var->exec_cmd = cmd;
-			return (true);
-		}
-		free(cmd);
-		i++;
-	}
-	return (false);
-}
 
 int	txt_file(char *file)
 {
@@ -128,6 +43,9 @@ char	*get_cmd(t_var *var)
 {
 	if (!var->splitted_path || !var->splitted_path[0])
 		return (check_given_file(var));
+	if (!ft_strncmp("..", var->current->content[0], 3) \
+	|| !ft_strncmp(".", var->current->content[0], 2))
+		return (command_not_found(var), NULL);
 	if (search_path(var, X_OK))
 	{
 		if (txt_file(var->exec_cmd))
@@ -140,6 +58,31 @@ char	*get_cmd(t_var *var)
 	return (NULL);
 }
 
+int	check_files(t_var *var, char *str)
+{
+	char	buffer[1];
+	int		fd;
+
+	if (access(str, F_OK) == -1)
+	{
+		error_msg(var, ": No such file or directory", 127);
+		return (1);
+	}
+	if (access(str, X_OK) == -1)
+	{
+		error_msg(var, ": Permission denied", 126);
+		return (1);
+	}
+	fd = open(str, O_RDONLY);
+	if (read(fd, buffer, 1) == -1)
+	{
+		close(fd);
+		error_msg(var, ": Is a directory", 126);
+		return (1);
+	}
+	return (0);
+}
+
 char	*check_given_file(t_var *var)
 {
 	char	*str;
@@ -147,6 +90,8 @@ char	*check_given_file(t_var *var)
 	str = ft_strdup(var->current->content[0]);
 	if (!str)
 		return (status_1(var), NULL);
+	if ((check_files(var, str)) == 1)
+		return (free(str), NULL);
 	if (access(str, X_OK) == 0)
 	{
 		if (txt_file(str))
@@ -160,25 +105,14 @@ char	*check_given_file(t_var *var)
 	return (NULL);
 }
 
-void	wait_children(t_var *var)
+char	**env_loop(t_var *var, char **(*f)(t_var *, char *))
 {
-	int		status;
-	int		i;
-	pid_t	pid;
+	int	i;
 
-	pid = 0;
-	i = 0;
-	status = var->status;
-	while (pid != var->pid)
-	{
-		pid = wait(&status);
-		i++;
-	}
-	var->status = status;
-	while (i++ < var->cmds)
-		wait(&status);
-	if (WIFEXITED(var->status))
-		var->status = WEXITSTATUS(var->status);
-	else if (WIFSIGNALED(var->status))
-		var->status = 128 + WTERMSIG(var->status);
+	i = 1;
+	if (f == &command_export && !var->current->content[i])
+		print_environment(var);
+	while (var->current->content[i] && var->env)
+		var->env = f(var, var->current->content[i++]);
+	return (var->env);
 }

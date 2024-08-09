@@ -73,7 +73,7 @@ int	open_files_in_parent(t_var *var)
 {
 	t_node	*node;
 	int		fd;
-	
+
 	node = get_next_node(var->list, IN_R | O_TRUNC | O_APPEND, END);
 	if (!node)
 		return (true);
