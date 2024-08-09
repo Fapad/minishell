@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/03 10:21:40 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 09:31:35 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	exec_builtins(t_var *var)
 	if (ft_strncmp(var->current->content[0], "export", 7) == 0)
 		var->env = command_export(var, var->current->content[1]);
 	else if (ft_strncmp(var->current->content[0], "unset", 6) == 0)
-		var->env = command_unset(var->env, var->current->content[1]);
+		var->env = command_unset(var, var->current->content[1]);
 	else if (ft_strncmp(var->current->content[0], "cd", 3) == 0)
 		command_cd(var, var->current->content[1]);
 	else if (ft_strncmp(var->current->content[0], "exit", 5) == 0)
@@ -58,7 +58,8 @@ void	first_cmd(t_var *var)
 void	middle_cmd(t_var *var)
 {
 	if (pipe(var->pfd) == -1)
-		return (perror("pipe"), free_all(var), close(var->in_fd), exit(EXIT_FAILURE));
+		return (perror("pipe"), free_all(var),
+			close(var->in_fd), exit(EXIT_FAILURE));
 	var->pid = fork();
 	if (var->pid == 0)
 	{

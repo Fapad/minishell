@@ -21,9 +21,9 @@ void	handle_sigint(int sig)
 	rl_redisplay();
 }
 
-void setup_signal_handlers()
+void	setup_signal_handlers(void)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
 	sa.sa_handler = handle_sigint;
 	sa.sa_flags = SA_RESTART;

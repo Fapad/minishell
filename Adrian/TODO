@@ -2,9 +2,83 @@
 TODO #######################################################################
 
 
+. és ".."
+
+heredocok a syntax error elött megírásra kerülnek???????????????????
+
+(/bin/env | grep "SHLVL"    illetve _= változó micsoda)
+
+Memory Leak / Conditional Jump:
+ 
+unset PWD
+cd ..
+ 
+cat
+CTRL-\
+CTRL-C
+also:
+cat | cat
+CTRL-C
+(conditional jump of status variable for waitpid)
+ 
+touch file
+chmod 000 file
+echo 1 > file
+(invalid close)
+ 
+echo $<variable with a value of more than 1024 characters>
+export PWD=$PWD$PWD$PWD
+export PWD=$PWD$PWD$PWD
+export PWD=$PWD$PWD$PWD
+export PWD=$PWD$PWD$PWD
+ 
+Different Behavior:
+ 
+unset PWD
+cd ..
+echo $OLDPWD
+ 
+asdf
+exit
+echo $?
+ 
+cat
+CTRL-C
+(prints prompt twice)
+ 
+SIGQUIT (CTRL-\) should exit a blocking command, like cat
+ 
+echo a" |
+echo a' |
+(no syntax error)
+ 
+echo $USER+
+echo $+
+ 
+For $ expansion: Only search for variables that have valid variable names (alphanumeric characters and underscore, not starting with a digit).
+It causes this to not work:
+export A=a
+export $A=b
+ 
+Executable with no exec permissions:
+Just don't check executable permissions when searching for an executable in the PATH env variable.
+You will say command not found, and have exit code 127 instead of 126.
+ 
+ 
+Tiny Things:
+Missing space: "my(s)hell: cd: error retrieving current"
+				"directory: getcwd: cannot access parent directories: "
+				"No such file or directory\n"), 1);
+ 
+ 
+Maybe delete every use of tcsetattr()
+It fixes tab autocomplete and empty environment behavior.
+
 
 DONE #######################################################################
 
+--echo $"HOME"
+--echo $'HOME'
 --tokenizer: $VAR is expanded into command and arguments
 --ambiguous redirect pl. lenti eset
 --ha nem egy child kap signalt, honnan tudja a kódot?

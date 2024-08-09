@@ -14,7 +14,7 @@
 
 size_t	envp_string_count(char **envp)
 {
-	size_t string_count;
+	size_t	string_count;
 
 	string_count = 0;
 	while (envp && envp[string_count])

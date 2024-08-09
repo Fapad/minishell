@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 12:04:49 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 09:29:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	command_env(t_var *var)
 		ft_printf("%s\n", var->env[i++]);
 }
 
-char	**command_unset(char **old_envp, char *str)
+char	**command_unset(t_var *var, char *str)
 {
 	size_t	to_compare;
 	size_t	len;
@@ -29,27 +29,27 @@ char	**command_unset(char **old_envp, char *str)
 	char	**new_env;
 
 	if (!str)
-		return (old_envp);
-	len = envp_string_count(old_envp);
+		return (var->env);
+	len = envp_string_count(var->env);
 	if (!len)
-		return (old_envp);
+		return (var->env);
 	to_compare = 0;
 	while (str[to_compare])
 		to_compare++;
 	dest = malloc(to_compare + 2);
 	if (!dest)
-		return (free(old_envp), NULL);
+		return (free(var->env), NULL);
 	ft_strlcpy(dest, str, to_compare + 2);
 	ft_strlcpy((dest + to_compare), "=", to_compare + 2);
 	new_env = malloc(len * sizeof (char *));
 	if (!new_env)
-		return (free(old_envp), free(dest), NULL);
-	if (unset2(old_envp, dest, to_compare, new_env))
-		return (free(old_envp), free(dest), new_env);
-	return (free(new_env), free(dest), old_envp);
+		return (free(var->env), free(dest), NULL);
+	if (unset2(var->env, dest, to_compare, new_env))
+		return (free(var->env), free(dest), new_env);
+	return (free(new_env), free(dest), var->env);
 }
 
-int  unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
+int	unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
 {
 	int	i;
 
@@ -82,9 +82,8 @@ char	**change_var(char **env, char *str)
 
 	len = ft_strchr(str, '=') + 1 - str;
 	tmp = str[len];
-	str[len] = 0;
-	i = 0;
-	while (env[i])
+	i = -1;
+	while (env[++i])
 	{
 		if (!ft_strncmp(env[i], str, len))
 		{
@@ -98,7 +97,6 @@ char	**change_var(char **env, char *str)
 			env[i] = var;
 			return (env);
 		}
-		i++;
 	}
 	str[len] = tmp;
 	return (NULL);
@@ -120,12 +118,9 @@ char	**command_export(t_var *var, char *str)
 	new_envp = malloc((len + 1 + 1) * sizeof (char *));
 	if (!new_envp)
 		return (free_string_array(var->env), NULL);
-	i = 0;
-	while (i < len)
-	{
+	i = -1;
+	while (++i < len)
 		new_envp[i] = var->env[i];
-		i++;
-	}
 	free(var->env);
 	new_envp[i] = ft_strdup(str);
 	if (!str)

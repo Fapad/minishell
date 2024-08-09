@@ -15,13 +15,13 @@
 void	unexpected_token(char *str)
 {
 	if (!*str)
-		ft_putstr_fd("syntax error near unexpected token `newline'\n", 
-		STDERR_FILENO);
+		ft_putstr_fd("syntax error near unexpected token `newline'\n",
+			STDERR_FILENO);
 	else
 	{
 		ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
-		ft_putstr_fd("\'\n", STDERR_FILENO);	
+		ft_putstr_fd("\'\n", STDERR_FILENO);
 	}
 }
 
@@ -33,8 +33,8 @@ bool	double_pipe(t_token *token)
 
 bool	missing_filename(t_token *token)
 {
-	return (token->type & REDIRECTION && 
-	token->right && token->right->type != CMD);
+	return (token->type & REDIRECTION
+		&& token->right && token->right->type != CMD);
 }
 
 bool	pipe_in_front(t_token *token)

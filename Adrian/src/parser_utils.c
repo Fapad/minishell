@@ -69,19 +69,3 @@ void	add_to_list(t_var *var, t_node *this)
 		this->next = NULL;
 	}
 }
-
-void	print_exec_list(t_node *list)
-{
-	int j = 1;
-	while (list->next)
-	{
-		ft_printf("list %d. type: %d\n", j, list->type);
-		for (size_t i = 0; list->content[i]; i++)
-			ft_printf("\tcontent %d. : %s\n", i, list->content[i]);
-		list = list->next;
-		j++;
-	}
-	ft_printf("list %d. type: %d\n", j, list->type);
-	for (size_t i = 0; list->content[i]; i++)
-		ft_printf("\tcontent %d. : %s\n", i, list->content[i]);
-}

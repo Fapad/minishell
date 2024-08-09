@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 14:06:33 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 10:11:41 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@
 [1;32m\002c \"\001\033[0m\002"
 # define TMP_PATH "/tmp/.tmp"
 # define FILENAME 1
+# ifndef TESTER
+#  define TESTER 0
+# endif
 
 typedef struct s_token
 {
@@ -85,9 +88,9 @@ typedef struct s_var
 t_token	*create_token(int type, char *str);
 t_token	*tokenize(t_var *var);
 int		add_token(t_var *var, char **start);
-void 	free_tokens(t_var *var);
+void	free_tokens(t_var *var);
 void	skip_whitespace(char **input);
-int		identify_token_type(t_var * var, char **start, char **end);
+int		identify_token_type(t_var *var, char **start, char **end);
 int		identify_input_redirection(char **start, char **end);
 int		identify_output_redirection(char **start, char **end);
 int		identify_pipe(char **start, char **end);
@@ -95,9 +98,9 @@ int		identify_general_token(t_var *var, char **start, char **end);
 int		identify_single_quotes(char **start, char **end);
 int		identify_double_quotes(char **start, char **end);
 void	print_tokens(t_token *head);
-int		identify_dollar_sign(char **start, char **end);
-void	ft_strncpy(char	*dest,const char *str, size_t n);
-char 	*ft_strndup(const char *s, size_t n);
+int		lone_dollar_sign(char *start, char *end);
+void	ft_strncpy(char	*dest, const char *str, size_t n);
+char	*ft_strndup(const char *s, size_t n);
 void	add_token_to_list(t_var *var, t_token *new_token);
 void	init_token(t_token *new, char *str, int type);
 void	mark_whitespaces(char *str);
@@ -126,8 +129,8 @@ bool	handle_compound_tokens(t_var *var, char *str);
 
 // SIGNAL
 
-extern sig_atomic_t signal_received;
-void	setup_signal_handlers();
+extern sig_atomic_t	signal_received;
+void	setup_signal_handlers(void);
 void	handle_sigint(int sig);
 
 // PARSER
@@ -153,7 +156,6 @@ bool	make_pipeline(t_var *var, t_token *start);
 t_token	*last_token(t_token *start);
 bool	close_pipeline(t_var *var, t_token *start);
 
-
 // ERROR_HANDLING
 
 void	init_var(t_var *var, int argc, char **argv, char **envp);
@@ -172,12 +174,12 @@ void	error_msg(t_var *var, char *str, int status);
 // BUILTINS
 
 void	malloc_envps(t_var *var, char **envp);
-char	**command_unset(char **old_envp, char *str);
+char	**command_unset(t_var *var, char *str);
 char	**command_export(t_var *var, char *str);
 int		valid_identifier(t_var *var, char *str);
 void	command_echo(t_node *list);
 size_t	envp_string_count(char **envp);
-void 	command_exit(t_var *var);
+void	command_exit(t_var *var);
 void	command_cd(t_var *var, char *path);
 bool	too_many_arguments(t_var *var, t_node *cmd);
 void	command_pwd(t_var *var);
@@ -193,6 +195,7 @@ char	*find_next_smallest(char **arr, char *current, char *max);
 void	print_environment(t_var *var);
 char	**set_shlvl(t_var *var, char *str);
 int		get_shlvl(char *str);
+char	**env_loop(t_var *var, char **(*f)(t_var *, char *));
 
 // EXECUTE
 

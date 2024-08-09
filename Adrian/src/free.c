@@ -48,7 +48,7 @@ void	free_linked_lists(t_var *var)
 
 void	free_tokens(t_var *var)
 {
-	t_token *temp;
+	t_token	*temp;
 
 	temp = var->tokens;
 	while (temp)

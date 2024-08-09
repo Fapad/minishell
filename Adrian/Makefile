@@ -6,7 +6,7 @@
 #    By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 16:17:41 by bszilas           #+#    #+#              #
-#    Updated: 2024/08/07 20:48:55 by bszilas          ###   ########.fr        #
+#    Updated: 2024/08/08 17:53:06 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CFILES = readline.c lexer.c lexerutils.c lexerutils2.c signal.c interpret.c cd.c
 parser.c error.c interpret_utils.c parser_utils.c execute.c builtin.c here_doc.c \
 exec_utils.c file_redirections.c environment.c cleanup.c free.c syntax_checker.c \
 execute_pipes.c interpret_compound_var.c interpret_utils2.c environment_utils2.c \
-environment_utils.c parser_utils2.c
+environment_utils.c parser_utils2.c lexerutils3.c error_utils.c exec_utils2.c
 
 CC = cc
 LIBDIR = libft
@@ -31,6 +31,9 @@ CFLAGS = -Wall -Wextra -Werror -g -I$(INCDIR)
 LFLAGS = -L$(LIBDIR) -lft -lreadline
 
 all: $(LIB) $(OBJDIR) $(NAME)
+
+tester:
+	$(CC) $(CFLAGS) -D TESTER=1 $(SRC) -o minishell $(LFLAGS)
 	
 $(LIB):
 	make -C $(LIBDIR)
