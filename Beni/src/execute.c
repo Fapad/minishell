@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 20:03:22 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 20:47:45 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,14 +81,14 @@ void	one_simple_cmd(t_var *var)
 	if (cd_export_exit_or_unset(var))
 		return ;
 	var->current = var->list;
-	signal(SIGQUIT, SIG_DFL);
+	signal(SIGQUIT | SIGINT, SIG_DFL);
 	var->pid = fork();
 	if (var->pid == 0)
 	{
 		redirect_or_exit(var);
 		exec_other_commands(var);
 	}
-	signal(SIGQUIT, SIG_IGN);
+	setup_signal_handlers(var);
 	wait_children(var);
 }
 
@@ -104,7 +104,7 @@ void	execute(t_var *var)
 	if (var->cmds == 1)
 		return (one_simple_cmd(var));
 	i = 0;
-	signal(SIGQUIT, SIG_DFL);
+	signal(SIGQUIT | SIGINT, SIG_DFL);
 	while (i < var->cmds)
 	{
 		if (i == 0)
@@ -115,6 +115,6 @@ void	execute(t_var *var)
 			middle_cmd(var);
 		i++;
 	}
-	signal(SIGQUIT, SIG_IGN);
+	setup_signal_handlers(var);
 	wait_children(var);
 }

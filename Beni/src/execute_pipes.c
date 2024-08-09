@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 20:38:22 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 20:52:23 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,10 @@ void	wait_children(t_var *var)
 	int		i;
 	pid_t	pid;
 
-	signal(SIGINT, &sigint_wait);
 	pid = 0;
 	i = 0;
 	status = var->status;
+	signal(SIGINT, &sigint_wait);
 	while (pid != var->pid)
 	{
 		pid = wait(&status);
@@ -118,5 +118,5 @@ void	wait_children(t_var *var)
 		var->status = 128 + WTERMSIG(var->status);
 		write(STDOUT_FILENO, "\n", 1);
 	}
-	sigaction(SIGINT, &var->sa, NULL);
+	signal(SIGINT, &handle_sigint);
 }
