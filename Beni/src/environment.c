@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 18:33:09 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 09:29:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	command_env(t_var *var)
 		ft_printf("%s\n", var->env[i++]);
 }
 
-char	**command_unset(char **old_envp, char *str)
+char	**command_unset(t_var *var, char *str)
 {
 	size_t	to_compare;
 	size_t	len;
@@ -29,24 +29,24 @@ char	**command_unset(char **old_envp, char *str)
 	char	**new_env;
 
 	if (!str)
-		return (old_envp);
-	len = envp_string_count(old_envp);
+		return (var->env);
+	len = envp_string_count(var->env);
 	if (!len)
-		return (old_envp);
+		return (var->env);
 	to_compare = 0;
 	while (str[to_compare])
 		to_compare++;
 	dest = malloc(to_compare + 2);
 	if (!dest)
-		return (free(old_envp), NULL);
+		return (free(var->env), NULL);
 	ft_strlcpy(dest, str, to_compare + 2);
 	ft_strlcpy((dest + to_compare), "=", to_compare + 2);
 	new_env = malloc(len * sizeof (char *));
 	if (!new_env)
-		return (free(old_envp), free(dest), NULL);
-	if (unset2(old_envp, dest, to_compare, new_env))
-		return (free(old_envp), free(dest), new_env);
-	return (free(new_env), free(dest), old_envp);
+		return (free(var->env), free(dest), NULL);
+	if (unset2(var->env, dest, to_compare, new_env))
+		return (free(var->env), free(dest), new_env);
+	return (free(new_env), free(dest), var->env);
 }
 
 int  unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)

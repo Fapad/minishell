@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 19:20:46 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 09:47:01 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,29 +50,27 @@ void	exec_other_commands(t_var *var)
 	exit(EXIT_SUCCESS);
 }
 
+char	**env_loop(t_var *var, char **(*f)(t_var *, char *))
+{
+	int	i;
+	
+	i = 1;
+	if (f == &command_export && !var->current->content[i])
+		print_environment(var);
+	while (var->current->content[i] && var->env)
+		var->env = f(var, var->current->content[i++]);
+	return (var->env);
+}
+
 int cd_export_exit_or_unset(t_var *var)
 {
-	int		i;
-
 	if (ft_strncmp(var->current->content[0], "export", 7) == 0)
-	{
-		i = 1;
-		if (!var->current->content[i])
-			print_environment(var);
-		while (var->current->content[i] && var->env)
-			var->env = command_export(var, var->current->content[i++]);
-	}
+		var->env = env_loop(var, &command_export);
 	else if (ft_strncmp(var->current->content[0], "unset", 6) == 0)
-	{
-		i = 1;
-		while (var->current->content[i] && var->env)
-			var->env = command_unset(var->env, var->current->content[i++]);
-	}
-	else if (ft_strncmp(var->current->content[0], "cd", 3) == 0)
-	{
-		if (!too_many_arguments(var, var->current))
-			command_cd(var, var->current->content[1]);
-	}
+		var->env = env_loop(var, &command_unset);
+	else if (ft_strncmp(var->current->content[0], "cd", 3) == 0 \
+	&& !too_many_arguments(var, var->current))
+		command_cd(var, var->current->content[1]);
 	else if (ft_strncmp(var->current->content[0], "exit", 5) == 0)
 		command_exit(var);
 	else

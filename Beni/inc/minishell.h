@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 17:45:43 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 09:47:28 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ void	error_msg(t_var *var, char *str, int status);
 // BUILTINS
 
 void	malloc_envps(t_var *var, char **envp);
-char	**command_unset(char **old_envp, char *str);
+char	**command_unset(t_var *var, char *str);
 char	**command_export(t_var *var, char *str);
 int		valid_identifier(t_var *var, char *str);
 void	command_echo(t_node *list);
@@ -196,6 +196,7 @@ char	*find_next_smallest(char **arr, char *current, char *max);
 void	print_environment(t_var *var);
 char	**set_shlvl(t_var *var, char *str);
 int		get_shlvl(char *str);
+char	**env_loop(t_var *var, char **(*f)(t_var *, char *));
 
 // EXECUTE
 
