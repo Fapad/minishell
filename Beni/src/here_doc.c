@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:35:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/02 15:17:49 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 11:07:58 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,6 @@ int	create_tmp_file(t_node *node)
 	}
 	file[i] = 0;
 	return (open(file, O_CREAT | O_WRONLY, 0644));
-}
-
-char	*append_nl_to_limiter(char *limiter)
-{
-	limiter = ft_strjoin_nofree(limiter, "\n");
-	return (limiter);
 }
 
 void	write_doc(char *limiter, int fd)
@@ -71,12 +65,12 @@ int	write_here_docs(t_var *var)
 	node = get_next_node(var->list, HEREDOC, END);
 	while (node)
 	{
-		limiter = append_nl_to_limiter(node->content[2]);
+		limiter = ft_strjoin_nofree(node->content[2], "\n");
 		if (!limiter)
 			return (perror("heredoc"), status_1(var), false);
 		fd = create_tmp_file(node);
 		if (fd == -1)
-			return (perror("heredoc"), status_1(var), false);
+			return (perror("heredoc"), status_1(var), free(limiter), false);
 		write_doc(limiter, fd);
 		free(limiter);
 		close(fd);

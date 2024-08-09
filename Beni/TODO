@@ -4,7 +4,8 @@ TODO #######################################################################
 
 . és ".."
 
-heredocok a syntax error elött megírásra kerülnek???????????????????
+--heredocok a syntax error elött megírásra kerülnek???????????????????
+--szerintem teljesen fölösleges
 
 (/bin/env | grep "SHLVL"    illetve _= változó micsoda)
 
@@ -25,12 +26,6 @@ touch file
 chmod 000 file
 echo 1 > file
 (invalid close)
- 
-echo $<variable with a value of more than 1024 characters>
-export PWD=$PWD$PWD$PWD
-export PWD=$PWD$PWD$PWD
-export PWD=$PWD$PWD$PWD
-export PWD=$PWD$PWD$PWD
  
 Different Behavior:
  
