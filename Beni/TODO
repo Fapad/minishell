@@ -2,10 +2,6 @@
 TODO #######################################################################
 
 
-echo $"HOME"
-
-echo $'HOME'
-
 . és ".."
 
 heredocok a syntax error elött megírásra kerülnek???????????????????
@@ -81,6 +77,8 @@ It fixes tab autocomplete and empty environment behavior.
 
 DONE #######################################################################
 
+--echo $"HOME"
+--echo $'HOME'
 --tokenizer: $VAR is expanded into command and arguments
 --ambiguous redirect pl. lenti eset
 --ha nem egy child kap signalt, honnan tudja a kódot?

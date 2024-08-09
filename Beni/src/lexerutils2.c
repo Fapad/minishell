@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:44 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/08 17:43:36 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 10:12:16 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,16 +154,14 @@ int	identify_double_quotes(char **start, char **end)
 	return (false);
 }
 
-int	identify_dollar_sign(char **start, char **end)
+int	lone_dollar_sign(char *start, char *end)
 {
-	
-	if (**end == '$')
+	if (*start == '$')
 	{
-		if (**start == '"')
-			(*start)++;
-		while (**end && !ft_strchr("\t\" ", **end))
-			(*end)++;
-		return (true);
+		start++;
+		if (identify_double_quotes(&start, &end) \
+		|| identify_single_quotes(&start, &end))
+			return (true);
 	}
 	return (false);
 }

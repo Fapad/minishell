@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/08 17:43:45 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 09:54:06 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,7 @@ int	add_token(t_var *var, char **start)
 		return (false);
 	*start = end;
 	if (ft_strchr(str, TO_SPLIT))
-	{
 		return (handle_compound_tokens(var, str));
-	}
 	new_token = create_token(type, str);
 	if (!new_token)
 		return (false);

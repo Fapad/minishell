@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 09:47:28 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 10:11:41 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int		identify_general_token(t_var *var, char **start, char **end);
 int		identify_single_quotes(char **start, char **end);
 int		identify_double_quotes(char **start, char **end);
 void	print_tokens(t_token *head);
-int		identify_dollar_sign(char **start, char **end);
+int		lone_dollar_sign(char *start, char *end);
 void	ft_strncpy(char	*dest,const char *str, size_t n);
 char 	*ft_strndup(const char *s, size_t n);
 void	add_token_to_list(t_var *var, t_token *new_token);
