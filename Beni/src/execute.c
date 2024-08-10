@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/10 12:53:27 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 17:36:49 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,7 @@ void	exec_system_commands(t_var *var)
 		return (free_all(var), exit(var->status));
 	signal(SIGQUIT | SIGINT, SIG_DFL);
 	execve(var->exec_cmd, var->current->content, var->env);
-	sigquit_and_sigint_handler(var);
-	perror(var->exec_cmd);
-	free(var->exec_cmd);
-	set_status(var);
-	free_all(var);
-	exit(var->status);
+	child_execve_error_handler(var);
 }
 
 void	exec_other_commands(t_var *var)

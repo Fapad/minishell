@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:18:55 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/10 13:45:30 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 16:36:53 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,14 @@ void	close_pipe(int pfd[])
 {
 	close(pfd[WRITE_END]);
 	close(pfd[READ_END]);
+}
+
+void	child_execve_error_handler(t_var *var)
+{
+	signal(SIGQUIT | SIGINT, SIG_IGN);
+	perror(var->exec_cmd);
+	free(var->exec_cmd);
+	set_status(var);
+	free_all(var);
+	exit(var->status);
 }

@@ -47,9 +47,6 @@ void	update_env_after_cd(t_var *var, char *env_var_name, char *path)
 
 bool	too_many_arguments(t_var *var, t_node *cmd)
 {
-	int	i;
-
-	i = 0;
 	if (cmd->content[1] && cmd->content[2])
 	{
 		error_msg(var, ": too many arguments", 1);

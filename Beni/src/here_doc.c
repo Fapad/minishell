@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:35:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 19:01:42 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 16:17:51 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	create_tmp_file(t_node *node)
 	return (open(file, O_CREAT | O_WRONLY, 0644));
 }
 
-void	write_doc(char *limiter, int fd)
+void	write_doc(t_var *var, char *limiter, int fd)
 {
 	extern sig_atomic_t	g_signal;
 	size_t				limiter_size;
@@ -44,6 +44,7 @@ void	write_doc(char *limiter, int fd)
 	ft_printf(HD_PROMPT);
 	write(STDOUT_FILENO, limiter, limiter_size - 2);
 	ft_printf("\" > ");
+	sigint_handler_interactive_mode(var);
 	line = get_next_line(STDIN_FILENO);
 	while (line && ft_strncmp(line, limiter, limiter_size) && !g_signal)
 	{
@@ -54,6 +55,7 @@ void	write_doc(char *limiter, int fd)
 		ft_printf("\" > ");
 		line = get_next_line(STDIN_FILENO);
 	}
+	sigint_handler_non_interactive_mode(var);
 	free(line);
 }
 
@@ -72,7 +74,7 @@ int	write_here_docs(t_var *var)
 		fd = create_tmp_file(node);
 		if (fd == -1)
 			return (perror("heredoc"), status_1(var), free(limiter), false);
-		write_doc(limiter, fd);
+		write_doc(var, limiter, fd);
 		free(limiter);
 		close(fd);
 		node = get_next_node(node->next, HEREDOC, END);

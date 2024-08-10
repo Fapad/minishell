@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/10 13:11:39 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 17:36:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,16 +101,15 @@ void	wait_children(t_var *var)
 
 	pid = 0;
 	i = 0;
-	status = var->status;
-	var->sa.sa_handler = sigint_wait;
-	sigaction(SIGINT, &var->sa, NULL);
-	while (i++ < var->cmds && pid != var->pid)
+	status = 0;
+	while (pid != var->pid)
+	{
 		pid = wait(&status);
+		i++;
+	}
 	var->status = status;
 	while (i++ < var->cmds)
 		wait(&status);
-	var->sa.sa_handler = handle_sigint;
-	sigaction(SIGINT, &var->sa, NULL);
 	if (WIFEXITED(var->status))
 		var->status = WEXITSTATUS(var->status);
 	else if (WIFSIGNALED(var->status))

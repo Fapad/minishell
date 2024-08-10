@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/10 12:53:38 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 17:35:37 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,9 +133,10 @@ bool	handle_compound_tokens(t_var *var, char *str);
 
 void	setup_signal_handlers(t_var *var);
 void	handle_sigint(int sig);
+void	sigint_handler_interactive_mode(t_var *var);
+void	save_sigint(int signal);
+void	sigint_handler_non_interactive_mode(t_var *var);
 void	check_received_signal(t_var *var);
-void	sigquit_and_sigint_handler(t_var *var);
-void	sigint_wait(int signal);
 
 // PARSER
 
@@ -174,6 +175,7 @@ void	command_not_found(t_var *var);
 void	ambiguous_redirect_error(t_var *var, char *str);
 void	invalid_identifier(t_var *var, char *str);
 void	error_msg(t_var *var, char *str, int status);
+void	child_execve_error_handler(t_var *var);
 
 // BUILTINS
 
@@ -232,6 +234,6 @@ void	redirect_or_exit(t_var *var);
 void	redirect_infile(t_var *var, char *file);
 void	redirect_outfile(t_var *var, char *file, int type);
 int		write_here_docs(t_var *var);
-void	write_doc(char *limiter, int fd);
+void	write_doc(t_var *var, char *limiter, int fd);
 
 #endif

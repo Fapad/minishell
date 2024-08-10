@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/10 13:47:43 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 17:03:33 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,10 @@ void	check_received_signal(t_var *var)
 	extern sig_atomic_t	g_signal;
 
 	if (g_signal)
+	{
 		var->status = g_signal + 128;
-	g_signal = 0;
+		g_signal = 0;
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -76,12 +78,14 @@ int	main(int argc, char **argv, char **envp)
 		var.line = readline(PROMPT);
 		if (!var.line)
 			break ;
+		sigint_handler_non_interactive_mode(&var);
 		if (*var.line)
 			add_history(var.line);
 		var.tokens = tokenize(&var);
 		if (parse_tokens(&var) == true)
 			execute(&var);
 		exec_cleanup(&var);
+		sigint_handler_interactive_mode(&var);
 	}
 	ft_printf("exit\n");
 	rl_clear_history();
