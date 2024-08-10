@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 18:37:11 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 22:11:10 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,6 @@ void	update_env_after_cd(t_var *var, char *env_var_name, char *path)
 
 bool	too_many_arguments(t_var *var, t_node *cmd)
 {
-	int	i;
-
-	i = 0;
 	if (cmd->content[1] && cmd->content[2])
 	{
 		error_msg(var, ": too many arguments", 1);
