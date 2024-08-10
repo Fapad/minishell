@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 20:34:22 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 12:53:38 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ bool	handle_compound_tokens(t_var *var, char *str);
 void	setup_signal_handlers(t_var *var);
 void	handle_sigint(int sig);
 void	check_received_signal(t_var *var);
+void	sigquit_and_sigint_handler(t_var *var);
 void	sigint_wait(int signal);
 
 // PARSER

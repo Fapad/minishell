@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/10 12:17:15 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 13:11:39 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,21 +102,22 @@ void	wait_children(t_var *var)
 	pid = 0;
 	i = 0;
 	status = var->status;
-	signal(SIGINT, &sigint_wait);
-	while (pid != var->pid)
-	{
+	var->sa.sa_handler = sigint_wait;
+	sigaction(SIGINT, &var->sa, NULL);
+	while (i++ < var->cmds && pid != var->pid)
 		pid = wait(&status);
-		i++;
-	}
 	var->status = status;
 	while (i++ < var->cmds)
 		wait(&status);
+	var->sa.sa_handler = handle_sigint;
+	sigaction(SIGINT, &var->sa, NULL);
 	if (WIFEXITED(var->status))
 		var->status = WEXITSTATUS(var->status);
 	else if (WIFSIGNALED(var->status))
 	{
 		var->status = 128 + WTERMSIG(var->status);
+		if (var->status == 128 + SIGQUIT)
+			ft_putstr_fd("Quit (core dumped)", STDERR_FILENO);
 		write(STDOUT_FILENO, "\n", 1);
 	}
-	signal(SIGINT, &handle_sigint);
 }

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:18:55 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/01 16:05:23 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 13:45:30 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	remove_heredocs(t_var *var)
 
 void	exec_cleanup(t_var *var)
 {
+	check_received_signal(var);
 	remove_heredocs(var);
 	free_lists_and_path(var);
 	free(var->line);

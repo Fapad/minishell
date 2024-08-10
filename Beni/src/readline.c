@@ -6,13 +6,11 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/09 20:24:06 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 13:47:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-sig_atomic_t	g_signal = 0;
 
 void	init_var(t_var *var, int argc, char **argv, char **envp)
 {
@@ -60,6 +58,8 @@ void	malloc_envps(t_var *var, char **envp)
 
 void	check_received_signal(t_var *var)
 {
+	extern sig_atomic_t	g_signal;
+
 	if (g_signal)
 		var->status = g_signal + 128;
 	g_signal = 0;
@@ -78,12 +78,9 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*var.line)
 			add_history(var.line);
-		check_received_signal(&var);
 		var.tokens = tokenize(&var);
-		if (parse_tokens(&var))
+		if (parse_tokens(&var) == true)
 			execute(&var);
-		else
-			status_1(&var);
 		exec_cleanup(&var);
 	}
 	ft_printf("exit\n");
