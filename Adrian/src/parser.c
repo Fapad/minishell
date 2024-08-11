@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 15:32:44 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 13:42:34 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ bool	parse_tokens(t_var *var)
 	var->out_fd = STDOUT_FILENO;
 	var->cmds = 0;
 	if (!var->tokens)
-		return (false);
+		return (status_1(var), false);
 	if (!valid_syntax(var->tokens))
 	{
 		status_2(var);
@@ -81,7 +81,7 @@ bool	parse_tokens(t_var *var)
 		if (!make_pipeline(var, current) || !close_pipeline(var, current))
 		{
 			free_linked_lists(var);
-			return (false);
+			return (status_1(var), false);
 		}
 		current = find_token(current, PIPE, END);
 	}

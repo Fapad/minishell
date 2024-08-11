@@ -1,3 +1,8 @@
+6. update
+
+invalide read: this will break your minishell cd .. "cd .." pwd $PWD hm $ASD
+
+
 5. Update
 
 ha csak exportot irunk be akkor is ki kell irja az env-t

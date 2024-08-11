@@ -6,28 +6,43 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:22 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/04 12:33:17 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/10 17:36:00 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
+sig_atomic_t	g_signal = 0;
+
 void	handle_sigint(int sig)
 {
-	signal_received = sig;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_replace_line("", 0);
+	g_signal = sig;
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_on_new_line();
-	rl_redisplay();
+	rl_replace_line("", 0);
 }
 
-void	setup_signal_handlers(void)
+void	save_sigint(int signal)
 {
-	struct sigaction	sa;
+	g_signal = signal;
+}
 
-	sa.sa_handler = handle_sigint;
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGINT, &sa, NULL);
+void	sigint_handler_non_interactive_mode(t_var *var)
+{
+	var->sa.sa_handler = save_sigint;
+	sigaction(SIGINT, &var->sa, NULL);
+}
+
+void	sigint_handler_interactive_mode(t_var *var)
+{
+	var->sa.sa_handler = handle_sigint;
+	sigaction(SIGINT, &var->sa, NULL);
+}
+
+void	setup_signal_handlers(t_var *var)
+{
 	signal(SIGQUIT, SIG_IGN);
+	var->sa.sa_flags = SA_RESTART;
+	sigemptyset(&var->sa.sa_mask);
+	sigint_handler_interactive_mode(var);
 }

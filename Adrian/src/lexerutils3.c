@@ -1,44 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexerutils2.c                                      :+:      :+:    :+:   */
+/*   lexerutils3.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:44 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/09 10:12:16 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/09 18:47:58 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-int	identify_nonexistent_var(t_var *var, char **start, char **end)
-{
-	char	*tkn_end;
-	char	*ptr;
-	char	c;
-
-	tkn_end = token_end(*start);
-	ptr = *start;
-	while (possible_var(var, ptr[0], ptr[1]) && ptr[1] != '?')
-	{
-		*end = ptr + 1;
-		ptr += 2;
-		while (*ptr && (ft_isalnum(*ptr) || *ptr == '_'))
-			ptr++;
-		c = *ptr;
-		*ptr = 0;
-		if (ft_getenv(var->env, *end))
-		{
-			*ptr = c;
-			*end = *start;
-			return (false);
-		}
-		*ptr = c;
-	}
-	reset_end(*start, end, ptr, tkn_end);
-	return (ptr == tkn_end);
-}
 
 int	identify_general_token(t_var *var, char **start, char **end)
 {
@@ -99,18 +71,6 @@ int	identify_double_quotes(char **start, char **end)
 		}
 	}
 	*end = tmp;
-	return (false);
-}
-
-int	lone_dollar_sign(char *start, char *end)
-{
-	if (*start == '$')
-	{
-		start++;
-		if (identify_double_quotes(&start, &end) \
-		|| identify_single_quotes(&start, &end))
-			return (true);
-	}
 	return (false);
 }
 

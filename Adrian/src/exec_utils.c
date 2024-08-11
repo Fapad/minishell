@@ -6,13 +6,13 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 15:19:44 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/11 11:40:04 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-int	txt_file(char *file)
+bool	txt_file(char *file)
 {
 	char	buf[BUFFER_SIZE];
 	ssize_t	len;
@@ -27,7 +27,7 @@ int	txt_file(char *file)
 		return (!txt);
 	len = read(fd, buf, BUFFER_SIZE);
 	if (len == -1)
-		return (!txt);
+		txt = false;
 	i = 0;
 	while (i < len)
 	{
@@ -43,6 +43,9 @@ char	*get_cmd(t_var *var)
 {
 	if (!var->splitted_path || !var->splitted_path[0])
 		return (check_given_file(var));
+	if (!ft_strncmp("..", var->current->content[0], 3) \
+	|| !ft_strncmp(".", var->current->content[0], 2))
+		return (command_not_found(var), NULL);
 	if (search_path(var, X_OK))
 	{
 		if (txt_file(var->exec_cmd))
@@ -77,6 +80,7 @@ int	check_files(t_var *var, char *str)
 		error_msg(var, ": Is a directory", 126);
 		return (1);
 	}
+	close(fd);
 	return (0);
 }
 
@@ -102,25 +106,14 @@ char	*check_given_file(t_var *var)
 	return (NULL);
 }
 
-void	wait_children(t_var *var)
+char	**env_loop(t_var *var, char **(*f)(t_var *, char *))
 {
-	int		status;
-	int		i;
-	pid_t	pid;
+	int	i;
 
-	pid = 0;
-	i = 0;
-	status = var->status;
-	while (pid != var->pid)
-	{
-		pid = wait(&status);
-		i++;
-	}
-	var->status = status;
-	while (i++ < var->cmds)
-		wait(&status);
-	if (WIFEXITED(var->status))
-		var->status = WEXITSTATUS(var->status);
-	else if (WIFSIGNALED(var->status))
-		var->status = 128 + WTERMSIG(var->status);
+	i = 1;
+	if (f == &command_export && !var->current->content[i])
+		print_environment(var);
+	while (var->current->content[i] && var->env)
+		var->env = f(var, var->current->content[i++]);
+	return (var->env);
 }

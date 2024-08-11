@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 10:11:41 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/11 11:43:35 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <fcntl.h>
 # include <errno.h>
 # include <sys/wait.h>
+# include <sys/ioctl.h>
 # include "../libft/libft.h"
 
 # define END 01
@@ -37,7 +38,7 @@
 # define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
 [1;32m\002ell\001\033[0m\002 > "
 # define HD_PROMPT "\001\033[1;31m\002her\001\033[1;37m\002edo\001\033\
-[1;32m\002c \"\001\033[0m\002"
+[1;32m\002c \001\033[0m\002\""
 # define TMP_PATH "/tmp/.tmp"
 # define FILENAME 1
 # ifndef TESTER
@@ -62,26 +63,28 @@ typedef struct s_node
 
 typedef struct s_var
 {
-	t_token	*tokens;
-	t_token	*last_token;
-	t_node	*list;
-	t_node	*current;
-	char	*line;
-	char	**env;
-	char	**stack_env;
-	char	**splitted_path;
-	char	**compound_arg;
-	char	*cwd;
-	char	*exec_cmd;
-	pid_t	pid;
-	size_t	len;
-	int		pfd[2];
-	int		in_fd;
-	int		out_fd;
-	int		cmds;
-	int		status;
-	int		loop;
-}			t_var;
+	struct sigaction	sa;
+	t_token				*tokens;
+	t_token				*last_token;
+	t_node				*list;
+	t_node				*current;
+	char				*line;
+	char				**env;
+	char				**stack_env;
+	char				**splitted_path;
+	char				**compound_arg;
+	char				*cwd;
+	char				*exec_cmd;
+	pid_t				pid;
+	size_t				len;
+	int					pfd[2];
+	int					in_fd;
+	int					out_fd;
+	int					cmds;
+	int					status;
+	int					last_status;
+	int					loop;
+}						t_var;
 
 // LEXER
 
@@ -97,7 +100,6 @@ int		identify_pipe(char **start, char **end);
 int		identify_general_token(t_var *var, char **start, char **end);
 int		identify_single_quotes(char **start, char **end);
 int		identify_double_quotes(char **start, char **end);
-void	print_tokens(t_token *head);
 int		lone_dollar_sign(char *start, char *end);
 void	ft_strncpy(char	*dest, const char *str, size_t n);
 char	*ft_strndup(const char *s, size_t n);
@@ -129,9 +131,12 @@ bool	handle_compound_tokens(t_var *var, char *str);
 
 // SIGNAL
 
-extern sig_atomic_t	signal_received;
-void	setup_signal_handlers(void);
+void	setup_signal_handlers(t_var *var);
 void	handle_sigint(int sig);
+void	sigint_handler_interactive_mode(t_var *var);
+void	save_sigint(int signal);
+void	sigint_handler_non_interactive_mode(t_var *var);
+void	check_received_signal(t_var *var);
 
 // PARSER
 
@@ -170,6 +175,7 @@ void	command_not_found(t_var *var);
 void	ambiguous_redirect_error(t_var *var, char *str);
 void	invalid_identifier(t_var *var, char *str);
 void	error_msg(t_var *var, char *str, int status);
+void	child_execve_error_handler(t_var *var);
 
 // BUILTINS
 
@@ -219,6 +225,7 @@ void	wait_children(t_var *var);
 char	*check_given_file(t_var *var);
 void	set_status(t_var *var);
 int		search_path(t_var *var, int access_type);
+void	get_child_exit_status(t_var *var);
 
 // REDIRECT
 
@@ -228,6 +235,6 @@ void	redirect_or_exit(t_var *var);
 void	redirect_infile(t_var *var, char *file);
 void	redirect_outfile(t_var *var, char *file, int type);
 int		write_here_docs(t_var *var);
-void	write_doc(char *limiter, int fd);
+void	write_doc(t_var *var, char *limiter, int fd);
 
 #endif

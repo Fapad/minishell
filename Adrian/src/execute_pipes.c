@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 09:31:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/11 11:42:33 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,24 @@ void	last_cmd(t_var *var)
 	close_in_and_out(var);
 	close(var->pfd[READ_END]);
 	var->in_fd = STDIN_FILENO;
+}
+
+void	wait_children(t_var *var)
+{
+	int		status;
+	int		i;
+	pid_t	pid;
+
+	pid = 0;
+	i = 0;
+	status = 0;
+	while (pid != var->pid)
+	{
+		pid = wait(&status);
+		i++;
+	}
+	var->status = status;
+	while (i++ < var->cmds)
+		wait(&status);
+	get_child_exit_status(var);
 }
