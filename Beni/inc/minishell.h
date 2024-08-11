@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/10 17:35:37 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/11 11:43:35 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,7 @@ void	wait_children(t_var *var);
 char	*check_given_file(t_var *var);
 void	set_status(t_var *var);
 int		search_path(t_var *var, int access_type);
+void	get_child_exit_status(t_var *var);
 
 // REDIRECT
 

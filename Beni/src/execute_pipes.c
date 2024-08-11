@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/10 17:36:43 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/11 11:42:33 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,13 +110,5 @@ void	wait_children(t_var *var)
 	var->status = status;
 	while (i++ < var->cmds)
 		wait(&status);
-	if (WIFEXITED(var->status))
-		var->status = WEXITSTATUS(var->status);
-	else if (WIFSIGNALED(var->status))
-	{
-		var->status = 128 + WTERMSIG(var->status);
-		if (var->status == 128 + SIGQUIT)
-			ft_putstr_fd("Quit (core dumped)", STDERR_FILENO);
-		write(STDOUT_FILENO, "\n", 1);
-	}
+	get_child_exit_status(var);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   error_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 15:10:31 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/11 11:43:56 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,14 @@ void	restore_environment(t_var *var)
 	perror("Could not change environment");
 	malloc_envps(var, var->stack_env);
 	ft_putendl_fd("Environment has been reset", STDERR_FILENO);
+}
+
+void	child_execve_error_handler(t_var *var)
+{
+	signal(SIGQUIT | SIGINT, SIG_IGN);
+	perror(var->exec_cmd);
+	free(var->exec_cmd);
+	set_status(var);
+	free_all(var);
+	exit(var->status);
 }

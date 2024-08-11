@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:18:55 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/10 16:36:53 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/11 11:45:24 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,18 @@ void	close_pipe(int pfd[])
 	close(pfd[READ_END]);
 }
 
-void	child_execve_error_handler(t_var *var)
+void	get_child_exit_status(t_var *var)
 {
-	signal(SIGQUIT | SIGINT, SIG_IGN);
-	perror(var->exec_cmd);
-	free(var->exec_cmd);
-	set_status(var);
-	free_all(var);
-	exit(var->status);
+	extern sig_atomic_t	g_signal;
+
+	if (WIFEXITED(var->status))
+		var->status = WEXITSTATUS(var->status);
+	else if (WIFSIGNALED(var->status))
+	{
+		var->status = 128 + WTERMSIG(var->status);
+		if (var->status == 128 + SIGQUIT)
+			ft_putendl_fd("Quit (core dumped)", STDERR_FILENO);
+	}
+	if (g_signal && ft_strncmp("./minishell", var->current->content[0], 12))
+		write(STDOUT_FILENO, "\n", 1);
 }

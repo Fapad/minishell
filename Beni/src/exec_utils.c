@@ -6,13 +6,13 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 18:46:36 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/11 11:40:04 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-int	txt_file(char *file)
+bool	txt_file(char *file)
 {
 	char	buf[BUFFER_SIZE];
 	ssize_t	len;
@@ -27,7 +27,7 @@ int	txt_file(char *file)
 		return (!txt);
 	len = read(fd, buf, BUFFER_SIZE);
 	if (len == -1)
-		return (!txt);
+		txt = false;
 	i = 0;
 	while (i < len)
 	{
@@ -80,6 +80,7 @@ int	check_files(t_var *var, char *str)
 		error_msg(var, ": Is a directory", 126);
 		return (1);
 	}
+	close(fd);
 	return (0);
 }
 
