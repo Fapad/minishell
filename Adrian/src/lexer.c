@@ -77,7 +77,6 @@ int	add_token(t_var *var, char **start)
 }
 char 	*add_token_doc(t_var *var, char **start)
 {
-	t_token	*new_token;
 	char	*end;
 	int		type;
 	char	*str;
@@ -86,12 +85,7 @@ char 	*add_token_doc(t_var *var, char **start)
 	type = identify_token_type(var, start, &end);
 	str = tokenize_str(var, *start, end, &type);
 	if (!str)
-		return (false);
-	*start = end;
-	new_token = create_token(type, str);
-	if (!new_token)
-		return (false);
-	add_token_to_list(var, new_token);
+		return (NULL);
 	return (str);
 }
 

@@ -47,20 +47,22 @@ void	write_doc(t_var *var, char *limiter, int fd)
 	ft_printf("\" > ");
 	sigint_handler_interactive_mode(var);
 	line = get_next_line(STDIN_FILENO);
-	while (line && ft_strncmp(line, limiter, limiter_size) && !g_signal)
+	tmp = "test";
+	while (tmp && line && ft_strncmp(line, limiter, limiter_size) && !g_signal)
 	{
 		tmp = add_token_doc(var, &line);
 		write(fd, tmp, ft_strlen(tmp));
+		free(line);
+		free(tmp);
 		ft_printf(HD_PROMPT);
 		write(STDOUT_FILENO, limiter, limiter_size - 2);
 		ft_printf("\" > ");
 		line = get_next_line(STDIN_FILENO);
 	}
+	sigint_handler_non_interactive_mode(var);
 	if (!line)
 		ft_printf("\n");
 	free(line);
-
-	sigint_handler_non_interactive_mode(var);
 }
 
 int	write_here_docs(t_var *var)

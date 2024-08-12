@@ -2,7 +2,7 @@
 
 6. Update 12.08.2024
 
-heredoc kicsomagolas leakel !
+heredoc eleg jo, de ha van a kicsomagolas utan meg valami szoveg akkor buggol !
 heredoc control + d megvan !
 . es .. exitkod  megvan !
 
