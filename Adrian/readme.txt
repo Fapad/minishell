@@ -1,6 +1,12 @@
-6. update
 
-invalide read: this will break your minishell cd .. "cd .." pwd $PWD hm $ASD
+
+6. Update 12.08.2024
+
+heredoc kicsomagolas leakel !
+heredoc control + d megvan !
+. es .. exitkod  megvan !
+
+
 
 
 5. Update
@@ -45,4 +51,4 @@ Valamint a norminette is hibatlan jeneleg
 
 
 # VALGRIND
-valgrind --leak-check=full --suppressions=readline.supp --trace-children=yes --track-fds=yes ./minishell
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-error-list=yes --suppressions=readline.supp --trace-children-skip="$(echo /bin/* /usr/bin/* /usr/sbin/* /home/bszilas/.capt/* $(which norminette) | tr ' ' ',')" --trace-children=yes --track-fds=yes ./minishell

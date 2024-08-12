@@ -39,6 +39,7 @@ void	write_doc(t_var *var, char *limiter, int fd)
 	extern sig_atomic_t	g_signal;
 	size_t				limiter_size;
 	char				*line;
+	char				*tmp;
 
 	limiter_size = ft_strlen(limiter) + 1;
 	ft_printf(HD_PROMPT);
@@ -48,15 +49,18 @@ void	write_doc(t_var *var, char *limiter, int fd)
 	line = get_next_line(STDIN_FILENO);
 	while (line && ft_strncmp(line, limiter, limiter_size) && !g_signal)
 	{
-		write(fd, line, ft_strlen(line));
-		free(line);
+		tmp = add_token_doc(var, &line);
+		write(fd, tmp, ft_strlen(tmp));
 		ft_printf(HD_PROMPT);
 		write(STDOUT_FILENO, limiter, limiter_size - 2);
 		ft_printf("\" > ");
 		line = get_next_line(STDIN_FILENO);
 	}
-	sigint_handler_non_interactive_mode(var);
+	if (!line)
+		ft_printf("\n");
 	free(line);
+
+	sigint_handler_non_interactive_mode(var);
 }
 
 int	write_here_docs(t_var *var)

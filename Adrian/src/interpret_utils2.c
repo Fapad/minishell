@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 20:43:43 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 18:48:01 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/12 10:51:24 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	identify_nonexistent_var(t_var *var, char **start, char **end)
 
 	tkn_end = token_end(*start);
 	ptr = *start;
-	while (possible_var(var, ptr[0], ptr[1]) && ptr[1] != '?')
+	while (*ptr && possible_var(var, ptr[0], ptr[1]) && ptr[1] != '?')
 	{
 		*end = ptr + 1;
 		ptr += 2;

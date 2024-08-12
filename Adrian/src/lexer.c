@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:35:08 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/10 16:35:43 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/12 12:34:13 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,25 @@ int	add_token(t_var *var, char **start)
 		return (false);
 	add_token_to_list(var, new_token);
 	return (true);
+}
+char 	*add_token_doc(t_var *var, char **start)
+{
+	t_token	*new_token;
+	char	*end;
+	int		type;
+	char	*str;
+
+	end = *start;
+	type = identify_token_type(var, start, &end);
+	str = tokenize_str(var, *start, end, &type);
+	if (!str)
+		return (false);
+	*start = end;
+	new_token = create_token(type, str);
+	if (!new_token)
+		return (false);
+	add_token_to_list(var, new_token);
+	return (str);
 }
 
 t_token	*tokenize(t_var *var)

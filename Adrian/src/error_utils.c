@@ -14,7 +14,7 @@
 
 void	status_1(t_var *var)
 {
-	if (var->status != 2)
+	if (var->status != 2 && var->status != 126 && var->status != 127)
 		var->status = EXIT_FAILURE;
 }
 

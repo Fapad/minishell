@@ -45,7 +45,10 @@ char	*get_cmd(t_var *var)
 		return (check_given_file(var));
 	if (!ft_strncmp("..", var->current->content[0], 3) \
 	|| !ft_strncmp(".", var->current->content[0], 2))
+	{
+		var->status = 127;
 		return (command_not_found(var), NULL);
+	}
 	if (search_path(var, X_OK))
 	{
 		if (txt_file(var->exec_cmd))

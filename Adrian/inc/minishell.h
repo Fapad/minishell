@@ -69,6 +69,7 @@ typedef struct s_var
 	t_node				*list;
 	t_node				*current;
 	char				*line;
+	char				*doc_line;
 	char				**env;
 	char				**stack_env;
 	char				**splitted_path;
@@ -236,5 +237,7 @@ void	redirect_infile(t_var *var, char *file);
 void	redirect_outfile(t_var *var, char *file, int type);
 int		write_here_docs(t_var *var);
 void	write_doc(t_var *var, char *limiter, int fd);
+char 	*add_token_doc(t_var *var, char **start);
+
 
 #endif
