@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:06:25 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 13:53:44 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/12 17:25:11 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,31 @@ size_t	envp_string_count(char **envp)
 	return (string_count);
 }
 
+char	*signed_llong_overflow_check(char *n)
+{
+	size_t	i;
+	bool	minus;
+
+	i = 0;
+	if (!n)
+		return (NULL);
+	skip_whitespace(&n);
+	if (*n == '-' || *n == '+')
+		i++;
+	while (n[i])
+	{
+		if (!ft_isdigit(n[i++]))
+			return (NULL);
+	}
+	i = 0;
+	if (n[i] == '-')
+		minus = true;
+	if (minus || n[i] == '+')
+		i++;
+		
+	return (*n);
+}
+
 int	get_shlvl(char *str)
 {
 	size_t	i;
@@ -32,7 +57,7 @@ int	get_shlvl(char *str)
 	i = 0;
 	if (str[i] == '+' || str[i] == '-')
 		i++;
-	if (ft_strlen(&str[i]) > digits_count(LONG_MAX, 10))
+	if (ft_strlen(&str[i]) > digits_count(LLONG_MAX, 10) )
 		return (0);
 	while (str[i])
 	{

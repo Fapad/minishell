@@ -3,15 +3,16 @@ TODO #######################################################################
 
 
 --env -i nélkül parancsok keresése
---hibás parancsok hibakódja pl. . és ".." (teszter)
---env _ változó
+--env -i PATH beáll
 --heredoc változók kibontása
---heredoc Ctrl-D
---SHLVL llong_min
+--exit llong_min -9223372036854775808
 
 
 DONE #######################################################################
 
+--heredoc Ctrl-D
+--env _ változó - export[0] -ban nincs benne
+--hibás parancsok hibakódja pl. . és ".." (teszter)
 --export argumentum nélkül conditional jump
 --echo $"HOME"
 --echo $'HOME'

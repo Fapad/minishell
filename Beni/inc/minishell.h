@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/11 11:43:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/12 16:19:03 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,9 @@ void	print_environment(t_var *var);
 char	**set_shlvl(t_var *var, char *str);
 int		get_shlvl(char *str);
 char	**env_loop(t_var *var, char **(*f)(t_var *, char *));
+void	update_last_cmd(t_var *var);
+char	*last_arg(char **args);
+void	update_last_cmd(t_var *var);
 
 // EXECUTE
 

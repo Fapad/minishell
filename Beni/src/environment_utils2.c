@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:10:04 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/12 14:27:42 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/12 16:41:25 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,12 @@ char	*find_next_smallest(char **arr, char *current, char *max)
 	return (next);
 }
 
+void	print_env_string(char *str)
+{
+	ft_printf("declare -x ");
+	ft_printf("%s\n", str);
+}
+
 void	print_environment(t_var *var)
 {
 	char	*next;
@@ -48,8 +54,6 @@ void	print_environment(t_var *var)
 	size_t	len;
 	size_t	i;
 
-	if (!var->env || !var->env[0])
-		return ;
 	len = envp_string_count(var->env);
 	ft_bzero(max, 2);
 	cat_char_to_str(max, CHAR_MAX, 1);
@@ -59,8 +63,40 @@ void	print_environment(t_var *var)
 	while (i < len)
 	{
 		next = find_next_smallest(var->env, next, max);
-		ft_printf("declare -x ");
-		ft_printf("%s\n", next);
+		if (ft_strnstr(next, "_=", 2) == next)
+		{
+			next = find_next_smallest(var->env, next, max);
+			if (++i == len)
+				break ;
+		}
+		print_env_string(next);
 		i++;
 	}
+}
+
+char	*last_arg(char **args)
+{
+	size_t	i;
+
+	i = 0;
+	while (args[i] && args[i + 1])
+		i++;
+	return (args[i]);
+}
+
+void	update_last_cmd(t_var *var)
+{
+	t_node	*cmd;
+	char	*str;
+	char	*envvar;
+
+	cmd = get_next_node(var->current, CMD, PIPE | END);
+	str = last_arg(cmd->content);
+	envvar = ft_strjoin_nofree("_=", str);
+	if (!envvar)
+		return (perror("update _"));
+	var->env = command_export(var, envvar);
+	free(envvar);
+	if (!var->env)
+		restore_environment(var);
 }

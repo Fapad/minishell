@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/12 10:58:27 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/12 15:18:11 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	exec_other_commands(t_var *var)
 		free_all(var);
 		exit(EXIT_SUCCESS);
 	}
+	update_last_cmd(var);
 	if (ft_strncmp(var->current->content[0], "echo", 5) == 0)
 		command_echo(var->current);
 	else if (ft_strncmp(var->current->content[0], "env", 4) == 0)
@@ -70,14 +71,13 @@ int	cd_export_exit_or_unset(t_var *var)
 
 void	one_simple_cmd(t_var *var)
 {
+	var->current = var->list;
+	update_last_cmd(var);
 	if (!open_files_in_parent(var))
 		return (status_1(var));
 	var->current = get_next_node(var->list, CMD, END);
-	if (!var->current)
-		return ;
 	if (cd_export_exit_or_unset(var))
 		return ;
-	var->current = var->list;
 	var->pid = fork();
 	if (var->pid == 0)
 	{
