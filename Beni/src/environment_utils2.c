@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:10:04 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 19:10:43 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/12 14:27:42 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	print_environment(t_var *var)
 	if (!var->env || !var->env[0])
 		return ;
 	len = envp_string_count(var->env);
+	ft_bzero(max, 2);
 	cat_char_to_str(max, CHAR_MAX, 1);
 	nul[0] = 0;
 	next = nul;

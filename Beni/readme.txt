@@ -40,4 +40,4 @@ Valamint a norminette is hibatlan jeneleg
 
 
 # VALGRIND
-valgrind --leak-check=full --suppressions=readline.supp --trace-children=yes --track-fds=yes ./minishell
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-error-list=yes --suppressions=readline.supp --trace-children-skip="$(echo /bin/* /usr/bin/* /usr/sbin/* /home/bszilas/.capt/* $(which norminette) | tr ' ' ',')" --trace-children=yes --track-fds=yes ./minishell
