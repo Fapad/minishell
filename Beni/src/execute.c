@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/12 15:18:11 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 13:48:16 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,14 @@ void	one_simple_cmd(t_var *var)
 	if (!open_files_in_parent(var))
 		return (status_1(var));
 	var->current = get_next_node(var->list, CMD, END);
+	if (!var->current)
+		return ;
 	if (cd_export_exit_or_unset(var))
 		return ;
 	var->pid = fork();
 	if (var->pid == 0)
 	{
+		var->current = var->list;
 		redirect_or_exit(var);
 		exec_other_commands(var);
 	}

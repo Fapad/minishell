@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 16:42:28 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/12 17:06:34 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 12:44:28 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,10 @@ void	command_exit(t_var *var)
 		var->status = var->last_status;
 		return ;
 	}
-	var->status = get_shlvl(var->list->content[1]);
-	if (var->status == 0 && ft_strncmp("0", var->list->content[1], 2))
+	var->status = get_shlvl(var, var->list->content[1]);
+	if ((var->status == 0 || var->overflow) \
+	&& (ft_strncmp("0", var->list->content[1], 2) && \
+	ft_strncmp("-9223372036854775808", var->list->content[1], 21)))
 		return (error_msg(var, ": numeric argument required", 2));
 	if (var->list->content[2])
 	{

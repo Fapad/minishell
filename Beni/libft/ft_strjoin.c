@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 08:26:46 by marvin            #+#    #+#             */
-/*   Updated: 2024/07/19 17:57:18 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 13:39:26 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,10 @@ char	*ft_strjoin_nofree(char const *s1, char const *s2)
 	size_t	i;
 	size_t	j;
 
-	if (!s2 || !s1)
+	if (!s1)
 		return (NULL);
+	if (!s2)
+		return (ft_strdup(s1));
 	ret = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof (char));
 	if (!ret)
 		return (NULL);

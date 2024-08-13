@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:10:04 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/12 16:41:25 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 13:38:29 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,10 @@ void	update_last_cmd(t_var *var)
 	char	*envvar;
 
 	cmd = get_next_node(var->current, CMD, PIPE | END);
-	str = last_arg(cmd->content);
+	if (!cmd)
+		str = NULL;
+	else
+		str = last_arg(cmd->content);
 	envvar = ft_strjoin_nofree("_=", str);
 	if (!envvar)
 		return (perror("update _"));

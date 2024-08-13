@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/11 11:43:56 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 14:33:45 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	status_1(t_var *var)
 {
-	if (var->status != 2)
+	if (var->status != 2 && var->status != 126 && var->status != 127)
 		var->status = EXIT_FAILURE;
 }
 

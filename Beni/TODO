@@ -1,15 +1,15 @@
 
 TODO #######################################################################
 
-
 --env -i nélkül parancsok keresése
 --env -i PATH beáll
---heredoc változók kibontása
---exit llong_min -9223372036854775808
+--export változókat "nyomtatja"
 
 
 DONE #######################################################################
 
+--heredoc változók kibontása
+--exit llong_min -9223372036854775808
 --heredoc Ctrl-D
 --env _ változó - export[0] -ban nincs benne
 --hibás parancsok hibakódja pl. . és ".." (teszter)

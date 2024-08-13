@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/11 11:40:04 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 14:31:39 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,10 @@ char	*get_cmd(t_var *var)
 		return (check_given_file(var));
 	if (!ft_strncmp("..", var->current->content[0], 3) \
 	|| !ft_strncmp(".", var->current->content[0], 2))
+	{
+		var->status = 127;
 		return (command_not_found(var), NULL);
+	}
 	if (search_path(var, X_OK))
 	{
 		if (txt_file(var->exec_cmd))
