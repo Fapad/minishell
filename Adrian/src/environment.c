@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 09:29:43 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 14:49:51 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,13 @@ void	command_env(t_var *var)
 
 	i = 0;
 	while (var->env[i])
-		ft_printf("%s\n", var->env[i++]);
+	{
+		if (!ft_strncmp("_=", var->env[i], 2))
+			ft_printf("_=/home/bszilas/.capt/root/usr/bin/env\n");
+		else
+			ft_printf("%s\n", var->env[i]);
+		i++;
+	}
 }
 
 char	**command_unset(t_var *var, char *str)

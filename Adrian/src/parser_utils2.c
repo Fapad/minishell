@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 20:38:56 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 20:40:00 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 15:34:33 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,14 @@ t_node	*new_redirect_node(t_token *current, t_node *this)
 
 	i = 0;
 	this->type = current->type;
-	if (this->type == HEREDOC)
+	if (this->type & HEREDOC)
 		this->content = malloc(4 * sizeof (char *));
 	else
 		this->content = malloc(3 * sizeof (char *));
 	if (!this->content)
 		return (free(this), NULL);
 	this->content[i++] = current->str;
-	if (this->type == HEREDOC)
+	if (this->type & HEREDOC)
 		this->content[i++] = NULL;
 	current = current->right;
 	if (current->type != CMD)

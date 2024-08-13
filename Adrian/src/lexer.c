@@ -75,19 +75,6 @@ int	add_token(t_var *var, char **start)
 	add_token_to_list(var, new_token);
 	return (true);
 }
-char 	*add_token_doc(t_var *var, char **start)
-{
-	char	*end;
-	int		type;
-	char	*str;
-
-	end = *start;
-	type = identify_token_type(var, start, &end);
-	str = tokenize_str(var, *start, end, &type);
-	if (!str)
-		return (NULL);
-	return (str);
-}
 
 t_token	*tokenize(t_var *var)
 {

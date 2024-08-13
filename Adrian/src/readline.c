@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/12 13:19:18 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 16:01:19 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,14 @@ int	main(int argc, char **argv, char **envp)
 	init_var(&var, argc, argv, envp);
 	while (var.loop)
 	{
-		var.line = readline(PROMPT);
+		if (TESTER)
+		{
+			char *line = get_next_line(0);
+			var.line = ft_strtrim(line, "\n");
+			free(line);
+		}
+		else
+			var.line = readline(PROMPT);
 		if (!var.line)
 			break ;
 		sigint_handler_non_interactive_mode(&var);
@@ -87,7 +94,8 @@ int	main(int argc, char **argv, char **envp)
 		exec_cleanup(&var);
 		sigint_handler_interactive_mode(&var);
 	}
-	ft_printf("exit\n");
+	if (!TESTER)
+		ft_printf("exit\n");
 	rl_clear_history();
 	free_all(&var);
 	return (var.status);

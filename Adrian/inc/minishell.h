@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/11 11:43:35 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 15:26:50 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # define INTERPRET 040
 # define AMBI_R 0100
 # define NO_VAR 0200
+# define NO_EXPAND 0400
 # define TO_SPLIT CHAR_MAX
 # define REDIRECTION 03006
 # define READ_END 0
@@ -69,7 +70,6 @@ typedef struct s_var
 	t_node				*list;
 	t_node				*current;
 	char				*line;
-	char				*doc_line;
 	char				**env;
 	char				**stack_env;
 	char				**splitted_path;
@@ -85,6 +85,7 @@ typedef struct s_var
 	int					status;
 	int					last_status;
 	int					loop;
+	int					overflow;
 }						t_var;
 
 // LEXER
@@ -129,6 +130,9 @@ bool	ambiguous_redirect(t_var *var, int type, char *str);
 void	free_bare_tokens(t_token *last);
 int		split_compound_tokens(t_var *var, char *str);
 bool	handle_compound_tokens(t_var *var, char *str);
+void	heredoc_expand_line_len(t_var *var, char *line);
+char	*expand_heredoc_line(t_var *var, char *line);
+void	heredoc_prompt(char *limiter, size_t limiter_size);
 
 // SIGNAL
 
@@ -201,8 +205,13 @@ void	cd_dotdot_for_istvan(t_var *var, char *path);
 char	*find_next_smallest(char **arr, char *current, char *max);
 void	print_environment(t_var *var);
 char	**set_shlvl(t_var *var, char *str);
-int		get_shlvl(char *str);
+int		get_shlvl(t_var *var, char *str);
 char	**env_loop(t_var *var, char **(*f)(t_var *, char *));
+void	update_last_cmd(t_var *var);
+char	*last_arg(char **args);
+void	update_last_cmd(t_var *var);
+long long	signed_llong_overflow_check(t_var *var, char *n);
+
 
 // EXECUTE
 
@@ -236,8 +245,6 @@ void	redirect_or_exit(t_var *var);
 void	redirect_infile(t_var *var, char *file);
 void	redirect_outfile(t_var *var, char *file, int type);
 int		write_here_docs(t_var *var);
-void	write_doc(t_var *var, char *limiter, int fd);
-char 	*add_token_doc(t_var *var, char **start);
-
+void	write_doc(t_var *var, char *limiter, int fd, int expand);
 
 #endif

@@ -1,14 +1,3 @@
-
-
-6. Update 12.08.2024
-
-heredoc eleg jo, de ha van a kicsomagolas utan meg valami szoveg akkor buggol !
-heredoc control + d megvan !
-. es .. exitkod  megvan !
-
-
-
-
 5. Update
 
 ha csak exportot irunk be akkor is ki kell irja az env-t

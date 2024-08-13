@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 10:17:53 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 15:30:33 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,12 @@ void	cat_double_qoutes(t_var *var, char *str, char **start, char *end)
 	*end = '\"';
 }
 
+void	flag_heredoc(t_var *var)
+{
+	if (var->last_token && var->last_token->type & HEREDOC)
+		var->last_token->type = var->last_token->type | NO_EXPAND;
+}
+
 char	*cat_intrd_str(t_var *var, char *start, char *end)
 {
 	char	*ptr;
@@ -94,9 +100,15 @@ char	*cat_intrd_str(t_var *var, char *start, char *end)
 	while (start < end)
 	{
 		if (*start == '\'' && identify_single_quotes(&start, &ptr))
+		{
+			flag_heredoc(var);
 			cat_single_qoutes(str, &start, ptr, var->len);
+		}
 		else if (*start == '\"' && identify_double_quotes(&start, &ptr))
+		{
+			flag_heredoc(var);
 			cat_double_qoutes(var, str, &start, ptr);
+		}
 		else if (possible_var(var, start[0], start[1]))
 			cat_env_var(var, str, &start, end);
 		else if (!lone_dollar_sign(start, end))
