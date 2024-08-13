@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 15:30:33 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 18:26:05 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,6 @@ void	cat_double_qoutes(t_var *var, char *str, char **start, char *end)
 		(*start)++;
 	}
 	*end = '\"';
-}
-
-void	flag_heredoc(t_var *var)
-{
-	if (var->last_token && var->last_token->type & HEREDOC)
-		var->last_token->type = var->last_token->type | NO_EXPAND;
 }
 
 char	*cat_intrd_str(t_var *var, char *start, char *end)

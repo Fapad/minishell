@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:35:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 15:25:59 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 18:27:36 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ char	*expand_heredoc_line(t_var *var, char *line)
 {
 	size_t	len;
 	char	*str;
-	
+
 	heredoc_expand_line_len(var, line);
 	if (!var->len)
 		return (line);
@@ -82,13 +82,6 @@ char	*expand_heredoc_line(t_var *var, char *line)
 		line++;
 	}
 	return (free(line - len), str);
-}
-
-void	heredoc_prompt(char *limiter, size_t limiter_size)
-{
-	ft_printf(HD_PROMPT);
-	write(STDOUT_FILENO, limiter, limiter_size - 2);
-	ft_printf("\" > ");
 }
 
 void	write_doc(t_var *var, char *limiter, int fd, int expand)

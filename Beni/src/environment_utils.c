@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:06:25 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 12:42:07 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 18:24:34 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,18 +117,4 @@ int	valid_identifier(t_var *var, char *str)
 		i++;
 	}
 	return (true);
-}
-
-int	existing_env_var(char **env, char *str)
-{
-	char	*tmp;
-	char	*var;
-
-	tmp = ft_strchr(str, '=');
-	if (!tmp)
-		return (false);
-	tmp[0] = '\0';
-	var = ft_getenv(env, str);
-	tmp[0] = '=';
-	return (var != NULL);
 }

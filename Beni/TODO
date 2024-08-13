@@ -1,13 +1,12 @@
 
 TODO #######################################################################
 
---env -i nélkül parancsok keresése
---env -i PATH beáll
---export változókat "nyomtatja"
-
 
 DONE #######################################################################
 
+--env -i nélkül parancsok keresése
+--env -i PATH beáll
+--export változókat "nyomtatja"
 --heredoc változók kibontása
 --exit llong_min -9223372036854775808
 --heredoc Ctrl-D

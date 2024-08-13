@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/11 11:42:33 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 20:03:52 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	exec_builtins(t_var *var)
 	if (!var->current)
 		return (free_all(var), exit(EXIT_SUCCESS));
 	if (ft_strncmp(var->current->content[0], "export", 7) == 0)
-		var->env = command_export(var, var->current->content[1]);
+		var->env = env_loop(var, &command_export);
 	else if (ft_strncmp(var->current->content[0], "unset", 6) == 0)
-		var->env = command_unset(var, var->current->content[1]);
+		var->env = env_loop(var, &command_unset);
 	else if (ft_strncmp(var->current->content[0], "cd", 3) == 0)
 		command_cd(var, var->current->content[1]);
 	else if (ft_strncmp(var->current->content[0], "exit", 5) == 0)

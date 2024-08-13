@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 16:42:28 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 12:44:28 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 19:33:31 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,18 @@ void	command_pwd(t_var *var)
 	free(cwd);
 }
 
+void	command_echo_util(t_node *list, int i)
+{
+	while (list->content[i] != NULL)
+	{
+		ft_printf("%s", list->content[i]);
+		if (list->content[i + 1] != NULL)
+			ft_printf(" ");
+		i++;
+	}
+	ft_printf("\n");
+}
+
 void	command_echo(t_node *list)
 {
 	int	i;
@@ -56,21 +68,18 @@ void	command_echo(t_node *list)
 		i++;
 		while (list->content[i] != NULL)
 		{
-			ft_printf("%s", list->content[i]);
-			if (list->content[i + 1] != NULL)
+			if (ft_strncmp(list->content[i], "-n", 3) != 0
+				&& list->content[i][2] != 'n')
+				ft_printf("%s", list->content[i]);
+			if (list->content[i + 1] != NULL
+				&& ft_strncmp(list->content[i], "-n", 3) != 0
+				&& list->content[i][2] != 'n')
 				ft_printf(" ");
 			i++;
 		}
 		return ;
 	}
-	while (list->content[i] != NULL)
-	{
-		ft_printf("%s", list->content[i]);
-		if (list->content[i + 1] != NULL)
-			ft_printf(" ");
-		i++;
-	}
-	ft_printf("\n");
+	command_echo_util(list, i);
 }
 
 void	cd_home(t_var *var, char *path)
