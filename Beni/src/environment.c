@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 18:40:24 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/14 16:40:42 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,7 @@ void	command_env(t_var *var)
 	}
 	while (var->env[i])
 	{
-		if (!ft_strncmp("_=", var->env[i], 2))
-			ft_printf("_=/home/bszilas/.capt/root/usr/bin/env\n");
-		else
+		if (ft_strchr(var->env[i], '='))
 			ft_printf("%s\n", var->env[i]);
 		i++;
 	}
@@ -85,33 +83,34 @@ int	unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
 	return (false);
 }
 
+size_t	to_export_len(char *str)
+{
+	if (ft_strchr(str, '='))
+		return (ft_strchr(str, '=') + 1 - str);
+	return (ft_strlen(str) + 1);
+}
+
 char	**change_var(char **env, char *str)
 {
 	char	*var;
-	char	tmp;
 	size_t	len;
 	size_t	i;
 
-	len = ft_strchr(str, '=') + 1 - str;
-	tmp = str[len];
+	len = to_export_len(str);
 	i = -1;
 	while (env[++i])
 	{
 		if (!ft_strncmp(env[i], str, len))
 		{
-			str[len] = tmp;
-			len = ft_strlen(str);
-			var = malloc((len + 1) * sizeof (char));
+			var = ft_strdup(str);
 			if (!var)
 				return (free_string_array(env), NULL);
-			ft_strlcpy(var, str, len + 1);
 			free(env[i]);
 			env[i] = var;
 			return (env);
 		}
 	}
-	str[len] = tmp;
-	return (NULL);
+	return (env);
 }
 
 char	**command_export(t_var *var, char *str)

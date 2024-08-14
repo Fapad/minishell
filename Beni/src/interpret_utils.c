@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:06 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 17:06:43 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/14 16:55:48 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,33 @@
 char	*ft_getenv(char **env, char *s)
 {
 	size_t	i;
-	size_t	varname_l;
+	size_t	len;
 	char	*var;
+	char	tmp;
 
 	i = 0;
 	if (!s)
 		return (NULL);
-	varname_l = ft_strlen(s);
+	len = ft_strlen(s);
 	while (env[i])
 	{
-		var = ft_strchr(env[i], '=') + 1;
-		if (env[i] + varname_l + 1 == var && !ft_strncmp(s, env[i], varname_l))
+		var = ft_strchr(env[i], '=');
+		if (var)
+		{
+			tmp = *var;
+			*var = 0;
+		}
+		else
+		{
+			tmp = 0;
+			var = s + len;
+		}
+		if (ft_strlen(env[i]) == len && !ft_strncmp(s, env[i], len + 1))
+		{
+			*var = tmp;
 			return (var);
+		}
+		*var = tmp;
 		i++;
 	}
 	return (NULL);

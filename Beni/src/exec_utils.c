@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 14:31:39 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/14 15:46:42 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,11 @@ char	**env_loop(t_var *var, char **(*f)(t_var *, char *))
 
 	i = 1;
 	if (f == &command_export && !var->current->content[i])
+	{
 		print_environment(var);
+		if (var->out_fd != STDOUT_FILENO)
+			close(var->out_fd);
+	}
 	while (var->current->content[i] && var->env)
 		var->env = f(var, var->current->content[i++]);
 	return (var->env);

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:24:11 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 18:29:06 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/14 16:11:58 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,15 @@ int	existing_env_var(char **env, char *str)
 
 	tmp = ft_strchr(str, '=');
 	if (!tmp)
-		return (false);
-	tmp[0] = '\0';
-	var = ft_getenv(env, str);
-	tmp[0] = '=';
+	{
+		var = ft_getenv(env, str);	
+	}
+	else
+	{
+		tmp[0] = '\0';
+		var = ft_getenv(env, str);
+		tmp[0] = '=';
+	}
 	return (var != NULL);
 }
 

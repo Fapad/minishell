@@ -41,3 +41,16 @@ Valamint a norminette is hibatlan jeneleg
 
 # VALGRIND
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-error-list=yes --suppressions=readline.supp --trace-children-skip="$(echo /bin/* /usr/bin/* /usr/sbin/* /home/bszilas/.capt/* $(which norminette) | tr ' ' ',')" --trace-children=yes --track-fds=yes ./minishell
+
+To scroll within a tmux pane, you need to enter copy mode. Here’s how you can do it:
+
+    Enter copy mode:
+        Press Ctrl+b followed by [ (the square bracket).
+
+    Scroll through the content:
+        Use the arrow keys (Up and Down) to scroll line by line.
+        Use PgUp and PgDn to scroll by pages.
+        You can also use Ctrl+u and Ctrl+d to scroll up and down by half a page, respectively.
+
+    Exit copy mode:
+        Press q to exit copy mode and return to normal mode.

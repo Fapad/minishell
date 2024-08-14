@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:10:04 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 20:05:31 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/14 15:58:09 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,5 +105,4 @@ void	print_environment(t_var *var)
 		}
 		print_env_string(next, var->out_fd);
 	}
-	close(var->out_fd);
 }
