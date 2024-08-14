@@ -38,8 +38,8 @@ void	free_linked_lists(t_var *var)
 	{
 		node = var->list;
 		var->list = node->next;
-		if (node->type == HEREDOC)
-			free(node->content[FILENAME]);
+		/* if (node->type & HEREDOC)
+			free(node->content[FILENAME]); */
 		free(node->content);
 		free(node);
 	}

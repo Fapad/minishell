@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/09 22:11:10 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 17:14:40 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	update_env_after_cd(t_var *var, char *env_var_name, char *path)
 	var->env = command_export(var, str);
 	free(str);
 	if (!var->env)
-		restore_environment(var);
+		return (perror("exiting"), free_all(var), exit(EXIT_FAILURE));
 }
 
 bool	too_many_arguments(t_var *var, t_node *cmd)

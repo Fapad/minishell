@@ -1,3 +1,27 @@
+
+6. Update
+
+Leakek:
+
+
+1_pipelines.sh
+
+line.: 84
+line.: 156
+line.: 161
+
+1_redirs.sh
+
+line.: 223
+line.: 229
+line.: 235
+line.: 241
+
+
+
+
+
+
 5. Update
 
 ha csak exportot irunk be akkor is ki kell irja az env-t

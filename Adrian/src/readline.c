@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/13 16:01:19 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/13 18:28:57 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,31 +29,6 @@ void	init_var(t_var *var, int argc, char **argv, char **envp)
 	malloc_envps(var, envp);
 	var->status = 0;
 	var->loop = true;
-}
-
-void	malloc_envps(t_var *var, char **envp)
-{
-	char	*str;
-	size_t	len;
-	size_t	i;
-
-	len = envp_string_count(envp);
-	var->env = malloc((len + 1) * sizeof (char *));
-	if (!var->env)
-		return (perror("exiting"), free_all(var), exit(EXIT_FAILURE));
-	i = 0;
-	while (i < len)
-	{
-		var->env[i] = ft_strdup(envp[i]);
-		if (!var->env[i])
-			return (perror("exiting"), free_all(var), exit(EXIT_FAILURE));
-		i++;
-	}
-	var->env[i] = NULL;
-	str = ft_getenv(var->env, "SHLVL");
-	var->env = set_shlvl(var, str);
-	if (!var->env)
-		return (perror("exiting"), free_all(var), exit(EXIT_FAILURE));
 }
 
 void	check_received_signal(t_var *var)
