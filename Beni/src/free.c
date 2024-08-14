@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 16:05:03 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 11:42:25 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/14 17:01:57 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	free_linked_lists(t_var *var)
 	{
 		node = var->list;
 		var->list = node->next;
-		if (node->type == HEREDOC)
+		if (node->type & HEREDOC)
 			free(node->content[FILENAME]);
 		free(node->content);
 		free(node);
