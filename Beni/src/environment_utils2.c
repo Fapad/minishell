@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 15:10:04 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/14 15:58:09 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 09:27:04 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ void	print_env_string(char *str, int fd)
 		}
 		i++;
 	}
-	write(fd, "\"", 1);
+	if (flag)
+		write(fd, "\"", 1);
 	write(fd, "\n", 1);
 }
 

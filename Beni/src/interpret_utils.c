@@ -6,11 +6,25 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:06 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/14 16:55:48 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 09:13:47 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
+
+void	ft_getenv_get_envvar_name(char *s, char **var, char *tmp, size_t len)
+{
+	if (var)
+	{
+		*tmp = **var;
+		**var = 0;
+	}
+	else
+	{
+		*tmp = 0;
+		*var = s + len;
+	}
+}
 
 char	*ft_getenv(char **env, char *s)
 {
@@ -26,16 +40,7 @@ char	*ft_getenv(char **env, char *s)
 	while (env[i])
 	{
 		var = ft_strchr(env[i], '=');
-		if (var)
-		{
-			tmp = *var;
-			*var = 0;
-		}
-		else
-		{
-			tmp = 0;
-			var = s + len;
-		}
+		ft_getenv_get_envvar_name(s, &var, &tmp, len);
 		if (ft_strlen(env[i]) == len && !ft_strncmp(s, env[i], len + 1))
 		{
 			*var = tmp;

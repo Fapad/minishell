@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/14 16:40:42 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 09:25:17 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,8 @@ char	**change_var(char **env, char *str)
 	i = -1;
 	while (env[++i])
 	{
-		if (!ft_strncmp(env[i], str, len))
+		if (!ft_strncmp(env[i], str, len) || \
+		(ft_strncmp(env[i], str, len) == -'=' && !ft_strchr(env[i], '=')))
 		{
 			var = ft_strdup(str);
 			if (!var)
@@ -119,8 +120,6 @@ char	**command_export(t_var *var, char *str)
 	size_t	len;
 	size_t	i;
 
-	if (!str)
-		return (print_environment(var), var->env);
 	if (!valid_identifier(var, str))
 		return (var->env);
 	if (existing_env_var(var->env, str))

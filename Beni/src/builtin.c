@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 16:42:28 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/14 15:14:37 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 09:40:13 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ bool	check_n(t_node *list, int i)
 	int	b;
 
 	b = 1;
-	if (list->content[i] == NULL)
+	if (!list->content[i] || !*list->content[i])
 		return (false);
 	if ((ft_strlen(list->content[i]) == 1)
 		|| (ft_strncmp(list->content[i], "-", 2) == 0))
