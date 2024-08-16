@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 10:23:27 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 17:43:49 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	cd_dotdot_for_istvan(t_var *var, char *path)
 	if (var->cwd && var->cwd[ft_strlen(var->cwd) - 1] == '/')
 		rv_path = ft_strjoin_nofree(var->cwd, path);
 	else
-		rv_path = ft_strjoin_three(var->cwd, path);
+		rv_path = ft_strjoin_three(var->cwd, path, '/');
 	if (!rv_path)
 		return (perror("cd"), status_1(var));
 	free(var->cwd);

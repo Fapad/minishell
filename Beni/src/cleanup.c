@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:18:55 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 11:07:10 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 21:12:00 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	remove_heredocs(t_var *var)
 			unlink(doc->content[FILENAME]);
 		doc = get_next_node(doc->next, HEREDOC, END);
 	}
+	free_heredoc_prompt(var);
 }
 
 void	exec_cleanup(t_var *var)
@@ -32,6 +33,8 @@ void	exec_cleanup(t_var *var)
 	free_lists_and_path(var);
 	free(var->line);
 	var->line = NULL;
+	free(var->hd_history);
+	var->hd_history = NULL;
 }
 
 void	close_in_and_out(t_var *var)
@@ -46,4 +49,13 @@ void	close_pipe(int pfd[])
 {
 	close(pfd[WRITE_END]);
 	close(pfd[READ_END]);
+}
+
+void	free_heredoc_prompt(t_var *var)
+{
+	if (var->prompt != var->stack_prompt)
+	{
+		free(var->prompt);
+		var->prompt = NULL;
+	}
 }

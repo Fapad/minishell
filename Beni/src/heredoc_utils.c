@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:26:29 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 18:27:42 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 21:45:24 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,27 @@ void	flag_heredoc(t_var *var)
 		var->last_token->type = var->last_token->type | NO_EXPAND;
 }
 
-void	heredoc_prompt(char *limiter, size_t limiter_size)
+void	heredoc_warning(t_var *var, int signal, char *limiter)
 {
-	ft_printf(HD_PROMPT);
-	write(STDOUT_FILENO, limiter, limiter_size - 2);
-	ft_printf("\" > ");
+	if (signal)
+		write(STDOUT_FILENO, "\n", 1);
+	else
+	{
+		var->hd_history = ft_strjoin(var->hd_history, "\n");
+		ft_putstr_fd("warning: here-document delimited by end-of-file \
+(wanted `", STDERR_FILENO);
+		ft_putstr_fd(limiter, STDERR_FILENO);
+		ft_putendl_fd("\')", STDERR_FILENO);
+	}
+}
+
+char	*heredoc_prompt(t_var *var, char *limiter)
+{
+	if (TESTER)
+		return (NULL);
+	var->prompt = ft_strjoin_nofree(HD_PROMPT, limiter);
+	var->prompt = ft_strjoin(var->prompt, "\" > ");
+	if (!var->prompt)
+		var->prompt = var->stack_prompt;
+	return (var->prompt);
 }

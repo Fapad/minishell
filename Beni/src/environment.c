@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 13:46:38 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 14:37:47 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ void	command_env(t_var *var)
 	}
 	while (var->env[i])
 	{
-		if (ft_strchr(var->env[i], '='))
+		if (!ft_strncmp(var->env[i], "_=", 2))
+			print_env_location(var);
+		else if (ft_strchr(var->env[i], '='))
 			ft_printf("%s\n", var->env[i]);
 		i++;
 	}

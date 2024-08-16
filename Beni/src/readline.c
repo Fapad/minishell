@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/16 10:35:02 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 20:50:03 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,11 @@ void	init_var(t_var *var, int argc, char **argv, char **envp)
 	var->line = NULL;
 	var->env = NULL;
 	var->splitted_path = NULL;
+	var->hd_history = NULL;
+	var->prompt = NULL;
 	var->exec_cmd = NULL;
+	ft_bzero(var->stack_prompt, 4);
+	ft_strlcpy(var->stack_prompt, " > ", 4);
 	var->cwd = getcwd(NULL, 0);
 	malloc_envps_or_exit(var, envp);
 	var->status = 0;
@@ -66,11 +70,11 @@ int	main(int argc, char **argv, char **envp)
 		if (!var.line)
 			break ;
 		sigint_handler_non_interactive_mode(&var);
-		if (*var.line)
-			add_history(var.line);
 		var.tokens = tokenize(&var);
 		if (parse_tokens(&var) == true)
 			execute(&var);
+		if (var.line && *var.line)
+			add_history(var.line);
 		exec_cleanup(&var);
 		sigint_handler_interactive_mode(&var);
 	}

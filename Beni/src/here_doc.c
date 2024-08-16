@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:35:45 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 18:27:36 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 21:51:22 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ char	*expand_heredoc_line(t_var *var, char *line)
 	size_t	len;
 	char	*str;
 
+	if (!line)
+		return (NULL);
 	heredoc_expand_line_len(var, line);
 	if (!var->len)
 		return (line);
@@ -84,57 +86,96 @@ char	*expand_heredoc_line(t_var *var, char *line)
 	return (free(line - len), str);
 }
 
-void	write_doc(t_var *var, char *limiter, int fd, int expand)
+char	*write_heredoc_line(t_var *var, int fd, char *line, int expand)
+{
+	line = ft_strjoin(line, "\n");
+	if (expand)
+		line = expand_heredoc_line(var, line);
+	if (!line)
+		return (free(var->hd_history), NULL);
+	write(fd, line, ft_strlen(line));
+	var->hd_history = ft_strjoin(var->hd_history, line);
+	free(line);
+	return (var->hd_history);
+}
+
+char	*append_char_if_missing(char *line, char c)
+{
+	size_t	len;
+	char	buf[2];
+
+	buf[0] = c;
+	buf[1] = 0;
+	len = ft_strlen(line);
+	if (!len || line[len - 1] != c)
+		return (ft_strjoin(line, buf));
+	return (line);
+}
+
+char	*write_doc(t_var *var, char *limiter, int fd, int expand)
 {
 	extern sig_atomic_t	g_signal;
-	size_t				limiter_size;
 	char				*line;
 
-	limiter_size = ft_strlen(limiter) + 1;
-	if (!TESTER)
-		heredoc_prompt(limiter, limiter_size);
 	sigint_handler_interactive_mode(var);
-	line = get_next_line(STDIN_FILENO);
-	while (line && ft_strncmp(line, limiter, limiter_size) && !g_signal)
+	if (TESTER)
+		line = trim_nl_free(get_next_line(STDIN_FILENO));
+	else
+		line = readline(heredoc_prompt(var, limiter));
+	while (line && ft_strncmp(line, limiter, ft_strlen(limiter) + 1) && !g_signal)
 	{
-		if (expand)
-			line = expand_heredoc_line(var, line);
-		if (!line)
-			break ;
-		write(fd, line, ft_strlen(line));
-		free(line);
-		if (!TESTER)
-			heredoc_prompt(limiter, limiter_size);
-		line = get_next_line(STDIN_FILENO);
+		var->hd_history = write_heredoc_line(var, fd, line, expand);
+		if (!var->hd_history)
+			return (free_heredoc_prompt(var), perror("heredoc"), NULL);
+		if (TESTER)
+			line = trim_nl_free(get_next_line(STDIN_FILENO));
+		else
+		line = readline(var->prompt);
 	}
-	if (!line)
-		write(STDOUT_FILENO, "\n", 1);
 	sigint_handler_non_interactive_mode(var);
-	free(line);
+	free_heredoc_prompt(var);
+	if (!line)
+		return (heredoc_warning(var, g_signal, limiter), var->hd_history);
+	line = append_char_if_missing(line, '\n');
+	if (!g_signal)
+		var->hd_history = ft_strjoin(var->hd_history, line);
+	return (free(line), var->hd_history);
+}
+
+void	add_heredoc_to_rl(t_var *var)
+{
+	char	*ptr;
+
+	if (var->hd_history)
+	{
+		ptr = var->line;
+		var->line = ft_strjoin_three(var->line, var->hd_history, '\n');
+		free(ptr);
+		free(var->hd_history);
+		var->hd_history = NULL;
+	}
 }
 
 int	write_here_docs(t_var *var)
 {
-	char	*limiter;
 	t_node	*node;
 	int		fd;
 
 	node = get_next_node(var->list, HEREDOC, END);
 	while (node && !var->status)
 	{
-		limiter = ft_strjoin_nofree(node->content[2], "\n");
-		if (!limiter)
-			return (perror("heredoc"), status_1(var), false);
 		fd = create_tmp_file(node);
 		if (fd == -1)
-			return (perror("heredoc"), status_1(var), free(limiter), false);
-		write_doc(var, limiter, fd, !(node->type & NO_EXPAND));
-		free(limiter);
+			return (perror("heredoc"), status_1(var), false);
+		var->hd_history = write_doc(var, node->content[2], fd, !(node->type & NO_EXPAND));
 		close(fd);
-		node = get_next_node(node->next, HEREDOC, END);
 		check_received_signal(var);
+		if (var->status)
+			return (add_heredoc_to_rl(var), false);
+		if (!var->hd_history)
+			return (perror("heredoc"), status_1(var), false);
+		node = get_next_node(node->next, HEREDOC, END);
 	}
-	if (var->status)
-		return (false);
+	add_heredoc_to_rl(var);
 	return (true);
 }

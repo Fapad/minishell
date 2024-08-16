@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*   exec_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 15:19:44 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 17:44:02 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_node	*get_next_node(t_node *node, int get_type, int before_type)
 	return (NULL);
 }
 
-char	*ft_strjoin_three(char *s1, char *s2)
+char	*ft_strjoin_three(char *s1, char *s2, char c)
 {
 	int		len1;
 	int		len2;
@@ -58,7 +58,7 @@ char	*ft_strjoin_three(char *s1, char *s2)
 		return (NULL);
 	while (s1 && *s1)
 		res[i++] = *s1++;
-	res[i++] = '/';
+	res[i++] = c;
 	while (s2 && *s2)
 		res[i++] = *s2++;
 	res[i] = '\0';
@@ -83,7 +83,7 @@ int	search_path(t_var *var, int access_type)
 	i = 0;
 	while (var->splitted_path && var->splitted_path[i])
 	{
-		cmd = ft_strjoin_three(var->splitted_path[i], var->current->content[0]);
+		cmd = ft_strjoin_three(var->splitted_path[i], var->current->content[0], '/');
 		if (!cmd)
 			return (status_1(var), false);
 		if (access(cmd, access_type) == 0)

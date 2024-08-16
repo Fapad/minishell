@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 13:46:03 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 21:37:50 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,9 @@ typedef struct s_var
 	char				**compound_arg;
 	char				*cwd;
 	char				*exec_cmd;
+	char				*hd_history;
+	char				*prompt;
+	char				stack_prompt[4];
 	pid_t				pid;
 	size_t				len;
 	int					pfd[2];
@@ -145,7 +148,6 @@ int			split_compound_tokens(t_var *var, char *str);
 bool		handle_compound_tokens(t_var *var, char *str);
 void		heredoc_expand_line_len(t_var *var, char *line);
 char		*expand_heredoc_line(t_var *var, char *line);
-void		heredoc_prompt(char *limiter, size_t limiter_size);
 
 /* SIGNAL */
 
@@ -231,6 +233,7 @@ long long	signed_llong_overflow_check(t_var *var, char *n);
 size_t		to_export_len(char *str);
 void		ft_getenv_get_envvar_name(char *s, char **var, char *tmp, \
 size_t len);
+void		print_env_location(t_var *var);
 
 /* EXECUTE */
 
@@ -243,7 +246,7 @@ t_node		*get_next_node(t_node *node, int get_type, int before_type);
 void		close_in_and_out(t_var *var);
 void		exec_system_commands(t_var *var);
 char		**splitted_path(t_var *var);
-char		*ft_strjoin_three(char *s1, char *s2);
+char		*ft_strjoin_three(char *s1, char *s2, char c);
 void		close_pipe(int pfd[]);
 void		exec_cleanup(t_var *var);
 char		*get_cmd(t_var *var);
@@ -266,8 +269,12 @@ void		redirect_outfile(t_var *var, char *file, int type);
 int			write_here_docs(t_var *var);
 void		heredoc_expand_line_len(t_var *var, char *line);
 char		*expand_heredoc_line(t_var *var, char *line);
-void		heredoc_prompt(char *limiter, size_t limiter_size);
-void		write_doc(t_var *var, char *limiter, int fd, int expand);
+char		*heredoc_prompt(t_var *var, char *limiter);
+void		free_heredoc_prompt(t_var *var);
+char		*write_doc(t_var *var, char *limiter, int fd, int expand);
 void		flag_heredoc(t_var *var);
+void		heredoc_warning(t_var *var, int signal, char *limiter);
+void		add_heredoc_to_rl(t_var *var);
+char		*append_char_if_missing(char *line, char c);
 
 #endif
