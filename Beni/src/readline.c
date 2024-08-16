@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/13 18:28:57 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 10:35:02 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	init_var(t_var *var, int argc, char **argv, char **envp)
 {
+	setup_signal_handlers(var);
 	(void)argc;
 	(void)argv;
 	var->stack_env = envp;
@@ -25,8 +26,8 @@ void	init_var(t_var *var, int argc, char **argv, char **envp)
 	var->env = NULL;
 	var->splitted_path = NULL;
 	var->exec_cmd = NULL;
-	var->cwd = getcwd(NULL, PATH_MAX);
-	malloc_envps(var, envp);
+	var->cwd = getcwd(NULL, 0);
+	malloc_envps_or_exit(var, envp);
 	var->status = 0;
 	var->loop = true;
 }
@@ -42,20 +43,24 @@ void	check_received_signal(t_var *var)
 	}
 }
 
+char	*trim_nl_free(char *line)
+{
+	char	*trim;
+
+	trim = ft_strtrim(line, "\n");
+	free(line);
+	return (trim);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_var	var;
 
-	setup_signal_handlers(&var);
 	init_var(&var, argc, argv, envp);
 	while (var.loop)
 	{
-		if (TESTER)
-		{
-			char *line = get_next_line(0);
-			var.line = ft_strtrim(line, "\n");
-			free(line);
-		}
+		if (TESTER || !isatty(STDIN_FILENO))
+			var.line = trim_nl_free(get_next_line(STDIN_FILENO));
 		else
 			var.line = readline(PROMPT);
 		if (!var.line)
@@ -69,7 +74,7 @@ int	main(int argc, char **argv, char **envp)
 		exec_cleanup(&var);
 		sigint_handler_interactive_mode(&var);
 	}
-	if (!TESTER)
+	if (!TESTER && isatty(STDIN_FILENO))
 		ft_printf("exit\n");
 	rl_clear_history();
 	free_all(&var);

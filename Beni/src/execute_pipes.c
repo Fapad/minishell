@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:26:38 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 20:03:52 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:11:53 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,10 @@ void	first_cmd(t_var *var)
 {
 	var->current = var->list;
 	if (pipe(var->pfd) == -1)
-		return (perror("pipe"), free_all(var), exit(EXIT_FAILURE));
+		return (perror("pipe"), status(var, PIPE_ERROR));
 	var->pid = fork();
+	if (var->pid == -1)
+		return (perror("fork"), close_pipe(var->pfd), status(var, FORK_ERROR));
 	if (var->pid == 0)
 	{
 		dup2(var->pfd[WRITE_END], STDOUT_FILENO);
@@ -58,9 +60,10 @@ void	first_cmd(t_var *var)
 void	middle_cmd(t_var *var)
 {
 	if (pipe(var->pfd) == -1)
-		return (perror("pipe"), free_all(var),
-			close(var->in_fd), exit(EXIT_FAILURE));
+		return (perror("pipe"), status(var, PIPE_ERROR));
 	var->pid = fork();
+	if (var->pid == -1)
+		return (perror("fork"), close_pipe(var->pfd), status(var, FORK_ERROR));
 	if (var->pid == 0)
 	{
 		dup2(var->in_fd, STDIN_FILENO);
@@ -71,8 +74,8 @@ void	middle_cmd(t_var *var)
 		exec_builtins(var);
 		exec_system_commands(var);
 	}
-	close_in_and_out(var);
 	close(var->pfd[WRITE_END]);
+	close(var->in_fd);
 	var->in_fd = var->pfd[READ_END];
 	var->current = get_next_node(var->current, PIPE, END)->next;
 }
@@ -80,6 +83,8 @@ void	middle_cmd(t_var *var)
 void	last_cmd(t_var *var)
 {
 	var->pid = fork();
+	if (var->pid == -1)
+		return (perror("fork"), close_pipe(var->pfd), status(var, FORK_ERROR));
 	if (var->pid == 0)
 	{
 		dup2(var->pfd[READ_END], STDIN_FILENO);
@@ -88,27 +93,6 @@ void	last_cmd(t_var *var)
 		exec_builtins(var);
 		exec_system_commands(var);
 	}
-	close_in_and_out(var);
 	close(var->pfd[READ_END]);
 	var->in_fd = STDIN_FILENO;
-}
-
-void	wait_children(t_var *var)
-{
-	int		status;
-	int		i;
-	pid_t	pid;
-
-	pid = 0;
-	i = 0;
-	status = 0;
-	while (pid != var->pid)
-	{
-		pid = wait(&status);
-		i++;
-	}
-	var->status = status;
-	while (i++ < var->cmds)
-		wait(&status);
-	get_child_exit_status(var);
 }

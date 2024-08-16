@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:56:14 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 17:14:40 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 10:23:27 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	cd_dotdot_for_istvan(t_var *var, char *path)
 		return (perror("cd"), status_1(var));
 	free(var->cwd);
 	chdir(path);
-	cwd = getcwd(NULL, PATH_MAX);
+	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
 		ft_putstr_fd("cd: error retrieving current directory:", STDERR_FILENO);
@@ -98,7 +98,7 @@ void	command_cd(t_var *var, char *path)
 	}
 	update_env_after_cd(var, "OLDPWD=", ft_getenv(var->env, "PWD"));
 	free(var->cwd);
-	var->cwd = getcwd(NULL, PATH_MAX);
+	var->cwd = getcwd(NULL, 0);
 	if (var->cwd)
 		update_env_after_cd(var, "PWD=", var->cwd);
 	var->status = EXIT_SUCCESS;

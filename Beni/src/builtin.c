@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 16:42:28 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 09:40:13 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 10:23:27 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	command_pwd(t_var *var)
 {
 	char	*cwd;
 
-	cwd = getcwd(NULL, PATH_MAX);
+	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		ft_putendl_fd(var->cwd, STDOUT_FILENO);
 	else

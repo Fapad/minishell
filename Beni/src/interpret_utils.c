@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:06 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 09:13:47 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 10:01:47 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_getenv_get_envvar_name(char *s, char **var, char *tmp, size_t len)
 {
-	if (var)
+	if (*var)
 	{
 		*tmp = **var;
 		**var = 0;
@@ -44,6 +44,8 @@ char	*ft_getenv(char **env, char *s)
 		if (ft_strlen(env[i]) == len && !ft_strncmp(s, env[i], len + 1))
 		{
 			*var = tmp;
+			if (*var == '=')
+				var++;
 			return (var);
 		}
 		*var = tmp;

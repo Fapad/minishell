@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:24:11 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/14 16:11:58 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 10:21:42 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	initialize_environment(t_var *var)
 		return (perror("exiting"), free_all(var), exit(EXIT_FAILURE));
 }
 
-void	malloc_envps(t_var *var, char **envp)
+void	malloc_envps_or_exit(t_var *var, char **envp)
 {
 	size_t	len;
 	size_t	i;

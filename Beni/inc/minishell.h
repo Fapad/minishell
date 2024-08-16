@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 18:29:56 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:10:24 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@
 # define REDIRECTION 03006
 # define READ_END 0
 # define WRITE_END 1
+# define PIPE_ERROR 129
+# define FORK_ERROR 254
 # define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
 [1;32m\002ell\001\033[0m\002 > "
 # define HD_PROMPT "\001\033[1;31m\002her\001\033[1;37m\002edo\001\033\
@@ -185,7 +187,7 @@ void		free_all(t_var *var);
 void		restore_environment(t_var *var);
 void		free_lists_and_path(t_var *var);
 void		status_1(t_var *var);
-void		status_2(t_var *var);
+void		status(t_var *var, int status);
 void		error_exec_txt_file(t_var *var);
 void		command_not_found(t_var *var);
 void		ambiguous_redirect_error(t_var *var, char *str);
@@ -195,7 +197,7 @@ void		child_execve_error_handler(t_var *var);
 
 // BUILTINS
 
-void		malloc_envps(t_var *var, char **envp);
+void		malloc_envps_or_exit(t_var *var, char **envp);
 void		initialize_environment(t_var *var);
 char		**command_unset(t_var *var, char *str);
 char		**command_export(t_var *var, char *str);

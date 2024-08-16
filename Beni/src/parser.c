@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:05:27 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/10 13:42:34 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:03:57 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ bool	parse_tokens(t_var *var)
 		return (status_1(var), false);
 	if (!valid_syntax(var->tokens))
 	{
-		status_2(var);
+		status(var, 2);
 		return (free_tokens(var), false);
 	}
 	current = var->tokens;
