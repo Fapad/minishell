@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 20:43:43 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/12 10:51:24 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:46:59 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,18 @@ int	identify_nonexistent_var(t_var *var, char **start, char **end)
 	}
 	reset_end(*start, end, ptr, tkn_end);
 	return (ptr == tkn_end);
+}
+
+void	ft_getenv_get_envvar_name(char *s, char **var, char *tmp, size_t len)
+{
+	if (*var)
+	{
+		*tmp = **var;
+		**var = 0;
+	}
+	else
+	{
+		*tmp = 0;
+		*var = s + len;
+	}
 }

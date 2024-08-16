@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:04:40 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 09:25:17 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:46:38 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,6 @@ int	unset2(char **old_envp, char *dest, size_t to_compare, char **new_env)
 	return (false);
 }
 
-size_t	to_export_len(char *str)
-{
-	if (ft_strchr(str, '='))
-		return (ft_strchr(str, '=') + 1 - str);
-	return (ft_strlen(str) + 1);
-}
-
 char	**change_var(char **env, char *str)
 {
 	char	*var;
@@ -101,7 +94,7 @@ char	**change_var(char **env, char *str)
 	while (env[++i])
 	{
 		if (!ft_strncmp(env[i], str, len) || \
-		(ft_strncmp(env[i], str, len) == -'=' && !ft_strchr(env[i], '=')))
+		(ft_strncmp(env[i], str, len) == - '=' && !ft_strchr(env[i], '=')))
 		{
 			var = ft_strdup(str);
 			if (!var)

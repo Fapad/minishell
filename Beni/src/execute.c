@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 13:10:34 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:41:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,10 +113,7 @@ void	execute(t_var *var)
 		else
 			middle_cmd(var);
 		if (var->status)
-		{
-			close_in_and_out(var);
 			var->cmds = i;
-		}
 		i++;
 	}
 	wait_children(var);

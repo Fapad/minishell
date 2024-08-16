@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 11:02:13 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 12:58:07 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:43:14 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	wait_children(t_var *var)
 	int		i;
 	pid_t	pid;
 
+	close_in_and_out(var);
 	pid = -1;
 	i = 0;
 	status = 0;
@@ -47,4 +48,11 @@ void	get_child_exit_status(t_var *var)
 	}
 	if (g_signal && ft_strncmp("./minishell", var->current->content[0], 12))
 		write(STDOUT_FILENO, "\n", 1);
+}
+
+size_t	to_export_len(char *str)
+{
+	if (ft_strchr(str, '='))
+		return (ft_strchr(str, '=') + 1 - str);
+	return (ft_strlen(str) + 1);
 }

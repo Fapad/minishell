@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 13:10:24 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:46:03 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ typedef struct s_var
 	int					overflow;
 }						t_var;
 
-// LEXER
+/* LEXER */
 
 t_token		*create_token(int type, char *str);
 t_token		*tokenize(t_var *var);
@@ -125,7 +125,7 @@ char		*token_end(char *start);
 void		reset_end(char *start, char **end, char *ptr, char *tkn_end);
 int			identify_nonexistent_var(t_var *var, char **start, char **end);
 
-// INTERPRET
+/* INTERPRET */
 
 void		cat_char_to_str(char *str, char c, size_t len);
 void		cat_single_qoutes(char *str, char **start, char *end, size_t len);
@@ -147,7 +147,7 @@ void		heredoc_expand_line_len(t_var *var, char *line);
 char		*expand_heredoc_line(t_var *var, char *line);
 void		heredoc_prompt(char *limiter, size_t limiter_size);
 
-// SIGNAL
+/* SIGNAL */
 
 void		setup_signal_handlers(t_var *var);
 void		handle_sigint(int sig);
@@ -156,8 +156,9 @@ void		check_received_signal(t_var *var);
 void		save_sigint(int signal);
 void		sigint_handler_non_interactive_mode(t_var *var);
 
-// PARSER
+/* PARSER */
 
+char		*trim_nl_free(char *line);
 t_node		*last_node(t_token *current, t_node *this);
 int			token_arg_count(t_token *current);
 t_node		*new_command_node(t_token *current, t_node *this);
@@ -166,7 +167,6 @@ void		set_redirect_type(t_node *this);
 t_node		*new_redirect_node(t_token *current, t_node *this);
 t_node		*new_list_node(t_token *current);
 void		add_to_list(t_var *var, t_node *this);
-void		print_exec_list(t_node *list);
 bool		parse_tokens(t_var *var);
 void		unexpected_token(char *str);
 bool		double_pipe(t_token *token);
@@ -179,7 +179,7 @@ bool		close_pipeline(t_var *var, t_token *start);
 bool		make_pipeline(t_var *var, t_token *start);
 t_token		*last_token(t_token *start);
 
-// ERROR_HANDLING
+/* ERROR_HANDLING */
 
 void		init_var(t_var *var, int argc, char **argv, char **envp);
 void		free_linked_lists(t_var *var);
@@ -195,7 +195,7 @@ void		invalid_identifier(t_var *var, char *str);
 void		error_msg(t_var *var, char *str, int status);
 void		child_execve_error_handler(t_var *var);
 
-// BUILTINS
+/* BUILTINS */
 
 void		malloc_envps_or_exit(t_var *var, char **envp);
 void		initialize_environment(t_var *var);
@@ -228,8 +228,11 @@ void		update_last_cmd(t_var *var);
 void		print_env_string(char *str, int fd);
 int			open_fd_export(t_var *var);
 long long	signed_llong_overflow_check(t_var *var, char *n);
+size_t		to_export_len(char *str);
+void		ft_getenv_get_envvar_name(char *s, char **var, char *tmp, \
+size_t len);
 
-// EXECUTE
+/* EXECUTE */
 
 void		execute(t_var *var);
 int			cd_export_exit_or_unset(t_var *var);
@@ -253,7 +256,7 @@ void		set_status(t_var *var);
 int			search_path(t_var *var, int access_type);
 void		get_child_exit_status(t_var *var);
 
-// REDIRECT
+/* REDIRECT */
 
 int			create_tmp_file(t_node *node);
 int			open_files_in_parent(t_var *var);
