@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 16:05:03 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/14 17:01:57 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/17 11:51:27 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	free_all(t_var *var)
 	var->env = NULL;
 	free(var->cwd);
 	var->cwd = NULL;
+	free(var->line);
+	var->line = NULL;
 }
 
 void	free_linked_lists(t_var *var)

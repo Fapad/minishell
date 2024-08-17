@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:26:29 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 21:45:24 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/17 11:44:15 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,34 @@ char	*heredoc_prompt(t_var *var, char *limiter)
 	if (!var->prompt)
 		var->prompt = var->stack_prompt;
 	return (var->prompt);
+}
+
+bool	heredoc_line_possible_var(t_var *var, char *line)
+{
+	size_t	i;
+
+	i = 0;
+	while (line[i] && line[i + 1])
+	{
+		if (possible_var(var, line[i], line[i + 1]))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+void	heredoc_expand_line_len(t_var *var, char *line)
+{
+	size_t	i;
+
+	i = 0;
+	var->len = 0;
+	while (line[i])
+	{
+		if (possible_var(var, line[i], line[i + 1]))
+			var->len += env_var_len(var, &line[i], line, &i);
+		else
+			var->len++;
+		i++;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:13:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 17:44:02 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/17 11:49:19 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,8 @@ int	search_path(t_var *var, int access_type)
 	i = 0;
 	while (var->splitted_path && var->splitted_path[i])
 	{
-		cmd = ft_strjoin_three(var->splitted_path[i], var->current->content[0], '/');
+		cmd = ft_strjoin_three(var->splitted_path[i], \
+		var->current->content[0], '/');
 		if (!cmd)
 			return (status_1(var), false);
 		if (access(cmd, access_type) == 0)

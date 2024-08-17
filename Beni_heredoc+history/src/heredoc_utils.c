@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:26:29 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/17 10:35:42 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/17 11:05:22 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ char	*ft_strdup_plus_1(char *str)
 	return (ret);
 }
 
-bool	update_input_after_nl(t_var *var, char *nl)
+void	update_input_after_nl(t_var *var, char *nl)
 {
 	char	*line;
 

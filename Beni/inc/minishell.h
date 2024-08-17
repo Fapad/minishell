@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/16 21:37:50 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/17 11:29:09 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,10 +271,9 @@ void		heredoc_expand_line_len(t_var *var, char *line);
 char		*expand_heredoc_line(t_var *var, char *line);
 char		*heredoc_prompt(t_var *var, char *limiter);
 void		free_heredoc_prompt(t_var *var);
-char		*write_doc(t_var *var, char *limiter, int fd, int expand);
+void		write_doc(t_var *var, char *limiter, int fd, int expand);
 void		flag_heredoc(t_var *var);
 void		heredoc_warning(t_var *var, int signal, char *limiter);
-void		add_heredoc_to_rl(t_var *var);
-char		*append_char_if_missing(char *line, char c);
+bool		heredoc_line_possible_var(t_var *var, char *line);
 
 #endif
