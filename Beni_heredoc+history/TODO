@@ -1,0 +1,56 @@
+
+TODO #######################################################################
+
+
+DONE #######################################################################
+
+--env -i nélkül parancsok keresése
+--env -i PATH beáll
+--export változókat "nyomtatja"
+--heredoc változók kibontása
+--exit llong_min -9223372036854775808
+--heredoc Ctrl-D
+--env _ változó - export[0] -ban nincs benne
+--hibás parancsok hibakódja pl. . és ".." (teszter)
+--export argumentum nélkül conditional jump
+--echo $"HOME"
+--echo $'HOME'
+--tokenizer: $VAR is expanded into command and arguments
+--ambiguous redirect pl. lenti eset
+--ha nem egy child kap signalt, honnan tudja a kódot?
+	#globálisba el van mentve a signum és a tokenizer elött a statusba rakjuk
+--sigquit ignore hozzáadva
+--export kinyomtatja ABC sorrendben az env-et
+--command not found / no permission / not executable esetén bash exit code
+https://www.gnu.org/software/bash/manual/bash.html#Command-Search-and-Execution
+--SHLVL változót a bashhel azonosan kezeli
+--absolute path executable keresés (ha / jelet tartalmaz)
+	pl. minishell a minishellböl indítható kell hogy legyen
+--unsetelt PATH esetén command keresés
+--hibaüzenet scriptek esetén
+--command_exit should not be printed by child
+--PWD és OLDPWD változókat updatelni cd parancs után
+--alsó edge caseben kinyomtatni a pwdt
+--bemenet kimenet fájl megnyitása egyszerre balról jobbra menjen
+--echo eltört? vagy a parser? # nem, csak a static analyzer után "make re" kell
+--heredoc segfaultol, heredoc tmp filet törölni, random nevet javítani
+--beépített parancsok hibaüzenete és hibakezelése
+	pl. nem létezö directory, unsetelt HOME stb.
+--$+nem alpha esetén a nyomtatás rossz...
+
+# AMBIGUOUS REDIRECT #######################################################
+
+bash
+bszilas@c3r10p6:~/m3/gh_msh/Beni$ echo hi > "a b c"
+bszilas@c3r10p6:~/m3/gh_msh/Beni$ cat "a b c"
+hi
+bszilas@c3r10p6:~/m3/gh_msh/Beni$ export VAR="x y z"
+bszilas@c3r10p6:~/m3/gh_msh/Beni$ echo hi > $VAR
+bash: $VAR: ambiguous redirect
+bszilas@c3r10p6:~/m3/gh_msh/Beni$ echo $?
+1
+bszilas@c3r10p6:~/m3/gh_msh/Beni$ export VAR="abc"
+bszilas@c3r10p6:~/m3/gh_msh/Beni$ echo hi > $VAR
+bszilas@c3r10p6:~/m3/gh_msh/Beni$ cat abc
+hi
+############################################################################
