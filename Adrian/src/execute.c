@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 19:46:32 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 20:03:47 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:41:43 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ void	one_simple_cmd(t_var *var)
 	if (cd_export_exit_or_unset(var))
 		return ;
 	var->pid = fork();
+	if (var->pid == -1)
+		return (perror("fork"), status(var, FORK_ERROR), free_all(var));
 	if (var->pid == 0)
 	{
 		var->current = var->list;
@@ -110,6 +112,8 @@ void	execute(t_var *var)
 			last_cmd(var);
 		else
 			middle_cmd(var);
+		if (var->status)
+			var->cmds = i;
 		i++;
 	}
 	wait_children(var);

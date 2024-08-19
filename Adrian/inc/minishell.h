@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 18:29:56 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/17 11:29:09 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@
 # define REDIRECTION 03006
 # define READ_END 0
 # define WRITE_END 1
+# define PIPE_ERROR 129
+# define FORK_ERROR 254
 # define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
 [1;32m\002ell\001\033[0m\002 > "
 # define HD_PROMPT "\001\033[1;31m\002her\001\033[1;37m\002edo\001\033\
@@ -87,6 +89,9 @@ typedef struct s_var
 	char				**compound_arg;
 	char				*cwd;
 	char				*exec_cmd;
+	char				*hd_history;
+	char				*prompt;
+	char				stack_prompt[4];
 	pid_t				pid;
 	size_t				len;
 	int					pfd[2];
@@ -99,7 +104,7 @@ typedef struct s_var
 	int					overflow;
 }						t_var;
 
-// LEXER
+/* LEXER */
 
 t_token		*create_token(int type, char *str);
 t_token		*tokenize(t_var *var);
@@ -123,7 +128,7 @@ char		*token_end(char *start);
 void		reset_end(char *start, char **end, char *ptr, char *tkn_end);
 int			identify_nonexistent_var(t_var *var, char **start, char **end);
 
-// INTERPRET
+/* INTERPRET */
 
 void		cat_char_to_str(char *str, char c, size_t len);
 void		cat_single_qoutes(char *str, char **start, char *end, size_t len);
@@ -143,9 +148,8 @@ int			split_compound_tokens(t_var *var, char *str);
 bool		handle_compound_tokens(t_var *var, char *str);
 void		heredoc_expand_line_len(t_var *var, char *line);
 char		*expand_heredoc_line(t_var *var, char *line);
-void		heredoc_prompt(char *limiter, size_t limiter_size);
 
-// SIGNAL
+/* SIGNAL */
 
 void		setup_signal_handlers(t_var *var);
 void		handle_sigint(int sig);
@@ -154,8 +158,9 @@ void		check_received_signal(t_var *var);
 void		save_sigint(int signal);
 void		sigint_handler_non_interactive_mode(t_var *var);
 
-// PARSER
+/* PARSER */
 
+char		*trim_nl_free(char *line);
 t_node		*last_node(t_token *current, t_node *this);
 int			token_arg_count(t_token *current);
 t_node		*new_command_node(t_token *current, t_node *this);
@@ -164,7 +169,6 @@ void		set_redirect_type(t_node *this);
 t_node		*new_redirect_node(t_token *current, t_node *this);
 t_node		*new_list_node(t_token *current);
 void		add_to_list(t_var *var, t_node *this);
-void		print_exec_list(t_node *list);
 bool		parse_tokens(t_var *var);
 void		unexpected_token(char *str);
 bool		double_pipe(t_token *token);
@@ -177,7 +181,7 @@ bool		close_pipeline(t_var *var, t_token *start);
 bool		make_pipeline(t_var *var, t_token *start);
 t_token		*last_token(t_token *start);
 
-// ERROR_HANDLING
+/* ERROR_HANDLING */
 
 void		init_var(t_var *var, int argc, char **argv, char **envp);
 void		free_linked_lists(t_var *var);
@@ -185,7 +189,7 @@ void		free_all(t_var *var);
 void		restore_environment(t_var *var);
 void		free_lists_and_path(t_var *var);
 void		status_1(t_var *var);
-void		status_2(t_var *var);
+void		status(t_var *var, int status);
 void		error_exec_txt_file(t_var *var);
 void		command_not_found(t_var *var);
 void		ambiguous_redirect_error(t_var *var, char *str);
@@ -193,9 +197,9 @@ void		invalid_identifier(t_var *var, char *str);
 void		error_msg(t_var *var, char *str, int status);
 void		child_execve_error_handler(t_var *var);
 
-// BUILTINS
+/* BUILTINS */
 
-void		malloc_envps(t_var *var, char **envp);
+void		malloc_envps_or_exit(t_var *var, char **envp);
 void		initialize_environment(t_var *var);
 char		**command_unset(t_var *var, char *str);
 char		**command_export(t_var *var, char *str);
@@ -226,8 +230,12 @@ void		update_last_cmd(t_var *var);
 void		print_env_string(char *str, int fd);
 int			open_fd_export(t_var *var);
 long long	signed_llong_overflow_check(t_var *var, char *n);
+size_t		to_export_len(char *str);
+void		ft_getenv_get_envvar_name(char *s, char **var, char *tmp, \
+size_t len);
+void		print_env_location(t_var *var);
 
-// EXECUTE
+/* EXECUTE */
 
 void		execute(t_var *var);
 int			cd_export_exit_or_unset(t_var *var);
@@ -238,7 +246,7 @@ t_node		*get_next_node(t_node *node, int get_type, int before_type);
 void		close_in_and_out(t_var *var);
 void		exec_system_commands(t_var *var);
 char		**splitted_path(t_var *var);
-char		*ft_strjoin_three(char *s1, char *s2);
+char		*ft_strjoin_three(char *s1, char *s2, char c);
 void		close_pipe(int pfd[]);
 void		exec_cleanup(t_var *var);
 char		*get_cmd(t_var *var);
@@ -251,7 +259,7 @@ void		set_status(t_var *var);
 int			search_path(t_var *var, int access_type);
 void		get_child_exit_status(t_var *var);
 
-// REDIRECT
+/* REDIRECT */
 
 int			create_tmp_file(t_node *node);
 int			open_files_in_parent(t_var *var);
@@ -261,8 +269,11 @@ void		redirect_outfile(t_var *var, char *file, int type);
 int			write_here_docs(t_var *var);
 void		heredoc_expand_line_len(t_var *var, char *line);
 char		*expand_heredoc_line(t_var *var, char *line);
-void		heredoc_prompt(char *limiter, size_t limiter_size);
+char		*heredoc_prompt(t_var *var, char *limiter);
+void		free_heredoc_prompt(t_var *var);
 void		write_doc(t_var *var, char *limiter, int fd, int expand);
 void		flag_heredoc(t_var *var);
+void		heredoc_warning(int signal, char *limiter);
+bool		heredoc_line_possible_var(t_var *var, char *line);
 
 #endif

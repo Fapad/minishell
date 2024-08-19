@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:24:11 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 18:29:06 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:44:57 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,15 @@ int	existing_env_var(char **env, char *str)
 
 	tmp = ft_strchr(str, '=');
 	if (!tmp)
-		return (false);
-	tmp[0] = '\0';
-	var = ft_getenv(env, str);
-	tmp[0] = '=';
+	{
+		var = ft_getenv(env, str);
+	}
+	else
+	{
+		tmp[0] = '\0';
+		var = ft_getenv(env, str);
+		tmp[0] = '=';
+	}
 	return (var != NULL);
 }
 
@@ -84,7 +89,7 @@ void	initialize_environment(t_var *var)
 		return (perror("exiting"), free_all(var), exit(EXIT_FAILURE));
 }
 
-void	malloc_envps(t_var *var, char **envp)
+void	malloc_envps_or_exit(t_var *var, char **envp)
 {
 	size_t	len;
 	size_t	i;

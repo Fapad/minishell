@@ -6,31 +6,11 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:26:06 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 17:06:43 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 14:39:37 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-char	*ft_getenv(char **env, char *s)
-{
-	size_t	i;
-	size_t	varname_l;
-	char	*var;
-
-	i = 0;
-	if (!s)
-		return (NULL);
-	varname_l = ft_strlen(s);
-	while (env[i])
-	{
-		var = ft_strchr(env[i], '=') + 1;
-		if (env[i] + varname_l + 1 == var && !ft_strncmp(s, env[i], varname_l))
-			return (var);
-		i++;
-	}
-	return (NULL);
-}
 
 size_t	single_quote_len(char *s, char *end, size_t *i)
 {

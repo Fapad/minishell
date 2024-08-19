@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 16:05:03 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/07 11:42:25 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/17 11:47:42 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	free_all(t_var *var)
 	var->env = NULL;
 	free(var->cwd);
 	var->cwd = NULL;
+	free(var->line);
+	var->line = NULL;
 }
 
 void	free_linked_lists(t_var *var)
@@ -38,8 +40,8 @@ void	free_linked_lists(t_var *var)
 	{
 		node = var->list;
 		var->list = node->next;
-		/* if (node->type & HEREDOC)
-			free(node->content[FILENAME]); */
+		if (node->type & HEREDOC)
+			free(node->content[FILENAME]);
 		free(node->content);
 		free(node);
 	}

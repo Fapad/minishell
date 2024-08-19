@@ -6,9 +6,10 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/08 15:10:31 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:03:15 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../inc/minishell.h"
 
 void	set_status(t_var *var)
@@ -26,7 +27,7 @@ void	error_exec_txt_file(t_var *var)
 	ft_putendl_fd("Minishell has no script support", STDERR_FILENO);
 	free(var->exec_cmd);
 	var->exec_cmd = NULL;
-	status_2(var);
+	status(var, 2);
 }
 
 void	command_not_found(t_var *var)

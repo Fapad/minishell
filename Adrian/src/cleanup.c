@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:18:55 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/11 11:45:24 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/17 11:49:11 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	remove_heredocs(t_var *var)
 			unlink(doc->content[FILENAME]);
 		doc = get_next_node(doc->next, HEREDOC, END);
 	}
+	free_heredoc_prompt(var);
 }
 
 void	exec_cleanup(t_var *var)
@@ -32,6 +33,8 @@ void	exec_cleanup(t_var *var)
 	free_lists_and_path(var);
 	free(var->line);
 	var->line = NULL;
+	free(var->hd_history);
+	var->hd_history = NULL;
 }
 
 void	close_in_and_out(t_var *var)
@@ -48,18 +51,11 @@ void	close_pipe(int pfd[])
 	close(pfd[READ_END]);
 }
 
-void	get_child_exit_status(t_var *var)
+void	free_heredoc_prompt(t_var *var)
 {
-	extern sig_atomic_t	g_signal;
-
-	if (WIFEXITED(var->status))
-		var->status = WEXITSTATUS(var->status);
-	else if (WIFSIGNALED(var->status))
+	if (var->prompt != var->stack_prompt)
 	{
-		var->status = 128 + WTERMSIG(var->status);
-		if (var->status == 128 + SIGQUIT)
-			ft_putendl_fd("Quit (core dumped)", STDERR_FILENO);
+		free(var->prompt);
+		var->prompt = NULL;
 	}
-	if (g_signal && ft_strncmp("./minishell", var->current->content[0], 12))
-		write(STDOUT_FILENO, "\n", 1);
 }

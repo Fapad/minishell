@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:21:33 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/13 14:33:45 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/08/16 13:01:03 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	status_1(t_var *var)
 		var->status = EXIT_FAILURE;
 }
 
-void	status_2(t_var *var)
+void	status(t_var *var, int status)
 {
-	var->status = EXIT_FAILURE << 1;
+	var->status = status;
 }
 
 void	invalid_identifier(t_var *var, char *str)
@@ -34,7 +34,7 @@ void	invalid_identifier(t_var *var, char *str)
 void	restore_environment(t_var *var)
 {
 	perror("Could not change environment");
-	malloc_envps(var, var->stack_env);
+	malloc_envps_or_exit(var, var->stack_env);
 	ft_putendl_fd("Environment has been reset", STDERR_FILENO);
 }
 
