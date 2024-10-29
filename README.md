@@ -21,12 +21,6 @@ make
 ./minishell
 ```
 
-### run with valgrind:
-```bash
-make valgrind
-```
-This will suppress leaks from the readline library and from the executables launched by the minishell.
-
 ## requirements for this school project:
 Any implemented feature and its error handling should behave like in bash.
 
