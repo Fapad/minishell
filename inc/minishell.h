@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:20:26 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/20 17:43:38 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/10/29 14:43:08 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@
 # define HD_PROMPT "\001\033[1;31m\002her\001\033[1;37m\002edo\001\033\
 [1;32m\002c \001\033[0m\002\""
 # define TMP_PATH "/tmp/.tmp"
-# define ENV_PATH "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/\
-bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+# define ENV_PATH "PATH=/usr/sbin:/usr/bin:/sbin:/bin:\
+/usr/games:/usr/local/games:/snap/bin:/usr/local/sbin:/usr/local/bin:"
 # define FILENAME 1
 # ifndef TESTER
 #  define TESTER 0
@@ -80,7 +80,6 @@ typedef struct s_var
 	char				**compound_arg;
 	char				*cwd;
 	char				*exec_cmd;
-	char				*hd_history;
 	char				*prompt;
 	char				stack_prompt[4];
 	pid_t				pid;

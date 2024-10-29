@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_gnl.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bszilas <bszilas@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 17:29:37 by szilas            #+#    #+#             */
-/*   Updated: 2024/07/19 19:05:12 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/10/29 14:17:01 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "libft.h"
-#include <fcntl.h>
 
 char	*trim_line(char *line, char *stash)
 {

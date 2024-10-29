@@ -6,7 +6,7 @@
 #    By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 16:17:41 by bszilas           #+#    #+#              #
-#    Updated: 2024/08/17 11:53:45 by bszilas          ###   ########.fr        #
+#    Updated: 2024/10/29 14:37:58 by bszilas          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,13 +22,13 @@ environment_utils3.c heredoc_utils.c exec_utils3.c environment_utils9000.c
 CC = cc
 LIBDIR = libft
 SRCDIR = src/
-INCDIR = inc/
+INCDIR = inc/ libft/
 OBJDIR = obj/
 LIB = libft.a
 RM = rm -rf
 SRC = $(addprefix $(SRCDIR),$(CFILES))
 OBJ = $(addprefix $(OBJDIR),$(CFILES:%.c=%.o))
-CFLAGS = -Wall -Wextra -Werror -I$(INCDIR)
+CFLAGS = -Wall -Wextra -Werror $(addprefix -I,$(INCDIR))
 LFLAGS = -L$(LIBDIR) -lft -lreadline
 
 all: $(LIB) $(OBJDIR) $(NAME)
@@ -57,6 +57,9 @@ fclean: clean
 
 diagram:
 	cflow --main=main --depth=6 --omit-arguments -f dot $(SRC) | dot -Txlib
+
+valgrind: all
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-error-list=yes --suppressions=readline.supp --trace-children-skip="$(echo /bin/* /usr/bin/* /usr/sbin/* | tr ' ' ',')" --trace-children=yes --track-fds=yes ./minishell
 
 re: fclean all
 

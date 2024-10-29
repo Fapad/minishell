@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:18:55 by bszilas           #+#    #+#             */
-/*   Updated: 2024/08/17 11:49:11 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/10/29 14:43:12 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ void	exec_cleanup(t_var *var)
 	free_lists_and_path(var);
 	free(var->line);
 	var->line = NULL;
-	free(var->hd_history);
-	var->hd_history = NULL;
 }
 
 void	close_in_and_out(t_var *var)

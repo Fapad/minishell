@@ -6,7 +6,7 @@
 /*   By: bszilas <bszilas@student.42vienna.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 10:36:13 by ajovanov          #+#    #+#             */
-/*   Updated: 2024/08/20 18:00:36 by bszilas          ###   ########.fr       */
+/*   Updated: 2024/10/29 14:43:05 by bszilas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	init_var(t_var *var, int argc, char **argv, char **envp)
 	var->line = NULL;
 	var->env = NULL;
 	var->splitted_path = NULL;
-	var->hd_history = NULL;
 	var->prompt = NULL;
 	var->exec_cmd = NULL;
 	ft_bzero(var->stack_prompt, 4);
