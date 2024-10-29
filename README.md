@@ -94,3 +94,9 @@ connected to the input of the next command via a pipe.
 • Avoid using more than one global variable to indicate a received signal. Consider
 the implications: this approach ensures that your signal handler will not access your
 main data structures.
+
+
+#### P.S.
+As this is a full Hungarian teamwork, the prompt is colored red-white-green as the Hungarian tricolore. 
+
+Its not Italian, that would be green-white-red :)
