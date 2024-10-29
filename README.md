@@ -16,7 +16,7 @@ docker run --it --rm minishell
 ## or run using make:
 ```bash
 sudo apt-get update -y
-sudo apt-get install -y build-essential readline-common libreadline-dev libreadline7
+sudo apt-get install -y build-essential readline-common libreadline-dev
 make
 ./minishell
 ```
