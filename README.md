@@ -1,18 +1,20 @@
 This is a school project building a shell in a team of two.
 
-## run with docker:
-
+## clone the repo
 ```bash
 git clone git@github.com:Fapad/minishelllllllll.git minishell
 cd minishell
+```
+
+## run with docker:
+
+```bash
 docker build -t minishell .
 docker run --it --rm minishell
 ```
 
-## run using make:
+## or run using make:
 ```bash
-git clone git@github.com:Fapad/minishelllllllll.git minishell
-cd minishell
 sudo apt-get update -y
 sudo apt-get install -y build-essential readline-common libreadline-dev libreadline7
 make
@@ -23,6 +25,7 @@ make
 ```bash
 make valgrind
 ```
+This will suppress leaks from the readline library and from the executables launched by the minishell.
 
 ## requirements for this school project:
 Any implemented feature and its error handling should behave like in bash.
