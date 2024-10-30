@@ -38,10 +38,8 @@
 # define WRITE_END 1
 # define PIPE_ERROR 129
 # define FORK_ERROR 254
-# define PROMPT "\001\033[1;31m\002min\001\033[1;37m\002ish\001\033\
-[1;32m\002ell\001\033[0m\002 > "
-# define HD_PROMPT "\001\033[1;31m\002her\001\033[1;37m\002edo\001\033\
-[1;32m\002c \001\033[0m\002\""
+# define PROMPT "\001\033[1;37m\002minishell\001\033[0m\002 > "
+# define HD_PROMPT "\001\033[1;37m\002heredoc \001\033[0m\002\""
 # define TMP_PATH "/tmp/.tmp"
 # define ENV_PATH "PATH=/usr/sbin:/usr/bin:/sbin:/bin:\
 /usr/games:/usr/local/games:/snap/bin:/usr/local/sbin:/usr/local/bin:"
