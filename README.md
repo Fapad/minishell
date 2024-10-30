@@ -22,43 +22,10 @@ make
 ```
 
 ## requirements for this school project:
-Any implemented feature and its error handling should behave like in bash.
 
-• Display a prompt when waiting for a new command.
+launching the right executable from the environment PATH variable or from a relative or absolute path
 
-• Have a working history.
-
-• Search and launch the right executable (based on the PATH variable or using a
-relative or an absolute path).
-
-• Handle ’ (single quote) which should prevent the shell from interpreting the meta-
-characters in the quoted sequence.
-
-• Handle " (double quote) which should prevent the shell from interpreting the meta-
-characters in the quoted sequence except for $ (dollar sign).
-
-• Handle environment variables ($ followed by a sequence of characters) which
-should expand to their values.
-
-• Handle $? which should expand to the exit status of the most recently executed
-foreground pipeline.
-
-• Not interpret unclosed quotes or special characters which are not required by the
-subject such as \ (backslash) or ; (semicolon).
-
-### redirections:
-
-◦ < should redirect input.
-
-◦ > should redirect output.
-
-◦ << should be given a delimiter, then read the input until a line containing the
-delimiter is seen. However, it doesn’t have to update the history!
-
-◦ >> should redirect output in append mode.
-
-• Implement pipes (| character). The output of each command in the pipeline is
-connected to the input of the next command via a pipe.
+’ (single quote) " (double quote) and enviroment variable expansion $ (dollar sign), also show the exit status of the last command ($?).
 
 ### builtins:
 
@@ -76,18 +43,12 @@ connected to the input of the next command via a pipe.
 
 ◦ exit with one argument and no options
 
+### redirections:
+
+infile <, outfile > or >> and << heredoc is handled like in bash
+
+any number of pipes | can be handled
+
 ### signal handling
 
-• Handle ctrl-C, ctrl-D and ctrl-\ which should behave like in bash.
-
-• In interactive mode:
-
-◦ ctrl-C displays a new prompt on a new line.
-
-◦ ctrl-D exits the shell.
-
-◦ ctrl-\ does nothing.
-
-• Avoid using more than one global variable to indicate a received signal. Consider
-the implications: this approach ensures that your signal handler will not access your
-main data structures.
+keyboard generated signals SIGINT and SIGQUIT are handled like in bash, as well as Ctrl+D
